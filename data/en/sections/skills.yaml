@@ -1,0 +1,26 @@
+# section information
+section:
+  name: Skills
+  id: skills
+  enable: true
+  weight: 2
+  showOnNavbar: true
+  # Can optionally hide the title in sections
+  # hideTitle: true
+
+# Your Skills.
+# Give a summary of you each skill in the summary section.
+skills:
+- name: Quantum Chemistry
+  # logo: "/images/sections/skills/kubernetes.png"
+  summary: "I have previously worked with Prof. Ayan Datta in studying the stability of Organic Halide Perovskites using DFT and most of my Masters Thesis was developing a Surface hopping python code based on LR-TDDFT for excited states. These experiences along with a course I took on electronic structure and condensed matter Physics has given me basic intuition about basic Quantum chemistry theory and calculations"
+  # url: "https://kubernetes.io/"
+
+- name: Quantum Dynamics
+  # logo: "/images/sections/skills/go.png"
+  summary: "From developing a code for propagating a simple 1D-quantum double well to developing a excited state electronic structure based Surface Hopping code and taking a course in Quantum Dynamics, I have gained baisc insight into how the propagation of quantum degrees of freedom coupled to semi-classical interactions can help us understand some very fundamental concepts about excited state phenomena in both Chemistry and Physics."
+  # url: "https://golang.org/"
+
+- name: Python Programming
+  # logo: "/images/sections/skills/cloud.png"
+  summary: "All my intuition in quantum mechanics comes from doing more and more simulations of various model and realistic systems. Python, with its easily programmable structure and vast set of scientific packages has helped me in gaining a lot of experience about the work in theoretical anc computational work."
