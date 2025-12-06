@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Mohammad Elious Mondal | Researcher</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Personal academic website of Mohammad Elious Mondal." />
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+  <!-- Top navigation bar -->
+  <header class="site-header">
+    <div class="container header-inner">
+      <div class="logo">
+        <!-- Change this to Mohammad Elious Mondal -->
+        <a href="#hero">Mohammad Elious Mondal</a>
+      </div>
+      <nav class="nav-links">
+        <a href="#about">About</a>
+        <a href="#research">Research</a>
+        <a href="#publications">Publications</a>
+        <a href="#teaching">Teaching</a>
+        <a href="#contact">Contact</a>
+      </nav>
+      <button class="theme-toggle" aria-label="Toggle dark mode">
+        ☾
+      </button>
+    </div>
+  </header>
+
+  <main>
+    <!-- Hero section with photo + short blurb -->
+    <section id="hero" class="hero">
+      <div class="container hero-grid">
+        <div class="hero-text">
+          <p class="tagline">Doctoral candidate in <span>Physical Chemistry</span></p>
+          <h1>Mohammad Elious Mondal</h1>
+          <p class="hero-description">
+            I am a PhD candidate in Chemistry at the University of Rochester, working
+            on open quantum systems, mixed quantum–classical dynamics, and spectroscopy
+            of exciton–polaritons in optical cavities.
+          </p>
+          <div class="hero-actions">
+            <a class="btn primary" href="assets/cv.pdf" target="_blank" rel="noopener">
+              Download CV
+            </a>
+            <a class="btn secondary" href="#contact">
+              Contact me
+            </a>
+          </div>
+        </div>
+
+        <div class="hero-photo">
+          <!-- Put your own profile.jpg in assets/ -->
+          <img src="assets/profile.png" alt="Photo of Mohammad Elious Mondal" />
+        </div>
+      </div>
+    </section>
+
+    <!-- About section -->
+    <section id="about" class="section">
+      <div class="container">
+        <h2>About</h2>
+        <p>
+          I am broadly interested in theoretical and computational chemistry, with a focus on
+          non-equilibrium dynamics in molecular and condensed-phase systems. My work involves
+          developing and applying mixed quantum–classical methods, Green’s-function techniques,
+          and numerical algorithms tailored for large-scale simulations.
+        </p>
+        <p>
+          I enjoy building open-source tools for quantum dynamics and spectroscopy, mentoring
+          students, and collaborating across chemistry, physics, and applied mathematics.
+        </p>
+      </div>
+    </section>
+
+    <!-- Research section -->
+    <section id="research" class="section section-alt">
+      <div class="container">
+        <h2>Research</h2>
+        <ul class="item-list">
+          <li>
+            <h3>Exciton–polaritons and cavity-modified chemistry</h3>
+            <p>
+              Modeling linear and nonlinear spectra of molecular ensembles strongly coupled to
+              optical cavities, including polaron decoupling, motional narrowing, and multi-mode
+              cavity effects.
+            </p>
+          </li>
+          <li>
+            <h3>Mixed quantum–classical dynamics</h3>
+            <p>
+              Developing and benchmarking mapping-based approaches (PLDM, Ehrenfest, etc.) and
+              hybrid schemes that combine trajectory methods with master-equation/Lindblad formalisms.
+            </p>
+          </li>
+          <li>
+            <h3>Open quantum systems & spectral densities</h3>
+            <p>
+              Using correlation-function approaches, reaction-coordinate mappings, and pseudomode
+              models to treat complex environments described by Drude–Lorentz and Brownian spectral densities.
+            </p>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- Publications section -->
+    <section id="publications" class="section">
+      <div class="container">
+        <h2>Selected publications</h2>
+        <ol class="pub-list">
+          <li>
+            <span class="pub-title">Title of your first paper</span><br />
+            <span class="pub-authors">Mohammad Elious Mondal, Coauthor A, Coauthor B</span><br />
+            <span class="pub-venue">Journal Name, Year</span><br />
+            <a href="https://arxiv.org/xxxx.xxxxx" target="_blank" rel="noopener">arXiv</a>
+            ·
+            <a href="https://doi.org/xx.xxxx/xxxx" target="_blank" rel="noopener">DOI</a>
+          </li>
+          <li>
+            <span class="pub-title">Title of your second paper</span><br />
+            <span class="pub-authors">Mohammad Elious Mondal, Coauthor C</span><br />
+            <span class="pub-venue">Journal Name, Year</span>
+          </li>
+          <!-- Add more <li> ... </li> items here -->
+        </ol>
+      </div>
+    </section>
+
+    <!-- Teaching / Talks / Outreach -->
+    <section id="teaching" class="section section-alt">
+      <div class="container">
+        <h2>Teaching & outreach</h2>
+        <ul class="item-list">
+          <li>
+            <h3>Teaching</h3>
+            <p>
+              List here any courses you have TA’d or taught, e.g. “Quantum Mechanics I (TA),
+              University of Rochester, 2023”.
+            </p>
+          </li>
+          <li>
+            <h3>Mentoring</h3>
+            <p>
+              Briefly mention any undergraduate/graduate mentoring, coding projects, or reading groups.
+            </p>
+          </li>
+          <li>
+            <h3>Talks & posters</h3>
+            <p>
+              Add a few recent conference or seminar talks with year, title, and venue.
+            </p>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- Contact section -->
+    <section id="contact" class="section">
+      <div class="container">
+        <h2>Contact</h2>
+        <p>
+          The best way to reach me is by email. I am always happy to discuss science,
+          potential collaborations, or code-related questions.
+        </p>
+        <ul class="contact-list">
+          <li><strong>Email:</strong> <a href="mailto:your.email@rochester.edu">your.email@rochester.edu</a></li>
+          <li><strong>GitHub:</strong> <a href="https://github.com/your-username" target="_blank" rel="noopener">github.com/your-username</a></li>
+          <li><strong>Google Scholar:</strong> <a href="https://scholar.google.com/citations?user=XXXX" target="_blank" rel="noopener">Google Scholar profile</a></li>
+          <li><strong>Office:</strong> Department / Building, University, City, Country</li>
+        </ul>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <span>© <span id="year"></span> Mohammad Elious Mondal</span>
+      <span class="footer-right">
+        Built with plain HTML &amp; CSS · Hosted on GitHub Pages
+      </span>
+    </div>
+  </footer>
+
+  <script src="main.js"></script>
+</body>
+</html>
