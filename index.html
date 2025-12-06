@@ -2,9 +2,9 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Mohammad Elious Mondal | Researcher</title>
+  <title>Mohammad Elious Ali Mondal | Theoretical & Computational Chemistry</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="description" content="Personal academic website of Mohammad Elious Mondal." />
+  <meta name="description" content="Personal academic website of Mohammad Elious Ali Mondal." />
   <link rel="stylesheet" href="style.css" />
 </head>
 
@@ -13,14 +13,12 @@
   <header class="site-header">
     <div class="container header-inner">
       <div class="logo">
-        <!-- Change this to Mohammad Elious Mondal -->
-        <a href="#hero">Mohammad Elious Mondal</a>
+        <a href="#hero">M. Elious A. Mondal</a>
       </div>
       <nav class="nav-links">
         <a href="#about">About</a>
         <a href="#research">Research</a>
         <a href="#publications">Publications</a>
-        <a href="#teaching">Teaching</a>
         <a href="#contact">Contact</a>
       </nav>
       <button class="theme-toggle" aria-label="Toggle dark mode">
@@ -30,16 +28,19 @@
   </header>
 
   <main>
-    <!-- Hero section with photo + short blurb -->
+    <!-- Hero section -->
     <section id="hero" class="hero">
       <div class="container hero-grid">
         <div class="hero-text">
-          <p class="tagline">Doctoral candidate in <span>Physical Chemistry</span></p>
-          <h1>Mohammad Elious Mondal</h1>
+          <p class="tagline">Ph.D. candidate in <span>Physical & Theoretical Chemistry</span></p>
+          <h1>Mohammad Elious Ali Mondal</h1>
           <p class="hero-description">
-            I am a PhD candidate in Chemistry at the University of Rochester, working
-            on open quantum systems, mixed quantum–classical dynamics, and spectroscopy
-            of exciton–polaritons in optical cavities.
+            I am a Ph.D. candidate in Chemistry at the University of Rochester, working with
+            Prof. Pengfei (Frank) Huo on quantum dynamics and spectroscopy of molecular
+            exciton–polaritons. My research focuses on developing mixed quantum–classical
+            dynamics and open quantum systems frameworks to efficiently simulate linear and
+            nonlinear spectra, transport, and collective effects in strongly coupled
+            light–matter systems. 
           </p>
           <div class="hero-actions">
             <a class="btn primary" href="assets/cv.pdf" target="_blank" rel="noopener">
@@ -52,8 +53,8 @@
         </div>
 
         <div class="hero-photo">
-          <!-- Put your own profile.jpg in assets/ -->
-          <img src="assets/profile.png" alt="Photo of Mohammad Elious Mondal" />
+          <!-- Your PNG profile picture -->
+          <img src="assets/profile.png" alt="Photo of Mohammad Elious Ali Mondal" />
         </div>
       </div>
     </section>
@@ -63,14 +64,24 @@
       <div class="container">
         <h2>About</h2>
         <p>
-          I am broadly interested in theoretical and computational chemistry, with a focus on
-          non-equilibrium dynamics in molecular and condensed-phase systems. My work involves
-          developing and applying mixed quantum–classical methods, Green’s-function techniques,
-          and numerical algorithms tailored for large-scale simulations.
+          I am currently pursuing my Ph.D. in Chemistry (2021–present) at the University of
+          Rochester. Before that, I completed an integrated BS–MS in Chemistry at the Indian
+          Institute of Science Education and Research (IISER) Bhopal (2016–2021), where I
+          worked on non-adiabatic dynamics and decoherence corrections for surface hopping
+          under the supervision of Dr. Varadharajan Srinivasan. :contentReference[oaicite:1]{index=1}
         </p>
         <p>
-          I enjoy building open-source tools for quantum dynamics and spectroscopy, mentoring
-          students, and collaborating across chemistry, physics, and applied mathematics.
+          In the Huo group, I develop methods and software for simulating linear and nonlinear
+          spectroscopies in large exciton–polariton systems by combining partial linearized
+          density matrix (PLDM) dynamics with Lindblad-type descriptions, spin-mapping ideas,
+          and open quantum systems techniques. My current work aims to understand how strong
+          light–matter coupling and structured environments reshape quantum dynamics,
+          spectroscopy, and transport in complex molecular systems. 
+        </p>
+        <p>
+          I also build high-performance codes in Python and C++ that leverage MPI and modern
+          numerical libraries, with the goal of making large-scale quantum dynamics and
+          spectroscopy simulations more accessible to the community.
         </p>
       </div>
     </section>
@@ -81,25 +92,39 @@
         <h2>Research</h2>
         <ul class="item-list">
           <li>
-            <h3>Exciton–polaritons and cavity-modified chemistry</h3>
+            <h3>Exciton–polaritons and cavity-modified spectroscopy</h3>
             <p>
-              Modeling linear and nonlinear spectra of molecular ensembles strongly coupled to
-              optical cavities, including polaron decoupling, motional narrowing, and multi-mode
-              cavity effects.
+              Developing quantum dynamics frameworks to study linear and nonlinear spectroscopy
+              (including 2D electronic spectroscopy) of molecular ensembles strongly coupled to
+              optical cavities, with a focus on polaron decoupling, long-lived polaritonic
+              coherence, and motional narrowing in disordered systems. 
             </p>
           </li>
           <li>
-            <h3>Mixed quantum–classical dynamics</h3>
+            <h3>Mixed quantum–classical dynamics & mapping approaches</h3>
             <p>
-              Developing and benchmarking mapping-based approaches (PLDM, Ehrenfest, etc.) and
-              hybrid schemes that combine trajectory methods with master-equation/Lindblad formalisms.
+              Designing trajectory-based methods that combine PLDM dynamics with Lindblad
+              formalisms to treat both Markovian and non-Markovian dissipation, and exploring
+              spin-mapping and related mapping-based approaches to improve accuracy and
+              efficiency for strongly coupled light–matter systems. 
             </p>
           </li>
           <li>
-            <h3>Open quantum systems & spectral densities</h3>
+            <h3>Open quantum systems & structured environments</h3>
             <p>
-              Using correlation-function approaches, reaction-coordinate mappings, and pseudomode
-              models to treat complex environments described by Drude–Lorentz and Brownian spectral densities.
+              Studying system–bath interactions under Drude–Lorentz and underdamped Brownian
+              spectral densities using correlation-function approaches, master equations, and
+              analog simulations, with an eye toward connecting microscopic models with
+              experimentally observed spectra and transport. 
+            </p>
+          </li>
+          <li>
+            <h3>High-performance computing & scientific software</h3>
+            <p>
+              Implementing scalable simulations using Python, C++, mpi4py, and scientific
+              libraries such as NumPy, SciPy, Numba, PyTorch, and Eigen, enabling studies of
+              quantum dynamics in large polaritonic systems with many molecules and cavity
+              modes. 
             </p>
           </li>
         </ul>
@@ -109,48 +134,156 @@
     <!-- Publications section -->
     <section id="publications" class="section">
       <div class="container">
-        <h2>Selected publications</h2>
+        <h2>Publications</h2>
+        <p>
+          Only published, accepted, or preprint works are listed here. Publications “in
+          preparation” or “to be submitted” are omitted. :contentReference[oaicite:7]{index=7}
+        </p>
+
         <ol class="pub-list">
           <li>
-            <span class="pub-title">Title of your first paper</span><br />
-            <span class="pub-authors">Mohammad Elious Mondal, Coauthor A, Coauthor B</span><br />
-            <span class="pub-venue">Journal Name, Year</span><br />
-            <a href="https://arxiv.org/xxxx.xxxxx" target="_blank" rel="noopener">arXiv</a>
-            ·
-            <a href="https://doi.org/xx.xxxx/xxxx" target="_blank" rel="noopener">DOI</a>
+            <span class="pub-title">Polariton Spectra under the Collective Coupling Regime. II. Efficient Simulation of 2DES Spectra</span><br />
+            <span class="pub-authors">M. E. Mondal, A. N. Vamivakas, S. T. Cundiff, T. D. Krauss, P. Huo</span><br />
+            <span class="pub-venue">J. Chem. Phys. <strong>162</strong> (7), 074110 (2025)</span> :contentReference[oaicite:8]{index=8}
           </li>
+
           <li>
-            <span class="pub-title">Title of your second paper</span><br />
-            <span class="pub-authors">Mohammad Elious Mondal, Coauthor C</span><br />
-            <span class="pub-venue">Journal Name, Year</span>
+            <span class="pub-title">Polariton Spectra under the Collective Coupling Regime. I. Efficient Simulation of Linear Spectra</span><br />
+            <span class="pub-authors">M. E. Mondal, A. N. Vamivakas, S. T. Cundiff, T. D. Krauss, P. Huo</span><br />
+            <span class="pub-venue">J. Chem. Phys. <strong>162</strong>, 014114 (2025)</span> :contentReference[oaicite:9]{index=9}
           </li>
-          <!-- Add more <li> ... </li> items here -->
+
+          <li>
+            <span class="pub-title">Quantum Dynamics Simulations of the Polariton Transport</span><br />
+            <span class="pub-authors">B. Chng, M. E. Mondal, W. Ying, P. Huo</span><br />
+            <span class="pub-venue">Nano Lett. <strong>25</strong> (4), 1617–1622 (2025)</span> :contentReference[oaicite:10]{index=10}
+          </li>
+
+          <li>
+            <span class="pub-title">Theory and Quantum Dynamics Simulations of Exciton-Polariton Motional Narrowing</span><br />
+            <span class="pub-authors">W. Ying, M. E. Mondal, P. Huo</span><br />
+            <span class="pub-venue">J. Chem. Phys. <strong>161</strong>, 064105 (2024)</span> :contentReference[oaicite:11]{index=11}
+          </li>
+
+          <li>
+            <span class="pub-title">Universal Measure for the Impact of Adiabaticity on Quantum Transitions</span><br />
+            <span class="pub-authors">R. Pant, P. K. Verma, C. Rangi, M. E. Mondal, M. Bhati, V. Srinivasan, S. Wüster</span><br />
+            <span class="pub-venue">Phys. Rev. Lett. <strong>132</strong> (12), 11 (2024)</span> :contentReference[oaicite:12]{index=12}
+          </li>
+
+          <li>
+            <span class="pub-title">Quantum Dynamics Simulations of the 2D Spectroscopy of Exciton Polariton</span><br />
+            <span class="pub-authors">M. E. Mondal, E. R. Koessler, A. N. Vamivakas, S. T. Cundiff, T. D. Krauss, P. Huo</span><br />
+            <span class="pub-venue">J. Chem. Phys. <strong>159</strong>, 094102 (2023)</span> :contentReference[oaicite:13]{index=13}
+          </li>
+
+          <li>
+            <span class="pub-title">Collective Effects in Polariton Chemistry and Photophysics</span><br />
+            <span class="pub-authors">W. Ying, M. E. Mondal, E. R. Koessler, S. M. Vega, P. Huo</span><br />
+            <span class="pub-venue">Ann. Rev. Phys. Chem. (accepted)</span> :contentReference[oaicite:14]{index=14}
+          </li>
+
+          <li>
+            <span class="pub-title">Long-Lived Polaritonic Coherence and Polaron Decoupling Effects in 2D Electronic Spectra</span><br />
+            <span class="pub-authors">M. E. Mondal, S. Park, M. Son, A. N. Vamivakas, S. T. Cundiff, T. D. Krauss, P. Huo</span><br />
+            <span class="pub-venue">ChemRxiv (preprint)</span> :contentReference[oaicite:15]{index=15}
+          </li>
+
+          <li>
+            <span class="pub-title">Vibrational Strong Coupling in Cavity QED forms a Macroscopic Quantum State</span><br />
+            <span class="pub-authors">M. E. Mondal, S. M. Vega, P. Huo</span><br />
+            <span class="pub-venue">ChemRxiv (preprint)</span> :contentReference[oaicite:16]{index=16}
+          </li>
         </ol>
       </div>
     </section>
 
-    <!-- Teaching / Talks / Outreach -->
-    <section id="teaching" class="section section-alt">
+    <!-- Awards & Fellowships section -->
+    <section id="awards" class="section section-alt">
       <div class="container">
-        <h2>Teaching & outreach</h2>
+        <h2>Awards &amp; Fellowships</h2>
+
         <ul class="item-list">
           <li>
-            <h3>Teaching</h3>
+            <h3>Finalist – ACS Physical Chemistry Graduate Awards (Theoretical Chemistry)</h3>
+            <p>American Chemical Society, 2025 :contentReference[oaicite:17]{index=17}</p>
+          </li>
+
+          <li>
+            <h3>Agnes M. and George Messersmith Fellowship</h3>
             <p>
-              List here any courses you have TA’d or taught, e.g. “Quantum Mechanics I (TA),
-              University of Rochester, 2023”.
+              University of Rochester (2025). One of the University’s most competitive dissertation
+              fellowships, awarded to students showing exceptional ability and promise. :contentReference[oaicite:18]{index=18}
             </p>
           </li>
+
+          <li>
+            <h3>Wu Fellowship</h3>
+            <p>
+              Department of Chemistry, University of Rochester (2024, 2023). Awarded by the Chemistry
+              faculty committee for outstanding research in chemistry. :contentReference[oaicite:19]{index=19}
+            </p>
+          </li>
+
+          <li>
+            <h3>The Journal of Physical Chemistry Poster Award</h3>
+            <p>
+              American Conference on Theoretical Chemistry (ACTC-2024) for work on efficient
+              simulations of exciton–polariton spectroscopy. :contentReference[oaicite:20]{index=20}
+            </p>
+          </li>
+
+          <li>
+            <h3>Kishore Vaigyanik Protsahan Yojana (KVPY) Fellowship</h3>
+            <p>
+              Department of Science and Technology (DST), Government of India (2016–2021), supporting
+              studies in fundamental sciences. 
+            </p>
+          </li>
+
+          <li>
+            <h3>Certificate of Merit (AISSCE 2015)</h3>
+            <p>
+              Awarded for outstanding performance in the Higher Secondary examination of CBSE. :contentReference[oaicite:22]{index=22}
+            </p>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- Teaching / Outreach / Talks -->
+    <section id="teaching" class="section">
+      <div class="container">
+        <h2>Teaching &amp; Outreach</h2>
+
+        <ul class="item-list">
+          <li>
+            <h3>Teaching assistantships</h3>
+            <p>
+              <strong>CHM 451 – Quantum Chemistry (Graduate)</strong>, University of Rochester,
+              Fall 2023 &amp; Fall 2022<br />
+              <strong>CHM 251/441 – Physical Chemistry I (Undergraduate)</strong>, Fall 2022<br />
+              <strong>CHM 132 – General Chemistry II Laboratory</strong>, Spring 2022<br />
+              <strong>CHM 131 – General Chemistry I Laboratory</strong>, Fall 2021
+              
+            </p>
+          </li>
+
+          <li>
+            <h3>Science outreach</h3>
+            <p>
+              Co-designed and taught <em>“Journey to Molecular World”</em>, a short summer course
+              (Summer 2022 &amp; 2023) for K–12 students providing a brief introduction to theoretical
+              and computational chemistry. 
+            </p>
+          </li>
+
           <li>
             <h3>Mentoring</h3>
             <p>
-              Briefly mention any undergraduate/graduate mentoring, coding projects, or reading groups.
-            </p>
-          </li>
-          <li>
-            <h3>Talks & posters</h3>
-            <p>
-              Add a few recent conference or seminar talks with year, title, and venue.
+              Mentored multiple undergraduate and graduate students in theoretical and computational
+              chemistry, including research projects on quantum dynamics and exciton–polariton
+              spectroscopy. :contentReference[oaicite:25]{index=25}
             </p>
           </li>
         </ul>
@@ -158,18 +291,18 @@
     </section>
 
     <!-- Contact section -->
-    <section id="contact" class="section">
+    <section id="contact" class="section section-alt">
       <div class="container">
         <h2>Contact</h2>
         <p>
-          The best way to reach me is by email. I am always happy to discuss science,
-          potential collaborations, or code-related questions.
+          The best way to reach me is by email. I am happy to discuss science, potential
+          collaborations, and questions about my codes or publications.
         </p>
         <ul class="contact-list">
-          <li><strong>Email:</strong> <a href="mailto:your.email@rochester.edu">your.email@rochester.edu</a></li>
-          <li><strong>GitHub:</strong> <a href="https://github.com/your-username" target="_blank" rel="noopener">github.com/your-username</a></li>
-          <li><strong>Google Scholar:</strong> <a href="https://scholar.google.com/citations?user=XXXX" target="_blank" rel="noopener">Google Scholar profile</a></li>
-          <li><strong>Office:</strong> Department / Building, University, City, Country</li>
+          <li><strong>Email:</strong> <a href="mailto:mmondal@ur.rochester.edu">mmondal@ur.rochester.edu</a></li>
+          <li><strong>GitHub:</strong> <a href="https://github.com/EliousMondal" target="_blank" rel="noopener">github.com/EliousMondal</a></li>
+          <li><strong>Google Scholar:</strong> <a href="https://scholar.google.com/" target="_blank" rel="noopener">Search for “M. Elious Mondal”</a></li>
+          <li><strong>Address:</strong> 60 Crittenden Blvd., Apt. 1122, Rochester, NY 14620, USA :contentReference[oaicite:26]{index=26}</li>
         </ul>
       </div>
     </section>
@@ -177,7 +310,7 @@
 
   <footer class="site-footer">
     <div class="container footer-inner">
-      <span>© <span id="year"></span> Mohammad Elious Mondal</span>
+      <span>© <span id="year"></span> Mohammad Elious Ali Mondal</span>
       <span class="footer-right">
         Built with plain HTML &amp; CSS · Hosted on GitHub Pages
       </span>
@@ -187,3 +320,4 @@
   <script src="main.js"></script>
 </body>
 </html>
+
