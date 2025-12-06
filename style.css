@@ -113,7 +113,8 @@
   
   .hero-grid {
     display: grid;
-    grid-template-columns: minmax(0, 1.8fr) minmax(0, 1.8fr);
+    /* grid-template-columns: minmax(0, 1.8fr) minmax(0, 1.8fr); */
+    grid-template-columns: 1fr 1fr;
     gap: 2rem;
     align-items: center;
   }
