@@ -261,6 +261,21 @@
     text-decoration: none;       /* no underline on hover */
   }
 
+  /* Hover background box for publication titles */
+  a.pub-title {
+    padding: 0.15rem 0.35rem;      /* Small padding to show box */
+    border-radius: 6px;            /* Rounded corners like navbar */
+    transition: background 0.15s ease;
+  }
+
+  a.pub-title:hover {
+    background: #e5e5e5;           /* Light grey hover box (light mode) */
+  }
+
+  /* Dark mode version */
+  :root[data-theme="dark"] a.pub-title:hover {
+    background: rgba(255, 255, 255, 0.10);  /* subtle light grey for dark mode */
+  }
 
   
   /* Contact list */
