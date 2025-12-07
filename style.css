@@ -250,16 +250,17 @@
   }
 
   /* Optional: nicer styling for clickable publication titles */
-  /* a.pub-title {
-    font-weight: 600;
-    color: var(--text);
-    text-decoration: none;
+  /* Prevent link-look on publication titles */
+  a.pub-title {
+    color: var(--text);          /* same color as normal text */
+    text-decoration: none;       /* no underline */
   }
 
   a.pub-title:hover {
-    color: var(--accent);
-    text-decoration: underline;
-  } */
+    color: var(--text);          /* no color change on hover */
+    text-decoration: none;       /* no underline on hover */
+  }
+
 
   
   /* Contact list */
