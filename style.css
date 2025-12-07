@@ -46,7 +46,7 @@
   }
 
   /* --------- Global text justification --------- */
-  .section p,
+  p,
   .pub-list li {
     text-align: justify;
     text-justify: inter-word;
