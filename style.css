@@ -263,7 +263,7 @@
 
   /* Hover background box for publication titles */
   a.pub-title {
-    padding: 0.15rem 0.35rem;      /* Small padding to show box */
+    padding: 0.15rem 0.25rem 0.15rem 0;      /* Small padding to show box */
     border-radius: 6px;            /* Rounded corners like navbar */
     transition: background 0.15s ease;
   }
