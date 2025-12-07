@@ -44,6 +44,13 @@
     color: var(--text);
     line-height: 1.6;
   }
+
+  /* --------- Global text justification --------- */
+  .section p,
+  .pub-list li {
+    text-align: justify;
+    text-justify: inter-word;
+  }
   
   /* A simple centered layout */
   .container {
