@@ -1,37 +1,56 @@
 document.addEventListener("DOMContentLoaded", () => {
-  // 1. Set current year in footer *if* the element exists
+  const root = document.documentElement;
+  const toggleBtn = document.querySelector(".theme-toggle");
+
+  // 1. Safely access localStorage (Brave/privacy modes can throw)
+  function getStoredTheme() {
+    try {
+      return window.localStorage.getItem("theme");
+    } catch (e) {
+      return null;
+    }
+  }
+
+  function setStoredTheme(value) {
+    try {
+      window.localStorage.setItem("theme", value);
+    } catch (e) {
+      // ignore if storage not available
+    }
+  }
+
+  // 2. Set current year in footer if present (optional)
   const yearSpan = document.getElementById("year");
   if (yearSpan) {
     yearSpan.textContent = new Date().getFullYear();
   }
 
-  // 2. Dark-mode toggle using localStorage
-  const root = document.documentElement;
-  const toggleBtn = document.querySelector(".theme-toggle");
-  if (!toggleBtn) return; // no button on this page
+  if (!toggleBtn) return;
 
-  // Load saved theme
-  const savedTheme = localStorage.getItem("theme");
+  // 3. Load saved theme
+  const savedTheme = getStoredTheme();
   if (savedTheme === "dark") {
     root.setAttribute("data-theme", "dark");
+  } else if (savedTheme === "light") {
+    root.removeAttribute("data-theme");
   }
 
-  // Update button icon based on theme
+  // 4. Update button icon
   function updateIcon() {
     const isDark = root.getAttribute("data-theme") === "dark";
     toggleBtn.textContent = isDark ? "☀︎" : "☾";
   }
   updateIcon();
 
-  // Toggle on click
+  // 5. Toggle on click
   toggleBtn.addEventListener("click", () => {
     const isDark = root.getAttribute("data-theme") === "dark";
     if (isDark) {
       root.removeAttribute("data-theme");
-      localStorage.setItem("theme", "light");
+      setStoredTheme("light");
     } else {
       root.setAttribute("data-theme", "dark");
-      localStorage.setItem("theme", "dark");
+      setStoredTheme("dark");
     }
     updateIcon();
   });
