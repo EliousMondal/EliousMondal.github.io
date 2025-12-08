@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Linear spectra of a two-level system coupled to a harmonic bath | Notes | Mohammad Elious Ali Mondal</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <!-- Adjust the version numbers if you changed them -->
+  <link rel="stylesheet" href="../style.css?v=1" />
+
+  <!-- MathJax config -->
+  <script>
+    window.MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        displayMath: [['$$', '$$'], ['\\[', '\\]']]
+      }
+    };
+  </script>
+  <script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+<body>
+  <header class="site-header">
+    <div class="container header-inner">
+      <div class="logo">
+        <a href="../index.html#hero">Mohammad Elious Ali Mondal</a>
+      </div>
+      <nav class="nav-links">
+        <a href="../index.html#about">About</a>
+        <a href="../research.html">Research</a>
+        <a href="../publications.html">Publications</a>
+        <a href="../notes.html">Notes</a>
+        <a href="../index.html#contact">Contact</a>
+      </nav>
+      <button class="theme-toggle" aria-label="Toggle dark mode">☾</button>
+    </div>
+  </header>
+
+  <main>
+    <section class="section">
+      <div class="container">
+        <h1>Linear spectra of a two-level system coupled to a harmonic bath</h1>
+        <p>
+          These notes follow my derivation of the linear absorption spectrum for a single
+          two-level system (2LS) linearly coupled to a harmonic bath, using the standard
+          cumulant expansion and expressing the lineshape function in terms of the spectral
+          density. The final goal is to obtain analytic expressions for Drude–Lorentz,
+          underdamped Brownian, and combined spectral densities.
+        </p>
+      </div>
+    </section>
+
+    <!-- I. Two-level system linearly coupled to a harmonic bath -->
+    <section class="section section-alt">
+      <div class="container">
+        <h2>I. Two-level system linearly coupled to a harmonic bath</h2>
+
+        <p>
+          We consider a two-level system with states $\lvert g \rangle$ and $\lvert e \rangle$,
+          with excited-state energy $\omega_{eg}$ and pure-dephasing–type coupling to a harmonic
+          bath. The total Hamiltonian is
+        </p>
+
+        <p>
+        \[
+          \hat{H} = \hat{H}_S + \hat{H}_B + \hat{H}_{SB},
+        \]
+        </p>
+
+        <p>
+        \[
+          \hat{H}_S = \omega_{eg} \lvert e \rangle \langle e \rvert,
+        \qquad
+          \hat{H}_B = \sum_k \left( \frac{\hat{p}_k^2}{2 m_k}
+          + \frac{1}{2} m_k \omega_k^2 \hat{q}_k^2 \right),
+        \]
+        </p>
+
+        <p>
+        \[
+          \hat{H}_{SB} = \lvert e \rangle \langle e \rvert \, \hat{B},
+        \qquad
+          \hat{B} = \sum_k c_k \hat{q}_k.
+        \]
+        </p>
+
+        <p>
+          The system–bath coupling is diagonal in the $\{\lvert g \rangle,\lvert e \rangle\}$ basis,
+          corresponding to pure dephasing. The spectral density is defined as
+        </p>
+
+        <p>
+        \[
+          J(\omega) = \pi \sum_k \frac{c_k^2}{2 m_k \omega_k} \, \delta(\omega - \omega_k),
+        \]
+        </p>
+
+        <p>
+          and the reorganization energy
+        </p>
+
+        <p>
+        \[
+          \lambda = \frac{1}{\pi} \int_0^\infty d\omega \, \frac{J(\omega)}{\omega}.
+        \]
+        </p>
+
+        <p>
+          One can write the excited-state Hamiltonian as a shifted bath plus a constant
+          reorganization contribution,
+        </p>
+
+        <p>
+        \[
+          \hat{H}_e
+          = \omega_{eg} \lvert e \rangle \langle e \rvert
+          + \lvert e \rangle \langle e \rvert \hat{B}
+          + \hat{H}_B
+          \equiv (\omega_{eg} + \lambda)\lvert e \rangle \langle e \rvert
+          + \hat{H}_B + \lvert e \rangle \langle e \rvert \, \delta\hat{B},
+        \]
+        </p>
+
+        <p>
+          where $\delta\hat{B}$ is the fluctuation part and the constant $\lambda$ may be
+          absorbed in a renormalized transition frequency when convenient.
+        </p>
+
+        <p>
+          The initial state is taken as the ground electronic state with the bath in thermal
+          equilibrium:
+        </p>
+
+        <p>
+        \[
+          \hat{\rho}(0) = \lvert g \rangle \langle g \rvert \otimes \hat{\rho}_B^{\mathrm{eq}},
+          \qquad
+          \hat{\rho}_B^{\mathrm{eq}} =
+          \frac{e^{-\beta \hat{H}_B}}{\mathrm{Tr}_B\{ e^{-\beta \hat{H}_B} \}}.
+        \]
+        </p>
+      </div>
+    </section>
+
+    <!-- A. Linear absorption and lineshape function -->
+    <section class="section">
+      <div class="container">
+        <h2>I.A. Linear absorption and the lineshape function</h2>
+
+        <p>
+          Under the Condon approximation, the dipole operator is
+        </p>
+
+        <p>
+        \[
+          \hat{\mu} = \mu_{eg} \left( \lvert e \rangle \langle g \rvert
+          + \lvert g \rangle \langle e \rvert \right).
+        \]
+        </p>
+
+        <p>
+          The first-order response function is
+        </p>
+
+        <p>
+        \[
+          R^{(1)}(t) = \frac{i}{\hbar} \,
+          \mathrm{Tr} \big[ \hat{\mu}(t), \hat{\mu}(0) \, \hat{\rho}(0) \big].
+        \]
+        </p>
+
+        <p>
+          Setting $\hbar = 1$, using the initial state above and that only the
+          $\lvert g \rangle \to \lvert e \rangle$ transition contributes, one finds
+        </p>
+
+        <p>
+        \[
+          R^{(1)}(t)
+          = i \mu_{eg}^2 \big( I(t) - I^*(t) \big),
+        \]
+        </p>
+
+        <p>
+          with
+        </p>
+
+        <p>
+        \[
+          I(t) = \mathrm{Tr}_B \left\{
+            e^{-i \hat{H}_e t} \, \hat{\rho}_B^{\mathrm{eq}} \, e^{+i \hat{H}_g t}
+          \right\},
+          \qquad \hat{H}_g = \hat{H}_B.
+        \]
+        </p>
+
+        <p>
+          Because $\hat{H}_e$ and $\hat{H}_g$ differ only by a linear bath operator
+          and a constant shift, $I(t)$ can be evaluated exactly via a cumulant expansion,
+          which is exact for linear coupling to a harmonic (Gaussian) bath. Introducing
+          the interaction picture with respect to $\hat{H}_B$,
+        </p>
+
+        <p>
+        \[
+          \hat{B}(t) = e^{+i \hat{H}_B t} \, \hat{B} \, e^{-i \hat{H}_B t},
+        \]
+        </p>
+
+        <p>
+          one obtains
+        </p>
+
+        <p>
+        \[
+          I(t) = \exp \big[ -i (\omega_{eg} + \lambda) t \big] \,
+          \exp \big[ -g(t) \big],
+        \]
+        </p>
+
+        <p>
+          where the (complex) lineshape function $g(t)$ is given by the second-order
+          cumulant
+        </p>
+
+        <p>
+        \[
+          g(t) = \int_0^t d\tau \int_0^{\tau} d\tau' \, C(\tau'),
+        \]
+        </p>
+
+        <p>
+          with bath correlation function
+        </p>
+
+        <p>
+        \[
+          C(t) = \langle \hat{B}(t)\hat{B}(0) \rangle_B
+          \equiv \mathrm{Tr}_B\{ \hat{B}(t)\hat{B}(0)\hat{\rho}_B^{\mathrm{eq}} \}.
+        \]
+        </p>
+
+        <p>
+          The absorption spectrum is proportional to the Fourier transform of
+          $R^{(1)}(t)$. Keeping only the “positive-frequency” contribution $I(t)$, one
+          often writes
+        </p>
+
+        <p>
+        \[
+          A(\omega) \propto \Re \int_0^\infty dt \;
+          e^{i(\omega - \omega_{eg}) t} e^{-i \lambda t} e^{-g(t)}.
+        \]
+        </p>
+
+        <p>
+          It is convenient to absorb the reorganization shift into a renormalized
+          transition frequency
+        </p>
+
+        <p>
+        \[
+          \tilde{\omega}_{eg} = \omega_{eg} + \lambda,
+        \]
+        </p>
+
+        <p>
+          so that
+        </p>
+
+        <p>
+        \[
+          A(\omega) \propto \Re \int_0^\infty dt \;
+          e^{i(\omega - \tilde{\omega}_{eg}) t} e^{-g(t)}.
+        \]
+        </p>
+      </div>
+    </section>
+
+    <!-- B. Correlation function in terms of spectral density -->
+    <section class="section section-alt">
+      <div class="container">
+        <h2>I.B. Correlation function in terms of the spectral density</h2>
+
+        <p>
+          Using the mode expansion of $\hat{B}$ and the definition of $J(\omega)$, the
+          correlation function can be written as
+        </p>
+
+        <p>
+        \[
+          C(t) = \frac{1}{\pi} \int_0^\infty d\omega \; J(\omega)
+          \left[
+            \coth\left( \frac{\beta \omega}{2} \right) \cos(\omega t)
+            - i \sin(\omega t)
+          \right].
+        \]
+        </p>
+
+        <p>
+          Inserting this into the definition of $g(t)$ and performing the time integrals
+          gives
+        </p>
+
+        <p>
+        \[
+          g(t)
+          = \frac{1}{\pi} \int_0^\infty d\omega \;
+          \frac{J(\omega)}{\omega^2}
+          \left[
+            \coth\left( \frac{\beta \omega}{2} \right)
+            \big(1 - \cos(\omega t)\big)
+            + i \big( \sin(\omega t) - \omega t \big)
+          \right].
+        \]
+        </p>
+
+        <p>
+          The imaginary term proportional to $\omega t$ gives exactly the
+          reorganization shift $\lambda t$; after absorbing $\lambda$ into
+          $\tilde{\omega}_{eg}$, the remaining imaginary part describes the dynamic
+          phase modulation.
+        </p>
+      </div>
+    </section>
+
+    <!-- II. Expansion in decaying exponentials -->
+    <section class="section">
+      <div class="container">
+        <h2>II. Expansion of the bath correlation function in decaying exponentials</h2>
+
+        <p>
+          For many purposes (analytics, HEOM, hierarchical expansions, etc.) it is useful
+          to represent $C(t)$ as a sum of exponentials
+        </p>
+
+        <p>
+        \[
+          C(t) = \sum_j c_j e^{-\nu_j t},
+        \]
+        </p>
+
+        <p>
+          where the (possibly complex) coefficients $c_j$ and rates $\nu_j$ are determined by
+          the pole structure of $J(\omega)\coth(\beta\omega/2)$ in the complex
+          $\omega$-plane. Inserting this form into the definition of $g(t)$,
+        </p>
+
+        <p>
+        \[
+          g(t) = \int_0^t d\tau \int_0^\tau d\tau' \sum_j c_j e^{-\nu_j \tau'}
+          = \sum_j c_j \int_0^t d\tau (t - \tau) e^{-\nu_j \tau},
+        \]
+        </p>
+
+        <p>
+          yields
+        </p>
+
+        <p>
+        \[
+          g(t) = \sum_j \frac{c_j}{\nu_j^2}
+          \big( e^{-\nu_j t} + \nu_j t - 1 \big).
+        \]
+        </p>
+
+        <p>
+          Thus, once $C(t)$ is decomposed into exponentials, the lineshape function is
+          immediately available in closed form.
+        </p>
+      </div>
+    </section>
+
+    <!-- III. Drude–Lorentz spectral density -->
+    <section class="section section-alt">
+      <div class="container">
+        <h2>III. Drude–Lorentz spectral density</h2>
+
+        <p>
+          For the Drude–Lorentz (overdamped Brownian) spectral density
+        </p>
+
+        <p>
+        \[
+          J_D(\omega) = 2 \lambda_D \,
+          \frac{\gamma_D \, \omega}{\omega^2 + \gamma_D^2},
+        \]
+        </p>
+
+        <p>
+          with reorganization energy $\lambda_D$ and cutoff rate $\gamma_D$, one can
+          evaluate $C_D(t)$ by contour integration or by using the partial fraction
+          expansion of the thermal factor
+        </p>
+
+        <p>
+        \[
+          \coth\left(\frac{\beta \omega}{2}\right)
+          = \frac{2}{\beta \omega}
+            + \frac{4\omega}{\beta} \sum_{n=1}^\infty
+              \frac{1}{\omega^2 + \nu_n^2},
+          \qquad \nu_n = \frac{2\pi n}{\beta}.
+        \]
+        </p>
+
+        <p>
+          The result is
+        </p>
+
+        <p>
+        \[
+          C_D(t) = c_0^{(D)} e^{-\gamma_D t}
+          + \sum_{n=1}^\infty c_n^{(D)} e^{-\nu_n t},
+        \]
+        </p>
+
+        <p>
+        \[
+          c_0^{(D)} = \lambda_D \gamma_D
+          \left[
+            \coth\left( \frac{\beta \gamma_D}{2} \right) - i
+          \right],
+          \qquad
+          c_n^{(D)} = \frac{4 \lambda_D \gamma_D}{\beta}
+          \frac{\nu_n}{\nu_n^2 - \gamma_D^2}.
+        \]
+        </p>
+
+        <p>
+          Comparing with $C(t) = \sum_j c_j e^{-\nu_j t}$, we identify
+        </p>
+
+        <p>
+        \[
+          \nu_0^{(D)} = \gamma_D, \qquad \nu_n^{(D)} = \nu_n = \frac{2\pi n}{\beta}, \; n \ge 1.
+        \]
+        </p>
+
+        <p>
+          The Drude contribution to the lineshape then reads
+        </p>
+
+        <p>
+        \[
+          g_D(t) =
+          \frac{c_0^{(D)}}{\gamma_D^2}
+            \big( e^{-\gamma_D t} + \gamma_D t - 1 \big)
+          + \sum_{n=1}^\infty
+          \frac{c_n^{(D)}}{\nu_n^2}
+            \big( e^{-\nu_n t} + \nu_n t - 1 \big).
+        \]
+        </p>
+      </div>
+    </section>
+
+    <!-- IV. Underdamped Brownian oscillator -->
+    <section class="section">
+      <div class="container">
+        <h2>IV. Underdamped Brownian oscillator spectral density</h2>
+
+        <p>
+          For an underdamped Brownian oscillator centered at $\omega_0$ with damping
+          $\gamma_B$ and reorganization energy $\lambda_B$, the spectral density is
+        </p>
+
+        <p>
+        \[
+          J_B(\omega) = 2 \lambda_B
+          \frac{\gamma_B \omega_0^2 \, \omega}
+          {(\omega^2 - \omega_0^2)^2 + 4 \gamma_B^2 \omega^2}.
+        \]
+        </p>
+
+        <p>
+          Defining the damped frequency
+        </p>
+
+        <p>
+        \[
+          \Omega = \sqrt{\omega_0^2 - \gamma_B^2}
+          \quad (\gamma_B < \omega_0),
+        \]
+        </p>
+
+        <p>
+          and again using contour integration and the thermal factor expansion, the
+          correlation function may be written as
+        </p>
+
+        <p>
+        \[
+          C_B(t) = c_+ e^{-\mu_+ t} + c_- e^{-\mu_- t}
+          + \sum_{n=1}^\infty c_n^{(B)} e^{-\nu_n t},
+        \]
+        </p>
+
+        <p>
+        \[
+          \mu_+ = \gamma_B - i \Omega, \qquad
+          \mu_- = \gamma_B + i \Omega,
+        \]
+        </p>
+
+        <p>
+        \[
+          c_+ = \frac{\lambda_B \omega_0^2}{2 \Omega}
+          \left[
+            \coth\left( \frac{\beta (\Omega - i\gamma_B)}{2} \right) - i
+          \right],
+          \qquad
+          c_- = \frac{\lambda_B \omega_0^2}{2 \Omega}
+          \left[
+            \coth\left( \frac{\beta (\Omega + i\gamma_B)}{2} \right) + i
+          \right].
+        \]
+        </p>
+
+        <p>
+          The Matsubara coefficients are
+        </p>
+
+        <p>
+        \[
+          c_n^{(B)} =
+          \frac{4 \lambda_B \gamma_B \omega_0^2}{\beta}
+          \frac{\nu_n}{(\omega_0^2 + \nu_n^2)^2 - 4 \gamma_B^2 \nu_n^2},
+          \qquad \nu_n = \frac{2\pi n}{\beta}.
+        \]
+        </p>
+
+        <p>
+          Identifying $\nu_+^{(B)} = \mu_+$ and $\nu_-^{(B)} = \mu_-$, the Brownian
+          contribution to the lineshape is
+        </p>
+
+        <p>
+        \[
+          g_B(t) =
+          \frac{c_+}{\mu_+^2}
+            \big( e^{-\mu_+ t} + \mu_+ t - 1 \big)
+          + \frac{c_-}{\mu_-^2}
+            \big( e^{-\mu_- t} + \mu_- t - 1 \big)
+          + \sum_{n=1}^\infty
+          \frac{c_n^{(B)}}{\nu_n^2}
+            \big( e^{-\nu_n t} + \nu_n t - 1 \big).
+        \]
+        </p>
+      </div>
+    </section>
+
+    <!-- V. Combined Drude + Brownian -->
+    <section class="section section-alt">
+      <div class="container">
+        <h2>V. Combined Drude–Lorentz + underdamped Brownian spectral density</h2>
+
+        <p>
+          For a total spectral density
+        </p>
+
+        <p>
+        \[
+          J(\omega) = J_D(\omega) + J_B(\omega),
+        \]
+        </p>
+
+        <p>
+          the total correlation function is simply
+        </p>
+
+        <p>
+        \[
+          C(t) = C_D(t) + C_B(t),
+        \]
+        </p>
+
+        <p>
+          and the total lineshape $g(t)$ is
+        </p>
+
+        <p>
+        \[
+          g(t) = g_D(t) + g_B(t).
+        \]
+        </p>
+
+        <p>
+          Collecting all terms, $C(t)$ can still be written as a single sum of
+          exponentials,
+        </p>
+
+        <p>
+        \[
+          C(t) = \sum_j c_j e^{-\nu_j t},
+        \]
+        </p>
+
+        <p>
+          where the set $\{c_j, \nu_j\}$ collects:
+        </p>
+
+        <ul>
+          <li>the Drude pole $(c_0^{(D)}, \gamma_D)$,</li>
+          <li>the Brownian poles $(c_+, \mu_+)$ and $(c_-, \mu_-)$,</li>
+          <li>the combined Matsubara tails:
+            $(c_n^{(D)} + c_n^{(B)}, \nu_n)$ for $n \ge 1$.</li>
+        </ul>
+
+        <p>
+          The full lineshape then becomes
+        </p>
+
+        <p>
+        \[
+          g(t) = \sum_j \frac{c_j}{\nu_j^2}
+          \big( e^{-\nu_j t} + \nu_j t - 1 \big),
+        \]
+        </p>
+
+        <p>
+          and the final analytic form of the linear absorption spectrum for the 2LS
+          coupled to a Drude–Lorentz plus underdamped Brownian bath is
+        </p>
+
+        <p>
+        \[
+          A(\omega) \propto
+          \Re \int_0^\infty dt \;
+          \exp\left\{ i\big(\omega - \tilde{\omega}_{eg}\big)t - g(t) \right\},
+        \]
+        </p>
+
+        <p>
+          with $\tilde{\omega}_{eg} = \omega_{eg} + \lambda_D + \lambda_B$ the transition
+          frequency including the total reorganization shift. This provides a
+          closed-form representation of the lineshape function suitable for efficient
+          numerical evaluation.
+        </p>
+      </div>
+    </section>
+  </main>
+
+  <!-- Dark mode + small JS utilities -->
+  <script src="../main.js?v=2"></script>
+</body>
+</html>
