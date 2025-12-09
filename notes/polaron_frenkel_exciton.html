@@ -1,0 +1,839 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Polaron transform of the Frenkel exciton model | Notes | Mohammad Elious Ali Mondal</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <!-- Match existing site style -->
+  <link rel="stylesheet" href="../style.css?v=1" />
+
+  <!-- MathJax config (same as other notes) -->
+  <script>
+    window.MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        displayMath: [['$$', '$$'], ['\\[', '\\]']]
+      }
+    };
+  </script>
+  <script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+<body>
+  <header class="site-header">
+    <div class="container header-inner">
+      <div class="logo">
+        <a href="../index.html#hero">Mohammad Elious Ali Mondal</a>
+      </div>
+      <nav class="nav-links">
+        <a href="../index.html#about">About</a>
+        <a href="../research.html">Research</a>
+        <a href="../publications.html">Publications</a>
+        <a href="../notes.html">Notes</a>
+        <a href="../index.html#contact">Contact</a>
+      </nav>
+      <button class="theme-toggle" aria-label="Toggle dark mode">☾</button>
+    </div>
+  </header>
+
+  <main>
+    <!-- Title / intro -->
+    <section class="section">
+      <div class="container">
+        <h1>Polaron transform of the Frenkel exciton model</h1>
+        <p>
+          These notes follow the explicit term-by-term polaron transformation of a Frenkel exciton
+          Hamiltonian with site-local harmonic baths. The goal is to remove the linear system–bath
+          coupling by shifting the bath coordinates, and to obtain the polaron-transformed Hamiltonian
+          where the diagonal system energies are bare and the off-diagonal excitonic couplings are
+          dressed by bath momentum operators.
+        </p>
+      </div>
+    </section>
+
+    <!-- 1. Frenkel exciton model -->
+    <section class="section section-alt">
+      <div class="container">
+        <h2>1. Frenkel exciton model</h2>
+
+        <p>
+          Consider a Frenkel exciton model with $n$ exciton sites, each coupled to a local harmonic
+          bath. The full Hamiltonian is
+        </p>
+
+        <p>
+        \[
+          \hat{H} =
+          \sum_n \left(
+            \varepsilon_n +
+            \sum_\nu \frac{g_{n,\nu}^2}{2 \omega_{n,\nu}^2}
+          \right) \lvert n\rangle\langle n\rvert
+          +
+          \sum_n \sum_{m\neq n}
+          \Delta_{n,m} \left(
+            \lvert n\rangle\langle m\rvert + \lvert m\rangle\langle n\rvert
+          \right)
+        \]
+        </p>
+
+        <p>
+        \[
+          \quad
+          +
+          \sum_{n,\nu}
+          \frac{1}{2}
+          \big(
+            \hat{P}_{n,\nu}^2 + \omega_{n,\nu}^2 \hat{R}_{n,\nu}^2
+          \big)
+          -
+          \sum_{n,\nu}
+          g_{n,\nu} \hat{R}_{n,\nu} \lvert n\rangle\langle n\rvert.
+          \tag{1}
+        \]
+        </p>
+
+        <p>
+          We identify:
+        </p>
+        <ul>
+          <li>$\varepsilon_n$ – the (renormalized) energy of site $n$;</li>
+          <li>$\Delta_{n,m}$ – electronic coupling between sites $n$ and $m$;</li>
+          <li>$\hat{R}_{n,\nu}$, $\hat{P}_{n,\nu}$ – position and momentum of the $\nu$th bath mode on site $n$;</li>
+          <li>$\omega_{n,\nu}$ – bath mode frequency;</li>
+          <li>$g_{n,\nu}$ – linear system–bath coupling constant.</li>
+        </ul>
+
+        <p>
+          The bath and system–bath parts are
+        </p>
+
+        <p>
+        \[
+          \hat{H}_b =
+          \sum_{n,\nu}
+          \frac{1}{2}
+          \big(
+            \hat{P}_{n,\nu}^2 + \omega_{n,\nu}^2 \hat{R}_{n,\nu}^2
+          \big),
+          \qquad
+          \hat{H}_{sb} =
+          - \sum_{n,\nu} g_{n,\nu} \hat{R}_{n,\nu} \lvert n\rangle\langle n\rvert,
+        \]
+        </p>
+
+        <p>
+          and the diagonal system part (including the counterterm) is
+        </p>
+
+        <p>
+        \[
+          \hat{H}_d =
+          \sum_n \left(
+            \varepsilon_n +
+            \sum_\nu \frac{g_{n,\nu}^2}{2 \omega_{n,\nu}^2}
+          \right) \lvert n\rangle\langle n\rvert.
+        \]
+        </p>
+
+        <p>
+          The off-diagonal system couplings are
+        </p>
+
+        <p>
+        \[
+          \hat{H}_\text{off} =
+          \sum_n \sum_{m\neq n}
+          \Delta_{n,m}
+          \left(
+            \lvert n\rangle\langle m\rvert + \lvert m\rangle\langle n\rvert
+          \right).
+        \]
+        </p>
+      </div>
+    </section>
+
+    <!-- 2. Polaron transform operator -->
+    <section class="section">
+      <div class="container">
+        <h2>2. Polaron transform operator</h2>
+
+        <p>
+          Since the model corresponds to shifted harmonic oscillators, we introduce a polaron (shift)
+          transformation that moves the bath coordinates back to the origin. We define
+        </p>
+
+        <p>
+        \[
+          \hat{S} =
+          \sum_{k,\mu}
+          M_{k,\mu}\,\hat{P}_{k,\mu}\,\lvert k\rangle\langle k\rvert.
+          \tag{2}
+        \]
+        </p>
+
+        <p>
+          For any operator $\hat{O}$, the polaron-transformed operator is
+        </p>
+
+        <p>
+        \[
+          \hat{O}_\mathrm{PT} =
+          e^{\hat{S}} \hat{O} e^{-\hat{S}}
+          =
+          \hat{O}
+          +
+          [\hat{S},\hat{O}]
+          +
+          \frac{1}{2!}[\hat{S},[\hat{S},\hat{O}]]
+          + \cdots.
+        \]
+        </p>
+
+        <p>
+          We now apply this expansion to each relevant term in $\hat{H}$.
+        </p>
+      </div>
+    </section>
+
+    <!-- 3. Transform of |n><n| -->
+    <section class="section section-alt">
+      <div class="container">
+        <h2>3. Transform of $\lvert n\rangle\langle n\rvert$</h2>
+
+        <p>
+          The diagonal projector transforms as
+        </p>
+
+        <p>
+        \[
+          e^{\hat{S}} \lvert n\rangle\langle n\rvert e^{-\hat{S}}
+          =
+          \lvert n\rangle\langle n\rvert
+          +
+          [\hat{S},\lvert n\rangle\langle n\rvert]
+          +
+          \frac{1}{2!}
+          [\hat{S},[\hat{S},\lvert n\rangle\langle n\rvert]] + \cdots.
+          \tag{3}
+        \]
+        </p>
+
+        <p>
+          The first commutator is
+        </p>
+
+        <p>
+        \[
+          [\hat{S},\lvert n\rangle\langle n\rvert]
+          =
+          \sum_{k,\mu}
+          M_{k,\mu}\hat{P}_{k,\mu}
+          [\lvert k\rangle\langle k\rvert,\lvert n\rangle\langle n\rvert].
+        \]
+        </p>
+
+        <p>
+        \[
+          [\lvert k\rangle\langle k\rvert,\lvert n\rangle\langle n\rvert]
+          =
+          \lvert k\rangle\langle k\rvert n\rangle\langle n\rvert
+          -
+          \lvert n\rangle\langle n\rvert k\rangle\langle k\rvert
+          =
+          \lvert k\rangle\langle n\rvert \delta_{k,n}
+          -
+          \lvert n\rangle\langle k\rvert \delta_{k,n}.
+        \]
+        </p>
+
+        <p>
+          Hence
+        </p>
+
+        <p>
+        \[
+          [\hat{S},\lvert n\rangle\langle n\rvert]
+          =
+          \sum_\mu
+          \big(
+            M_{n,\mu}\hat{P}_{n,\mu}\lvert n\rangle\langle n\rvert
+            -
+            M_{n,\mu}\hat{P}_{n,\mu}\lvert n\rangle\langle n\rvert
+          \big)
+          = 0.
+          \tag{4}
+        \]
+        </p>
+
+        <p>
+          All higher commutators vanish, so
+        </p>
+
+        <p>
+        \[
+          e^{\hat{S}} \lvert n\rangle\langle n\rvert e^{-\hat{S}}
+          = \lvert n\rangle\langle n\rvert.
+          \tag{5}
+        \]
+        </p>
+      </div>
+    </section>
+
+    <!-- 4. Transform of bath operators P and R -->
+    <section class="section">
+      <div class="container">
+        <h2>4. Transform of bath operators $\hat{P}_{n,\nu}$ and $\hat{R}_{n,\nu}$</h2>
+
+        <h3>4.1 Momentum operator</h3>
+
+        <p>
+        \[
+          e^{\hat{S}} \hat{P}_{n,\nu} e^{-\hat{S}}
+          =
+          \hat{P}_{n,\nu}
+          + [\hat{S},\hat{P}_{n,\nu}]
+          + \frac{1}{2!}[\hat{S},[\hat{S},\hat{P}_{n,\nu}]] + \cdots.
+          \tag{6}
+        \]
+        </p>
+
+        <p>
+        \[
+          [\hat{S},\hat{P}_{n,\nu}]
+          =
+          \sum_{k,\mu}
+          M_{k,\mu}
+          [\hat{P}_{k,\mu}\lvert k\rangle\langle k\rvert,\hat{P}_{n,\nu}]
+          =
+          \sum_{k,\mu}
+          M_{k,\mu}
+          [\hat{P}_{k,\mu},\hat{P}_{n,\nu}]
+          \lvert k\rangle\langle k\rvert
+          = 0,
+          \tag{7}
+        \]
+        </p>
+
+        <p>
+          so all higher commutators vanish and
+        </p>
+
+        <p>
+        \[
+          e^{\hat{S}} \hat{P}_{n,\nu} e^{-\hat{S}}
+          = \hat{P}_{n,\nu}.
+          \tag{8}
+        \]
+        </p>
+
+        <h3>4.2 Position operator</h3>
+
+        <p>
+        \[
+          e^{\hat{S}} \hat{R}_{n,\nu} e^{-\hat{S}}
+          =
+          \hat{R}_{n,\nu}
+          + [\hat{S},\hat{R}_{n,\nu}]
+          + \frac{1}{2!}[\hat{S},[\hat{S},\hat{R}_{n,\nu}]] + \cdots.
+          \tag{9}
+        \]
+        </p>
+
+        <p>
+        \[
+          [\hat{S},\hat{R}_{n,\nu}]
+          =
+          \sum_{k,\mu}
+          M_{k,\mu}
+          [\hat{P}_{k,\mu}\lvert k\rangle\langle k\rvert,\hat{R}_{n,\nu}]
+          =
+          \sum_{k,\mu}
+          M_{k,\mu}
+          [\hat{P}_{k,\mu},\hat{R}_{n,\nu}]
+          \lvert k\rangle\langle k\rvert.
+        \]
+        </p>
+
+        <p>
+          Using $[\hat{P}_{k,\mu},\hat{R}_{n,\nu}] = -i\,\delta_{k,n}\delta_{\mu,\nu}$, we obtain
+        </p>
+
+        <p>
+        \[
+          [\hat{S},\hat{R}_{n,\nu}]
+          =
+          -i M_{n,\nu} \lvert n\rangle\langle n\rvert.
+          \tag{10}
+        \]
+        </p>
+
+        <p>
+          Since the first commutator no longer contains bath operators, all higher-order commutators vanish.
+          Thus
+        </p>
+
+        <p>
+        \[
+          e^{\hat{S}} \hat{R}_{n,\nu} e^{-\hat{S}}
+          = \hat{R}_{n,\nu} - i M_{n,\nu} \lvert n\rangle\langle n\rvert.
+          \tag{11}
+        \]
+        </p>
+      </div>
+    </section>
+
+    <!-- 5. Transform of H_b + H_sb and choice of M -->
+    <section class="section section-alt">
+      <div class="container">
+        <h2>5. Transform of $\hat{H}_b + \hat{H}_{sb}$ and choice of $M_{n,\nu}$</h2>
+
+        <h3>5.1 Bath Hamiltonian</h3>
+
+        <p>
+          Using the transformed operators in $\hat{H}_b$, we write
+        </p>
+
+        <p>
+        \[
+          e^{\hat{S}} \hat{H}_b e^{-\hat{S}}
+          =
+          \frac{1}{2}
+          \sum_{n,\nu}
+          e^{\hat{S}}
+          \big(
+            \hat{P}_{n,\nu}^2 + \omega_{n,\nu}^2 \hat{R}_{n,\nu}^2
+          \big)
+          e^{-\hat{S}}.
+        \]
+        </p>
+
+        <p>
+          Using
+          $e^{\hat{S}}\hat{P}_{n,\nu}e^{-\hat{S}} = \hat{P}_{n,\nu}$ and
+          $e^{\hat{S}}\hat{R}_{n,\nu}e^{-\hat{S}} = \hat{R}_{n,\nu} - i M_{n,\nu}\lvert n\rangle\langle n\rvert$:
+        </p>
+
+        <p>
+        \[
+          e^{\hat{S}} \hat{H}_b e^{-\hat{S}}
+          =
+          \frac{1}{2}
+          \sum_{n,\nu}
+          \hat{P}_{n,\nu}^2
+          +
+          \frac{1}{2}
+          \sum_{n,\nu}
+          \omega_{n,\nu}^2
+          \big(
+            \hat{R}_{n,\nu} - i M_{n,\nu}\lvert n\rangle\langle n\rvert
+          \big)^2.
+        \]
+        </p>
+
+        <p>
+        \[
+          =
+          \frac{1}{2}
+          \sum_{n,\nu}
+          \hat{P}_{n,\nu}^2
+          +
+          \frac{1}{2}
+          \sum_{n,\nu}
+          \omega_{n,\nu}^2
+          \big(
+            \hat{R}_{n,\nu}^2
+            - 2 i M_{n,\nu} \hat{R}_{n,\nu}\lvert n\rangle\langle n\rvert
+            - M_{n,\nu}^2 \lvert n\rangle\langle n\rvert
+          \big).
+          \tag{12}
+        \]
+        </p>
+
+        <p>
+          So
+        </p>
+
+        <p>
+        \[
+          e^{\hat{S}} \hat{H}_b e^{-\hat{S}}
+          =
+          \frac{1}{2}
+          \sum_{n,\nu}
+          \big(
+            \hat{P}_{n,\nu}^2 + \omega_{n,\nu}^2 \hat{R}_{n,\nu}^2
+          \big)
+          -
+          i \sum_{n,\nu}
+          \omega_{n,\nu}^2 M_{n,\nu} \hat{R}_{n,\nu} \lvert n\rangle\langle n\rvert
+        \]
+        </p>
+
+        <p>
+        \[
+          \quad
+          - \frac{1}{2}
+          \sum_{n,\nu}
+          \omega_{n,\nu}^2 M_{n,\nu}^2 \lvert n\rangle\langle n\rvert.
+        \]
+        </p>
+
+        <h3>5.2 System–bath interaction</h3>
+
+        <p>
+          The system–bath Hamiltonian transforms as
+        </p>
+
+        <p>
+        \[
+          e^{\hat{S}} \hat{H}_{sb} e^{-\hat{S}}
+          =
+          e^{\hat{S}}
+          \left(
+            -\sum_{n,\nu} g_{n,\nu} \hat{R}_{n,\nu} \lvert n\rangle\langle n\rvert
+          \right)
+          e^{-\hat{S}}.
+        \]
+        </p>
+
+        <p>
+          Using the previous results,
+        </p>
+
+        <p>
+        \[
+          e^{\hat{S}} \hat{H}_{sb} e^{-\hat{S}}
+          =
+          -\sum_{n,\nu} g_{n,\nu}
+          \big(
+            e^{\hat{S}} \hat{R}_{n,\nu} e^{-\hat{S}}
+          \big)
+          \big(
+            e^{\hat{S}} \lvert n\rangle\langle n\rvert e^{-\hat{S}}
+          \big)
+        \]
+        </p>
+
+        <p>
+        \[
+          =
+          -\sum_{n,\nu} g_{n,\nu}
+          \big(
+            \hat{R}_{n,\nu} - i M_{n,\nu}\lvert n\rangle\langle n\rvert
+          \big)
+          \lvert n\rangle\langle n\rvert
+        \]
+        </p>
+
+        <p>
+        \[
+          =
+          -\sum_{n,\nu} g_{n,\nu}\hat{R}_{n,\nu} \lvert n\rangle\langle n\rvert
+          +
+          i \sum_{n,\nu} g_{n,\nu} M_{n,\nu} \lvert n\rangle\langle n\rvert.
+          \tag{13}
+        \]
+        </p>
+
+        <h3>5.3 Choosing $M_{n,\nu}$</h3>
+
+        <p>
+          Combining the transformed $\hat{H}_b$ and $\hat{H}_{sb}$, the coefficient in front of
+          $\hat{R}_{n,\nu}\lvert n\rangle\langle n\rvert$ is
+        </p>
+
+        <p>
+        \[
+          - i \omega_{n,\nu}^2 M_{n,\nu}
+          - g_{n,\nu}.
+        \]
+        </p>
+
+        <p>
+          To eliminate the linear system–bath coupling, we choose $M_{n,\nu}$ such that this term
+          vanishes:
+        </p>
+
+        <p>
+        \[
+          - i \omega_{n,\nu}^2 M_{n,\nu} - g_{n,\nu} = 0
+          \quad\Rightarrow\quad
+          M_{n,\nu} = i\,\frac{g_{n,\nu}}{\omega_{n,\nu}^2}.
+          \tag{15}
+        \]
+        </p>
+
+        <p>
+          Using this, and collecting the diagonal terms, we find
+        </p>
+
+        <p>
+        \[
+          e^{\hat{S}}(\hat{H}_b + \hat{H}_{sb}) e^{-\hat{S}}
+          =
+          \frac{1}{2}
+          \sum_{n,\nu}
+          \big(
+            \hat{P}_{n,\nu}^2 + \omega_{n,\nu}^2 \hat{R}_{n,\nu}^2
+          \big)
+          - \sum_{n,\nu}
+          \frac{g_{n,\nu}^2}{2 \omega_{n,\nu}^2}
+          \lvert n\rangle\langle n\rvert.
+          \tag{16}
+        \]
+        </p>
+
+        <p>
+          Together with the diagonal system part, the transformed diagonal + bath sector is
+        </p>
+
+        <p>
+        \[
+          e^{\hat{S}}(\hat{H}_d + \hat{H}_b + \hat{H}_{sb}) e^{-\hat{S}}
+          =
+          \sum_n \varepsilon_n \lvert n\rangle\langle n\rvert
+          +
+          \frac{1}{2}
+          \sum_{n,\nu}
+          \big(
+            \hat{P}_{n,\nu}^2 + \omega_{n,\nu}^2 \hat{R}_{n,\nu}^2
+          \big).
+          \tag{18}
+        \]
+        </p>
+
+        <p>
+          Thus, after the polaron shift, the diagonal system energies are bare ($\varepsilon_n$) and the bath
+          is a collection of unshifted harmonic oscillators.
+        </p>
+      </div>
+    </section>
+
+    <!-- 6. Transform of |n><m| and final polaron Hamiltonian -->
+    <section class="section">
+      <div class="container">
+        <h2>6. Transform of $\lvert n\rangle\langle m\rvert$ and the final polaron Hamiltonian</h2>
+
+        <h3>6.1 First commutator</h3>
+
+        <p>
+          For $n \neq m$, the off-diagonal operator transforms as
+        </p>
+
+        <p>
+        \[
+          e^{\hat{S}} \lvert n\rangle\langle m\rvert e^{-\hat{S}}
+          =
+          \lvert n\rangle\langle m\rvert
+          +
+          [\hat{S},\lvert n\rangle\langle m\rvert]
+          +
+          \frac{1}{2!}[\hat{S},[\hat{S},\lvert n\rangle\langle m\rvert]] + \cdots.
+          \tag{19}
+        \]
+        </p>
+
+        <p>
+          The first commutator is
+        </p>
+
+        <p>
+        \[
+          [\hat{S},\lvert n\rangle\langle m\rvert]
+          =
+          \sum_{k,\mu}
+          M_{k,\mu}
+          [\hat{P}_{k,\mu}\lvert k\rangle\langle k\rvert,
+          \lvert n\rangle\langle m\rvert].
+        \]
+        </p>
+
+        <p>
+        \[
+          =
+          \sum_{k,\mu}
+          M_{k,\mu} \hat{P}_{k,\mu}
+          \left(
+            \lvert k\rangle\langle k\rvert n\rangle\langle m\rvert
+            -
+            \lvert n\rangle\langle m\rvert k\rangle\langle k\rvert
+          \right)
+        \]
+        </p>
+
+        <p>
+        \[
+          =
+          \sum_\mu
+          \big(
+            M_{n,\mu} \hat{P}_{n,\mu} \lvert n\rangle\langle m\rvert
+            -
+            M_{m,\mu} \hat{P}_{m,\mu} \lvert n\rangle\langle m\rvert
+          \big).
+          \tag{21}
+        \]
+        </p>
+
+        <p>
+          Hence
+        </p>
+
+        <p>
+        \[
+          [\hat{S},\lvert n\rangle\langle m\rvert]
+          =
+          \sum_\mu
+          \big(
+            M_{n,\mu} \hat{P}_{n,\mu}
+            -
+            M_{m,\mu} \hat{P}_{m,\mu}
+          \big)\,
+          \lvert n\rangle\langle m\rvert.
+        \]
+        </p>
+
+        <h3>6.2 Second commutator and collective bath momentum</h3>
+
+        <p>
+          The second commutator can be shown to take the form
+        </p>
+
+        <p>
+        \[
+          [\hat{S},\lvert n\rangle\langle m\rvert]^2
+          =
+          \left(
+            \sum_\mu
+            \big(
+              M_{n,\mu} \hat{P}_{n,\mu}
+              -
+              M_{m,\mu} \hat{P}_{m,\mu}
+            \big)
+          \right)^2
+          \lvert n\rangle\langle m\rvert.
+          \tag{30}
+        \]
+        </p>
+
+        <p>
+          This suggests introducing collective momentum operators for each site,
+        </p>
+
+        <p>
+        \[
+          \hat{X}_n =
+          \sum_\mu M_{n,\mu} \hat{P}_{n,\mu}.
+          \tag{31}
+        \]
+        </p>
+
+        <p>
+          Then
+        </p>
+
+        <p>
+        \[
+          [\hat{S},\lvert n\rangle\langle m\rvert]
+          =
+          (\hat{X}_n - \hat{X}_m) \lvert n\rangle\langle m\rvert,
+        \]
+        </p>
+
+        <p>
+        \[
+          [\hat{S},\lvert n\rangle\langle m\rvert]^2
+          =
+          (\hat{X}_n - \hat{X}_m)^2 \lvert n\rangle\langle m\rvert,
+        \]
+        </p>
+
+        <p>
+          and, by induction, the $k$-th nested commutator yields
+        </p>
+
+        <p>
+        \[
+          [\hat{S},\lvert n\rangle\langle m\rvert]^k
+          =
+          (\hat{X}_n - \hat{X}_m)^k \lvert n\rangle\langle m\rvert.
+        \]
+        </p>
+
+        <p>
+          Summing the series, we obtain
+        </p>
+
+        <p>
+        \[
+          e^{\hat{S}} \lvert n\rangle\langle m\rvert e^{-\hat{S}}
+          =
+          \left[
+            1
+            + (\hat{X}_n - \hat{X}_m)
+            + \frac{1}{2!}(\hat{X}_n - \hat{X}_m)^2
+            + \cdots
+          \right]
+          \lvert n\rangle\langle m\rvert,
+        \]
+        </p>
+
+        <p>
+        \[
+          =
+          e^{\hat{X}_{nm}} \lvert n\rangle\langle m\rvert,
+          \quad
+          \hat{X}_{nm} \equiv \hat{X}_n - \hat{X}_m.
+          \tag{33}
+        \]
+        </p>
+
+        <h3>6.3 Final polaron-transformed Hamiltonian</h3>
+
+        <p>
+          Using the results for the diagonal sector, Eq. (18), and for the off-diagonal terms, Eq. (33),
+          in the original Hamiltonian (1), the fully polaron-transformed Hamiltonian is
+        </p>
+
+        <p>
+        \[
+          \hat{H}_\mathrm{PT}
+          =
+          e^{\hat{S}} \hat{H} e^{-\hat{S}}
+          =
+          \sum_n \varepsilon_n \lvert n\rangle\langle n\rvert
+          +
+          \frac{1}{2}
+          \sum_{n,\nu}
+          \big(
+            \hat{P}_{n,\nu}^2 + \omega_{n,\nu}^2 \hat{R}_{n,\nu}^2
+          \big)
+        \]
+        </p>
+
+        <p>
+        \[
+          \quad
+          +
+          \sum_{n} \sum_{m\neq n}
+          \Delta_{n,m}
+          \left(
+            e^{\hat{X}_{nm}} \lvert n\rangle\langle m\rvert
+            +
+            e^{-\hat{X}_{nm}} \lvert m\rangle\langle n\rvert
+          \right).
+          \tag{34}
+        \]
+        </p>
+
+        <p>
+          In this representation, the linear system–bath coupling has been fully removed. The price paid
+          is that the excitonic couplings are now dressed by bath momentum operators through the
+          exponentials $e^{\pm \hat{X}_{nm}}$, which encode the polaronic dressing of exciton
+          hopping between sites $n$ and $m$.
+        </p>
+      </div>
+    </section>
+  </main>
+
+  <!-- Dark mode + small JS utilities -->
+  <script src="../main.js?v=2"></script>
+</body>
+</html>
