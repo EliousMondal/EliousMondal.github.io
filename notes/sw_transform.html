@@ -1,0 +1,793 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Schrieffer–Wolff transform for a transmon–resonator system | Notes | Mohammad Elious Ali Mondal</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="../style.css?v=1" />
+
+  <!-- MathJax config -->
+  <script>
+    window.MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        displayMath: [['$$', '$$'], ['\\[', '\\]']],
+        tags: "none"
+      }
+    };
+  </script>
+  <script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+<body>
+  <header class="site-header">
+    <div class="container header-inner">
+      <div class="logo">
+        <a href="../index.html#hero">Mohammad Elious Ali Mondal</a>
+      </div>
+      <nav class="nav-links">
+        <a href="../index.html#about">About</a>
+        <a href="../research.html">Research</a>
+        <a href="../publications.html">Publications</a>
+        <a href="../notes.html">Notes</a>
+        <a href="../index.html#contact">Contact</a>
+      </nav>
+      <button class="theme-toggle" aria-label="Toggle dark mode">☾</button>
+    </div>
+  </header>
+
+  <main>
+    <!-- Intro -->
+    <section class="section">
+      <div class="container">
+        <h1>Schrieffer–Wolff transform for a transmon–resonator system</h1>
+        <p>
+          These notes derive the effective dispersive Hamiltonian for a two-level transmon qubit
+          coupled to two resonator modes via a Tavis–Cummings interaction, using the
+          Schrieffer–Wolff (SW) transformation. We start from the full qubit–resonator
+          Hamiltonian, define an anti-Hermitian generator in the dispersive regime, and obtain
+          the cross-Kerr and resonator–resonator coupling terms to second order in
+          $g_i / \Delta_i$.
+        </p>
+      </div>
+    </section>
+
+    <!-- 1. Transmon Hamiltonian -->
+    <section class="section section-alt">
+      <div class="container">
+        <h2>1. Transmon Hamiltonian</h2>
+
+        <h3>1.1 Operators involved</h3>
+
+        <p>
+          We treat the transmon as an effective two-level system (qubit) in the basis
+          $\{\lvert e\rangle, \lvert g\rangle\}$. The Pauli operators are
+        </p>
+
+        <p>
+        \[
+          \hat{\sigma}_z
+          =
+          \lvert e\rangle\langle e\rvert
+          -
+          \lvert g\rangle\langle g\rvert
+          \equiv
+          \begin{pmatrix}
+            1 & 0 \\
+            0 & -1
+          \end{pmatrix},
+          \tag{1}
+        \]
+        </p>
+
+        <p>
+        \[
+          \hat{\sigma}_+
+          =
+          \lvert e\rangle\langle g\rvert
+          \equiv
+          \begin{pmatrix}
+            0 & 1 \\
+            0 & 0
+          \end{pmatrix},
+          \qquad
+          \hat{\sigma}_-
+          =
+          \lvert g\rangle\langle e\rvert
+          \equiv
+          \begin{pmatrix}
+            0 & 0 \\
+            1 & 0
+          \end{pmatrix}.
+          \tag{2}
+        \]
+        </p>
+
+        <p>
+          These obey the usual commutation relations
+        </p>
+
+        <p>
+        \[
+          [\hat{\sigma}_+,\hat{\sigma}_-] = \hat{\sigma}_z,
+          \qquad
+          [\hat{\sigma}_z,\hat{\sigma}_\pm] = \pm 2 \hat{\sigma}_\pm.
+          \tag{3}
+        \]
+        </p>
+
+        <p>
+          The two resonators are modeled as bosonic modes with annihilation and creation
+          operators $\hat{b}_i$, $\hat{b}_i^\dagger$ ($i = 1,2$), satisfying
+        </p>
+
+        <p>
+        \[
+          [\hat{b}_i,\hat{b}_j^\dagger] = \delta_{ij}, \qquad
+          [\hat{b}_i,\hat{b}_j^\dagger \hat{b}_j] = \delta_{ij}\hat{b}_j.
+          \tag{4}
+        \]
+        </p>
+
+        <p>
+          The number operator for each resonator mode is
+        </p>
+
+        <p>
+        \[
+          \hat{n}_i = \hat{b}_i^\dagger \hat{b}_i.
+          \tag{5}
+        \]
+        </p>
+
+        <h3>1.2 Free Hamiltonian and interaction</h3>
+
+        <p>
+          The free Hamiltonian for the qubit and the two resonators is
+        </p>
+
+        <p>
+        \[
+          \hat{H}_0
+          =
+          \frac{\hbar \omega_q}{2}\,\hat{\sigma}_z
+          +
+          \sum_{i=1}^2
+          \hbar\omega_i \hat{b}_i^\dagger \hat{b}_i,
+          \tag{6}
+        \]
+        </p>
+
+        <p>
+          where $\omega_q$ is the qubit frequency and $\omega_1, \omega_2$ are the resonator
+          frequencies. The capacitive (transverse) coupling between the qubit and the resonators is
+        </p>
+
+        <p>
+        \[
+          \hat{H}_\mathrm{int}
+          =
+          \sum_{i=1}^2
+          \hbar g_i
+          \big(\hat{b}_i + \hat{b}_i^\dagger\big)
+          \big(\hat{\sigma}_+ + \hat{\sigma}_-\big).
+          \tag{7}
+        \]
+        </p>
+
+        <p>
+          In the regime where all bare frequencies are much larger than the coupling strengths,
+          $\omega_q,\omega_i \gg g_i$, we can apply the rotating wave approximation (RWA). The
+          interaction Hamiltonian becomes a Tavis–Cummings interaction,
+        </p>
+
+        <p>
+        \[
+          \hat{H}_\mathrm{int}
+          =
+          \sum_{i=1}^2
+          \hbar g_i
+          \big(
+            \hat{b}_i \hat{\sigma}_+
+            +
+            \hat{b}_i^\dagger \hat{\sigma}_-
+          \big).
+          \tag{8}
+        \]
+        </p>
+
+        <p>
+          The total Hamiltonian is therefore
+        </p>
+
+        <p>
+        \[
+          \hat{H}
+          =
+          \hat{H}_0 + \hat{H}_\mathrm{int}
+          =
+          \frac{\hbar \omega_q}{2}\,\hat{\sigma}_z
+          +
+          \sum_{i=1}^2
+          \hbar\omega_i \hat{b}_i^\dagger \hat{b}_i
+          +
+          \sum_{i=1}^2
+          \hbar g_i
+          \big(
+            \hat{b}_i \hat{\sigma}_+
+            +
+            \hat{b}_i^\dagger \hat{\sigma}_-
+          \big).
+          \tag{9}
+        \]
+        </p>
+      </div>
+    </section>
+
+    <!-- 1.3 Schrieffer-Wolff -->
+    <section class="section">
+      <div class="container">
+        <h2>1.3 Schrieffer–Wolff transformation</h2>
+
+        <p>
+          We define the detuning of each resonator mode from the qubit as
+        </p>
+
+        <p>
+        \[
+          \Delta_i = \omega_q - \omega_i.
+          \tag{10}
+        \]
+        </p>
+
+        <p>
+          We work in the dispersive regime
+        </p>
+
+        <p>
+        \[
+          \lvert \Delta_i \rvert \gg g_i
+          \quad\Longleftrightarrow\quad
+          \left\lvert \frac{g_i}{\Delta_i} \right\rvert \ll 1,
+          \tag{11}
+        \]
+        </p>
+
+        <p>
+          which allows us to treat the coupling perturbatively via a Schrieffer–Wolff
+          transformation. We choose an anti-Hermitian generator
+        </p>
+
+        <p>
+        \[
+          \hat{S}
+          =
+          \sum_{i=1}^2
+          \lambda_i
+          \big(
+            \hat{b}_i \hat{\sigma}_+
+            -
+            \hat{b}_i^\dagger \hat{\sigma}_-
+          \big),
+          \tag{12}
+        \]
+        </p>
+
+        <p>
+          and perform the unitary transformation
+        </p>
+
+        <p>
+        \[
+          \hat{H}_\mathrm{SW}
+          =
+          e^{\hat{S}}
+          \hat{H}
+          e^{-\hat{S}}
+          =
+          \hat{H}
+          +
+          [\hat{S},\hat{H}]
+          +
+          \frac{1}{2}[\hat{S},[\hat{S},\hat{H}]]
+          + \cdots.
+          \tag{13}
+        \]
+        </p>
+
+        <p>
+          We choose $\hat{S}$ such that it cancels the first-order interaction:
+        </p>
+
+        <p>
+        \[
+          [\hat{S},\hat{H}_0] = - \hat{H}_\mathrm{int}.
+          \tag{14}
+        \]
+        </p>
+
+        <p>
+          With this choice, the SW-transformed Hamiltonian to second order becomes
+        </p>
+
+        <p>
+        \[
+          \hat{H}_\mathrm{SW}
+          =
+          \hat{H}_0
+          +
+          \frac{1}{2}
+          [\hat{S},\hat{H}_\mathrm{int}].
+          \tag{15}
+        \]
+        </p>
+
+        <h3>Commutator $[\hat{S},\hat{H}_0]$ and choice of $\lambda_i$</h3>
+
+        <p>
+          First we evaluate
+        </p>
+
+        <p>
+        \[
+        \begin{aligned}
+          [\hat{S},\hat{H}_0]
+          &=
+          \sum_{i=1}^2
+          \lambda_i
+          \Big[
+            \hat{b}_i\hat{\sigma}_+
+            -
+            \hat{b}_i^\dagger \hat{\sigma}_-,
+            \hat{H}_0
+          \Big]
+          \\
+          &=
+          \sum_{i=1}^2
+          \lambda_i
+          \Big(
+            [\hat{b}_i\hat{\sigma}_+,\hat{H}_0]
+            -
+            [\hat{b}_i^\dagger \hat{\sigma}_-,\hat{H}_0]
+          \Big).
+        \end{aligned}
+        \tag{16}
+        \]
+        </p>
+
+        <p>
+          Using
+        </p>
+
+        <p>
+        \[
+        \begin{aligned}
+          [\hat{b}_i\hat{\sigma}_+,\hat{H}_0]
+          &=
+          \left[
+            \hat{b}_i\hat{\sigma}_+,
+            \frac{\hbar\omega_q}{2}\hat{\sigma}_z
+            +
+            \sum_{j=1}^2
+            \hbar\omega_j \hat{b}_j^\dagger \hat{b}_j
+          \right]
+          \\
+          &=
+          \frac{\hbar\omega_q}{2}
+          \hat{b}_i
+          [\hat{\sigma}_+,\hat{\sigma}_z]
+          +
+          \sum_{j=1}^2
+          \hbar\omega_j
+          [\hat{b}_i,\hat{b}_j^\dagger \hat{b}_j]\hat{\sigma}_+
+          \\
+          &=
+          \frac{\hbar\omega_q}{2}
+          \hat{b}_i(-2\hat{\sigma}_+)
+          +
+          \hbar\omega_i \hat{b}_i \hat{\sigma}_+
+          \\
+          &=
+          -\hbar(\omega_q - \omega_i)
+          \hat{b}_i\hat{\sigma}_+
+          =
+          -\hbar\Delta_i \hat{b}_i\hat{\sigma}_+,
+        \end{aligned}
+        \tag{17}
+        \]
+        </p>
+
+        <p>
+        \[
+        \begin{aligned}
+          [\hat{b}_i^\dagger \hat{\sigma}_-,\hat{H}_0]
+          &=
+          \left[
+            \hat{b}_i^\dagger \hat{\sigma}_-,
+            \frac{\hbar\omega_q}{2}\hat{\sigma}_z
+            +
+            \sum_{j=1}^2
+            \hbar\omega_j \hat{b}_j^\dagger \hat{b}_j
+          \right]
+          \\
+          &=
+          \frac{\hbar\omega_q}{2}
+          \hat{b}_i^\dagger
+          [\hat{\sigma}_-,\hat{\sigma}_z]
+          +
+          \sum_{j=1}^2
+          \hbar\omega_j
+          [\hat{b}_i^\dagger,\hat{b}_j^\dagger \hat{b}_j]\hat{\sigma}_-
+          \\
+          &=
+          \frac{\hbar\omega_q}{2}
+          \hat{b}_i^\dagger(2\hat{\sigma}_-)
+          -
+          \hbar\omega_i \hat{b}_i^\dagger \hat{\sigma}_-
+          \\
+          &=
+          \hbar(\omega_q - \omega_i)
+          \hat{b}_i^\dagger \hat{\sigma}_-
+          =
+          \hbar\Delta_i \hat{b}_i^\dagger \hat{\sigma}_-,
+        \end{aligned}
+        \tag{18}
+        \]
+        </p>
+
+        <p>
+          we obtain
+        </p>
+
+        <p>
+        \[
+        \begin{aligned}
+          [\hat{S},\hat{H}_0]
+          &=
+          \sum_{i=1}^2
+          \lambda_i
+          \big(
+            -\hbar\Delta_i \hat{b}_i\hat{\sigma}_+
+            -
+            \hbar\Delta_i \hat{b}_i^\dagger \hat{\sigma}_-
+          \big)
+          \\
+          &=
+          -\hbar
+          \sum_{i=1}^2
+          \lambda_i \Delta_i
+          \big(
+            \hat{b}_i\hat{\sigma}_+
+            +
+            \hat{b}_i^\dagger \hat{\sigma}_-
+          \big).
+        \end{aligned}
+        \tag{19}
+        \]
+        </p>
+
+        <p>
+          Comparing with Eq. (8), the condition (14) is satisfied if
+        </p>
+
+        <p>
+        \[
+          \lambda_i = \frac{g_i}{\Delta_i}.
+          \tag{20}
+        \]
+        </p>
+
+        <p>
+          With this choice, the SW Hamiltonian is given by Eq. (15). The truncation to second
+          order is valid in the dispersive limit (11).
+        </p>
+      </div>
+    </section>
+
+    <!-- Commutator [S, Hint] -->
+    <section class="section section-alt">
+      <div class="container">
+        <h2>1.4 Evaluating $\frac{1}{2}[\hat{S},\hat{H}_\mathrm{int}]$</h2>
+
+        <p>
+          We now compute
+        </p>
+
+        <p>
+        \[
+        \begin{aligned}
+          [\hat{S},\hat{H}_\mathrm{int}]
+          &=
+          \sum_{i,j=1}^2
+          \lambda_i g_j
+          \Big[
+            \hat{b}_i\hat{\sigma}_+
+            -
+            \hat{b}_i^\dagger \hat{\sigma}_-,
+            \hat{b}_j\hat{\sigma}_+
+            +
+            \hat{b}_j^\dagger \hat{\sigma}_-
+          \Big]
+          \\
+          &=
+          \sum_{i,j=1}^2
+          \lambda_i g_j
+          \left(
+            [\hat{b}_i\hat{\sigma}_+,\hat{b}_j^\dagger \hat{\sigma}_-]
+            -
+            [\hat{b}_i^\dagger \hat{\sigma}_-,\hat{b}_j\hat{\sigma}_+]
+          \right).
+        \end{aligned}
+        \tag{21}
+        \]
+        </p>
+
+        <p>
+          The individual commutators are
+        </p>
+
+        <p>
+        \[
+        \begin{aligned}
+          [\hat{b}_i\hat{\sigma}_+,\hat{b}_j^\dagger \hat{\sigma}_-]
+          &=
+          [\hat{b}_i,\hat{b}_j^\dagger]\hat{\sigma}_+\hat{\sigma}_-
+          +
+          \hat{b}_j^\dagger \hat{b}_i
+          [\hat{\sigma}_+,\hat{\sigma}_-]
+          \\
+          &=
+          \delta_{ij}\hat{\sigma}_+\hat{\sigma}_-
+          +
+          \hat{b}_j^\dagger \hat{b}_i \hat{\sigma}_z,
+        \end{aligned}
+        \tag{22}
+        \]
+        </p>
+
+        <p>
+        \[
+        \begin{aligned}
+          [\hat{b}_i^\dagger \hat{\sigma}_-,\hat{b}_j\hat{\sigma}_+]
+          &=
+          [\hat{b}_i^\dagger,\hat{b}_j]\hat{\sigma}_-\hat{\sigma}_+
+          +
+          \hat{b}_j \hat{b}_i^\dagger
+          [\hat{\sigma}_-,\hat{\sigma}_+]
+          \\
+          &=
+          -\delta_{ij}\hat{\sigma}_-\hat{\sigma}_+
+          -
+          \hat{b}_j \hat{b}_i^\dagger \hat{\sigma}_z.
+        \end{aligned}
+        \tag{23}
+        \]
+        </p>
+
+        <p>
+          Adding them,
+        </p>
+
+        <p>
+        \[
+        \begin{aligned}
+          \frac{1}{2}[\hat{S},\hat{H}_\mathrm{int}]
+          &=
+          \frac{1}{2}
+          \sum_{i,j=1}^2
+          \hbar \lambda_i g_j
+          \Big\{
+            (\hat{\sigma}_+\hat{\sigma}_- + \hat{\sigma}_-\hat{\sigma}_+)\delta_{ij}
+            +
+            (\hat{b}_j^\dagger \hat{b}_i + \hat{b}_j \hat{b}_i^\dagger)\hat{\sigma}_z
+          \Big\}.
+        \end{aligned}
+        \tag{24}
+        \]
+        </p>
+
+        <h3>$i=j$ terms</h3>
+
+        <p>
+          For $i=j$,
+        </p>
+
+        <p>
+        \[
+        \begin{aligned}
+          \frac{1}{2}[\hat{S},\hat{H}_\mathrm{int}]_{i=j}
+          &=
+          \sum_{i=1}^2
+          \frac{\hbar \lambda_i g_i}{2}
+          (\hat{\sigma}_+\hat{\sigma}_- + \hat{\sigma}_-\hat{\sigma}_+)
+          +
+          \sum_{i=1}^2
+          \hbar \lambda_i g_i
+          \hat{b}_i^\dagger \hat{b}_i \hat{\sigma}_z.
+        \end{aligned}
+        \tag{25}
+        \]
+        </p>
+
+        <p>
+          The first sum is a constant shift
+          ($\hat{\sigma}_+\hat{\sigma}_- + \hat{\sigma}_-\hat{\sigma}_+ = \hat{\mathbb{1}}$),
+          while the second sum describes a dispersive (cross-Kerr) shift of the resonator frequencies
+          conditioned on the qubit state.
+        </p>
+
+        <h3>$i\neq j$ terms</h3>
+
+        <p>
+          For $i\neq j$,
+        </p>
+
+        <p>
+        \[
+        \begin{aligned}
+          \frac{1}{2}[\hat{S},\hat{H}_\mathrm{int}]_{i\neq j}
+          &=
+          \frac{\hbar \lambda_1 g_2}{2}
+          \big(
+            \hat{b}_1^\dagger \hat{b}_2
+            +
+            \hat{b}_2 \hat{b}_1^\dagger
+          \big)\hat{\sigma}_z
+          +
+          \frac{\hbar \lambda_2 g_1}{2}
+          \big(
+            \hat{b}_1^\dagger \hat{b}_2
+            +
+            \hat{b}_2 \hat{b}_1^\dagger
+          \big)\hat{\sigma}_z
+          \\
+          &=
+          \hbar \frac{\lambda_1 g_2 + \lambda_2 g_1}{2}
+          \big(
+            \hat{b}_1^\dagger \hat{b}_2
+            +
+            \hat{b}_2 \hat{b}_1^\dagger
+          \big)\hat{\sigma}_z.
+        \end{aligned}
+        \tag{26}
+        \]
+        </p>
+
+        <p>
+          Define the effective resonator–resonator coupling
+        </p>
+
+        <p>
+        \[
+          J
+          =
+          \hbar
+          \frac{\lambda_1 g_2 + \lambda_2 g_1}{2},
+          \tag{27}
+        \]
+        </p>
+
+        <p>
+          so that
+        </p>
+
+        <p>
+        \[
+          \frac{1}{2}[\hat{S},\hat{H}_\mathrm{int}]_{i\neq j}
+          =
+          J
+          \big(
+            \hat{b}_1^\dagger \hat{b}_2
+            +
+            \hat{b}_2 \hat{b}_1^\dagger
+          \big)\hat{\sigma}_z.
+          \tag{28}
+        \]
+        </p>
+
+        <p>
+          Finally, introducing the dispersive shifts
+        </p>
+
+        <p>
+        \[
+          \chi_i = \lambda_i g_i = \frac{g_i^2}{\Delta_i},
+          \tag{29}
+        \]
+        </p>
+
+        <p>
+          the Schrieffer–Wolff transformed Hamiltonian can be written as
+        </p>
+
+        <p>
+        \[
+        \begin{aligned}
+          \hat{H}_\mathrm{SW}
+          &=
+          \sum_{i=1}^2
+          \hbar\omega_i \hat{b}_i^\dagger \hat{b}_i
+          +
+          \frac{\hbar \tilde{\omega}_q}{2} \hat{\sigma}_z
+          +
+          \sum_{i=1}^2
+          \hbar\chi_i \hat{b}_i^\dagger \hat{b}_i \hat{\sigma}_z
+          \\
+          &\quad
+          +
+          J
+          \big(
+            \hat{b}_1^\dagger \hat{b}_2
+            +
+            \hat{b}_2 \hat{b}_1^\dagger
+          \big)\hat{\sigma}_z,
+        \end{aligned}
+        \tag{30}
+        \]
+        </p>
+
+        <p>
+          where the Lamb-shifted qubit frequency is
+        </p>
+
+        <p>
+        \[
+          \tilde{\omega}_q = \omega_q + \chi_1 + \chi_2.
+        \]
+        </p>
+
+        <p>
+          Introducing the vector notation
+        </p>
+
+        <p>
+        \[
+          \hat{\mathbf{b}}
+          =
+          \begin{pmatrix}
+            \hat{b}_1 \\[0.2em]
+            \hat{b}_2
+          \end{pmatrix},
+          \qquad
+          \hat{\mathbf{b}}^\dagger
+          =
+          \begin{pmatrix}
+            \hat{b}_1^\dagger &
+            \hat{b}_2^\dagger
+          \end{pmatrix},
+          \tag{31}
+        \]
+        </p>
+
+        <p>
+          we can rewrite the interaction terms compactly as
+        </p>
+
+        <p>
+        \[
+          \hat{H}_\mathrm{SW}
+          =
+          \sum_{i=1}^2
+          \hbar\omega_i \hat{b}_i^\dagger \hat{b}_i
+          +
+          \frac{\hbar \tilde{\omega}_q}{2} \hat{\sigma}_z
+          +
+          \hat{\mathbf{b}}^\dagger
+          \begin{pmatrix}
+            \chi_1 & J \\
+            J & \chi_2
+          \end{pmatrix}
+          \hat{\mathbf{b}}\,\hat{\sigma}_z.
+          \tag{32}
+        \]
+        </p>
+
+        <p style="margin-top:1.5rem;">
+          <a class="pub-title" href="../notes.html">&larr; Back to Notes</a>
+        </p>
+      </div>
+    </section>
+  </main>
+
+  <script src="../main.js?v=2"></script>
+</body>
+</html>
