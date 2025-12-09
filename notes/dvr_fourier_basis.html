@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Discrete Variable Representation (Fourier DVR) | Notes | Mohammad Elious Ali Mondal</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="../style.css?v=1" />
+
+  <!-- MathJax config -->
+  <script>
+    window.MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        displayMath: [['$$', '$$'], ['\\[', '\\]']],
+        tags: "none"
+      }
+    };
+  </script>
+  <script
+    async
+    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+  ></script>
+</head>
+<body>
+  <header class="site-header">
+    <div class="container header-inner">
+      <div class="logo">
+        <a href="../index.html#hero">Mohammad Elious Ali Mondal</a>
+      </div>
+      <nav class="nav-links">
+        <a href="../index.html#about">About</a>
+        <a href="../research.html">Research</a>
+        <a href="../publications.html">Publications</a>
+        <a href="../notes.html">Notes</a>
+        <a href="../index.html#contact">Contact</a>
+      </nav>
+      <button class="theme-toggle" aria-label="Toggle dark mode">☾</button>
+    </div>
+  </header>
+
+  <main>
+    <!-- Intro -->
+    <section class="section">
+      <div class="container">
+        <h1>Discrete Variable Representation (Fourier DVR)</h1>
+        <p>
+          These notes outline the construction of a discrete variable representation (DVR) for a
+          one-dimensional quantum particle in a box with periodic boundary conditions, using a
+          Fourier (plane-wave) primitive basis. The goal is to obtain a representation in which
+          the potential energy operator is diagonal while the kinetic energy retains a simple,
+          analytic form.
+        </p>
+      </div>
+    </section>
+
+    <!-- I. 1D Hamiltonian -->
+    <section class="section section-alt">
+      <div class="container">
+        <h2>I. The 1D Hamiltonian</h2>
+
+        <p>
+          Consider a particle of mass $m$ confined to the interval
+          $x \in [0,L]$ with periodic boundary conditions. The Hamiltonian is
+        </p>
+
+        <p>
+        \[
+          \hat{H}
+          =
+          \hat{T} + \hat{V}
+          =
+          \frac{\hat{p}^2}{2m}
+          + V(\hat{x}),
+          \tag{1}
+        \]
+        </p>
+
+        <p>
+          with the canonical commutation relation $[\hat{x},\hat{p}] = i\hbar$.
+          The DVR aims to construct a basis in which $V(\hat{x})$ is diagonal, while
+          $\hat{T}$ has a convenient analytic matrix representation.
+        </p>
+      </div>
+    </section>
+
+    <!-- II. Fourier primitive basis -->
+    <section class="section">
+      <div class="container">
+        <h2>II. Choice of primitive basis: Fourier (plane-wave) states</h2>
+
+        <p>
+          We choose $N$ orthonormal plane-wave basis functions
+        </p>
+
+        <p>
+        \[
+          \phi_n(x)
+          =
+          \langle x \vert \phi_n \rangle
+          =
+          \frac{1}{\sqrt{L}}
+          e^{i k_n x},
+          \qquad
+          n = 1,2,\dots,N,
+          \tag{2}
+        \]
+        </p>
+
+        <p>
+          where the wavevectors are
+        </p>
+
+        <p>
+        \[
+          k_n
+          =
+          \frac{2\pi}{L}
+          \left(
+            n - \frac{N+1}{2}
+          \right).
+          \tag{3}
+        \]
+        </p>
+
+        <p>
+          The truncated Hilbert space is then
+        </p>
+
+        <p>
+        \[
+          \mathcal{H}_N
+          =
+          \mathrm{span}\{\,
+            \vert \phi_1 \rangle,
+            \dots,
+            \vert \phi_N \rangle
+          \,\}.
+        \]
+        </p>
+      </div>
+    </section>
+
+    <!-- III. Kinetic energy in primitive basis -->
+    <section class="section section-alt">
+      <div class="container">
+        <h2>III. Kinetic energy in the primitive basis</h2>
+
+        <p>
+          In this plane-wave basis, momentum is diagonal:
+        </p>
+
+        <p>
+        \[
+          \hat{p}
+          \vert \phi_n \rangle
+          =
+          \hbar k_n
+          \vert \phi_n \rangle,
+          \tag{4}
+        \]
+        </p>
+
+        <p>
+          so the kinetic energy matrix elements are
+        </p>
+
+        <p>
+        \[
+          T_{nm}
+          =
+          \langle \phi_n \vert \hat{T} \vert \phi_m \rangle
+          =
+          \frac{\hbar^2 k_n^2}{2m}
+          \,\delta_{nm}.
+          \tag{5}
+        \]
+        </p>
+
+        <p>
+          Thus the kinetic energy is diagonal in the primitive basis,
+        </p>
+
+        <p>
+        \[
+          T
+          =
+          \mathrm{diag}
+          \left(
+            \frac{\hbar^2 k_1^2}{2m},
+            \dots,
+            \frac{\hbar^2 k_N^2}{2m}
+          \right).
+        \]
+        </p>
+      </div>
+    </section>
+
+    <!-- IV. Projected position operator -->
+    <section class="section">
+      <div class="container">
+        <h2>IV. Projected position operator</h2>
+
+        <p>
+          Define the projector onto the truncated space
+        </p>
+
+        <p>
+        \[
+          \hat{P}
+          =
+          \sum_{n=1}^N
+          \vert \phi_n \rangle \langle \phi_n \vert,
+        \]
+        </p>
+
+        <p>
+          and the projected position operator
+        </p>
+
+        <p>
+        \[
+          \hat{X}
+          =
+          \hat{P}\,\hat{x}\,\hat{P}.
+        \]
+        </p>
+
+        <p>
+          Its matrix elements in the primitive basis are
+        </p>
+
+        <p>
+        \[
+        \begin{aligned}
+          X_{nm}
+          &=
+          \langle \phi_n \vert \hat{x} \vert \phi_m \rangle
+          =
+          \frac{1}{L}
+          \int_0^L
+          x\, e^{-i k_n x} e^{i k_m x}\,dx
+          \\
+          &=
+          \frac{1}{L}
+          \int_0^L
+          x\, e^{i (k_m - k_n)x}\,dx,
+        \end{aligned}
+          \tag{6}
+        \]
+        </p>
+
+        <p>
+          where we define $\Delta k_{nm} = k_m - k_n$.
+        </p>
+
+        <h3>a. Diagonal elements ($n = m$)</h3>
+
+        <p>
+        \[
+          X_{nn}
+          =
+          \frac{1}{L}
+          \int_0^L x\,dx
+          =
+          \frac{L}{2}.
+          \tag{7}
+        \]
+        </p>
+
+        <h3>b. Off-diagonal elements ($n \ne m$)</h3>
+
+        <p>
+        \[
+        \begin{aligned}
+          X_{nm}
+          &=
+          \frac{1}{L}
+          \int_0^L
+          x\, e^{i \Delta k_{nm} x}\,dx
+          \\
+          &=
+          \frac{1}{L}
+          \left[
+            e^{i \Delta k L}
+            \left(
+              \frac{L}{i\Delta k}
+              -
+              \frac{1}{(\Delta k)^2}
+            \right)
+            +
+            \frac{1}{(\Delta k)^2}
+          \right].
+        \end{aligned}
+          \tag{8–9}
+        \]
+        </p>
+
+        <p>
+          This defines the full Hermitian matrix $X$ in the primitive Fourier basis.
+        </p>
+      </div>
+    </section>
+
+    <!-- V. Diagonalization of X -->
+    <section class="section section-alt">
+      <div class="container">
+        <h2>V. Diagonalization of the projected position operator</h2>
+
+        <p>
+          Since $X$ is Hermitian, it has $N$ real eigenvalues and orthonormal eigenvectors:
+        </p>
+
+        <p>
+        \[
+          X U = U\,x_\mathrm{diag},
+          \tag{10}
+        \]
+        </p>
+
+        <p>
+          where $x_\mathrm{diag} = \mathrm{diag}(x_1,x_2,\dots,x_N)$ and the columns of $U$
+          are the normalized eigenvectors.
+        </p>
+
+        <p>
+          For the Fourier basis, the eigenvalues are known analytically:
+        </p>
+
+        <p>
+        \[
+          x_\alpha
+          =
+          \frac{L}{N}(\alpha - 1),
+          \qquad
+          \alpha = 1,\dots,N.
+          \tag{11}
+        \]
+        </p>
+
+        <p>
+          These $x_\alpha$ are equally spaced grid points on $[0,L)$.
+        </p>
+
+        <p>
+          The corresponding eigenvectors are given by the discrete Fourier transform (DFT):
+        </p>
+
+        <p>
+        \[
+          U_{n\alpha}
+          =
+          \frac{1}{\sqrt{N}}
+          \exp(i k_n x_\alpha)
+          =
+          \frac{1}{\sqrt{N}}
+          \exp\left[
+            i\frac{2\pi}{L}
+            \left(
+              n - \frac{N+1}{2}
+            \right)
+            x_\alpha
+          \right].
+          \tag{12}
+        \]
+        </p>
+      </div>
+    </section>
+
+    <!-- VI. DVR basis states -->
+    <section class="section">
+      <div class="container">
+        <h2>VI. Definition of DVR basis states</h2>
+
+        <p>
+          The DVR basis $\{\vert \chi_\alpha \rangle\}$ is defined by the unitary transformation
+        </p>
+
+        <p>
+        \[
+          \vert \chi_\alpha \rangle
+          =
+          \sum_{n=1}^N
+          \vert \phi_n \rangle U_{n\alpha},
+          \qquad
+          \alpha = 1,\dots,N.
+          \tag{13}
+        \]
+        </p>
+
+        <p>
+          Within the truncated space,
+        </p>
+
+        <p>
+        \[
+          \hat{X}
+          \vert \chi_\alpha \rangle
+          =
+          x_\alpha
+          \vert \chi_\alpha \rangle,
+        \]
+        </p>
+
+        <p>
+          so the DVR basis diagonalizes the projected position operator.
+        </p>
+      </div>
+    </section>
+
+    <!-- VII. Potential operator in DVR -->
+    <section class="section section-alt">
+      <div class="container">
+        <h2>VII. Potential operator in DVR (diagonal form)</h2>
+
+        <p>
+          The potential operator is a function of $\hat{x}$:
+        </p>
+
+        <p>
+        \[
+          \hat{V}
+          =
+          V(\hat{x}).
+        \]
+        </p>
+
+        <p>
+          In the DVR basis, its matrix elements are
+        </p>
+
+        <p>
+        \[
+          V^{(\mathrm{DVR})}_{\alpha\beta}
+          =
+          \langle \chi_\alpha \vert \hat{V} \vert \chi_\beta \rangle
+          \approx
+          V(x_\alpha)\,\delta_{\alpha\beta}.
+          \tag{14}
+        \]
+        </p>
+
+        <p>
+          Thus the potential energy is simply
+        </p>
+
+        <p>
+        \[
+          V^{(\mathrm{DVR})}
+          =
+          \mathrm{diag}\big(
+            V(x_1),\dots,V(x_N)
+          \big).
+          \tag{15}
+        \]
+        </p>
+
+        <p>
+          In other words, the potential is diagonal and obtained by sampling $V(x)$ at the DVR
+          grid points $\{x_\alpha\}$.
+        </p>
+      </div>
+    </section>
+
+    <!-- VIII. Kinetic operator in DVR -->
+    <section class="section">
+      <div class="container">
+        <h2>VIII. Kinetic energy operator in DVR</h2>
+
+        <p>
+          The kinetic operator in the DVR basis is obtained via the unitary transform
+        </p>
+
+        <p>
+        \[
+        \begin{aligned}
+          T^{(\mathrm{DVR})}_{\alpha\beta}
+          &=
+          \sum_{n,m}
+          U^\ast_{n\alpha}
+          T_{nm}
+          U_{m\beta}
+          =
+          (U^\dagger T U)_{\alpha\beta}.
+        \end{aligned}
+          \tag{16}
+        \]
+        </p>
+
+        <p>
+          Since $T$ is diagonal in the plane-wave basis,
+          $T_{nm} = \frac{\hbar^2 k_n^2}{2m}\delta_{nm}$, one can derive a closed-form expression
+          for the Fourier DVR kinetic operator:
+        </p>
+
+        <p>
+        \[
+          T^{(\mathrm{DVR})}_{\alpha\beta}
+          =
+          \begin{cases}
+            \displaystyle
+            \frac{\hbar^2}{2m}
+            \frac{\pi^2}{3L^2}
+            \big(N^2 - 1\big),
+            & \alpha = \beta, \\[1.2em]
+            \displaystyle
+            \frac{\hbar^2}{2m}
+            \frac{(-1)^{\alpha-\beta}}{L^2}
+            \frac{\pi^2}{\sin^2\!\left(\dfrac{\pi}{N}(\alpha-\beta)\right)},
+            & \alpha \neq \beta.
+          \end{cases}
+          \tag{17}
+        \]
+        </p>
+      </div>
+    </section>
+
+    <!-- IX. Full Hamiltonian in DVR -->
+    <section class="section section-alt">
+      <div class="container">
+        <h2>IX. Full Hamiltonian in the DVR basis</h2>
+
+        <p>
+          Combining kinetic and potential contributions, the DVR Hamiltonian matrix is
+        </p>
+
+        <p>
+        \[
+          H^{(\mathrm{DVR})}_{\alpha\beta}
+          =
+          T^{(\mathrm{DVR})}_{\alpha\beta}
+          +
+          V(x_\alpha)\,\delta_{\alpha\beta}.
+          \tag{18}
+        \]
+        </p>
+
+        <p>
+          The time-independent Schrödinger equation becomes the matrix eigenvalue problem
+        </p>
+
+        <p>
+        \[
+          \sum_{\beta=1}^N
+          H^{(\mathrm{DVR})}_{\alpha\beta}
+          C^{(k)}_\beta
+          =
+          E_k C^{(k)}_\alpha,
+          \tag{19}
+        \]
+        </p>
+
+        <p>
+          where the $E_k$ approximate the eigenenergies of the Hamiltonian, and
+        </p>
+
+        <p>
+        \[
+          \psi_k(x_\alpha)
+          \approx
+          C^{(k)}_\alpha
+          \tag{20}
+        \]
+        </p>
+
+        <p>
+          is the approximate wavefunction evaluated at the DVR grid points.
+        </p>
+      </div>
+    </section>
+
+    <!-- X. Summary -->
+    <section class="section">
+      <div class="container">
+        <h2>X. Summary of Fourier DVR procedure</h2>
+
+        <p>The Fourier DVR construction can be summarized as follows:</p>
+
+        <ol>
+          <li>
+            Choose the plane-wave basis $\phi_n(x)$ and compute the wavevectors $k_n$ for
+            $n=1,\dots,N$.
+          </li>
+          <li>
+            Construct the projected position matrix $X_{nm} = \langle \phi_n \vert \hat{x} \vert \phi_m \rangle$
+            and diagonalize it.
+          </li>
+          <li>
+            The eigenvalues give the DVR grid points
+            $x_\alpha = \dfrac{L}{N}(\alpha - 1)$.
+          </li>
+          <li>
+            Form the DVR kinetic energy matrix using the analytic formula in Eq. (17).
+          </li>
+          <li>
+            Form the DVR potential energy by evaluating $V(x_\alpha)$ at each grid point.
+          </li>
+          <li>
+            Diagonalize the resulting DVR Hamiltonian $H^{(\mathrm{DVR})}$ to obtain eigenvalues
+            $E_k$ and eigenvectors $C^{(k)}_\alpha$, which approximate the energies and
+            wavefunctions of the 1D Hamiltonian.
+          </li>
+        </ol>
+
+        <p>
+          This yields an efficient and systematically convergent numerical method for solving
+          one-dimensional quantum Hamiltonians with arbitrary potentials using a Fourier-based DVR.
+        </p>
+
+        <p style="margin-top:1.5rem;">
+          <a class="pub-title" href="../notes.html">&larr; Back to Notes</a>
+        </p>
+      </div>
+    </section>
+  </main>
+
+  <!-- Dark mode + utilities -->
+  <script src="../main.js?v=2"></script>
+</body>
+</html>
