@@ -4,7 +4,6 @@
   <meta charset="UTF-8" />
   <title>Variational polaron transform | Notes | Mohammad Elious Ali Mondal</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <!-- Adjust the version numbers if you changed them -->
   <link rel="stylesheet" href="../style.css?v=1" />
 
   <!-- MathJax config -->
@@ -12,7 +11,8 @@
     window.MathJax = {
       tex: {
         inlineMath: [['$', '$'], ['\\(', '\\)']],
-        displayMath: [['$$', '$$'], ['\\[', '\\]']]
+        displayMath: [['$$', '$$'], ['\\[', '\\]']],
+        tags: "none"
       }
     };
   </script>
@@ -39,827 +39,809 @@
   </header>
 
   <main>
-    <!-- Title / intro -->
+    <!-- Intro -->
     <section class="section">
       <div class="container">
         <h1>Variational polaron transform</h1>
         <p>
-          These notes contain my derivation of the variational polaron transformation for
-          a Frenkel exciton model with site-local harmonic baths. The LaTeX body from my
-          original <code>vPT_derivation.tex</code> file is rendered here using MathJax,
-          following the same conventions as in the other notes.
+          These notes outline a variational polaron transformation for the Frenkel exciton model
+          with site-local harmonic baths. The idea is to generalize the full polaron transform by
+          introducing variational displacement parameters and determine them via a variational
+          principle (e.g. Feynman–Bogoliubov). This allows one to interpolate between the bare
+          exciton picture and the fully dressed polaron picture in a controlled way.
         </p>
       </div>
     </section>
 
-    <!-- TeX body -->
+    <!-- 1. Frenkel exciton Hamiltonian -->
     <section class="section section-alt">
       <div class="container">
-        <div class="note-body">
+        <h2>1. Frenkel exciton Hamiltonian with local baths</h2>
 
-          <!--
-            ===== HOW TO USE YOUR TEX FILE HERE =====
+        <p>
+          We consider an $N$-site Frenkel exciton model, where each site $n$ is coupled to its own
+          local harmonic bath labeled by $(n,\nu)$:
+        </p>
 
-            1. Open vPT_derivation.tex.
-            2. Find the first line that looks like:
-                 \section{Variational Polaron transform}
-            3. COPY EVERYTHING *AFTER* that line (the actual derivation)
-               and paste it directly below this comment.
-            4. Optional: for nicer headings, you can replace lines like
-                 \subsection{Something}
-               with:
-                 <h3>Something</h3>
+        <p>
+        \[
+          \hat{H}
+          =
+          \hat{H}_\mathrm{s}
+          + \hat{H}_\mathrm{b}
+          + \hat{H}_\mathrm{sb}.
+        \]
+        </p>
 
-            MathJax will take care of all the equations
-            (\begin{align}, \begin{equation}, etc.).
-          -->
+        <p>The system Hamiltonian is</p>
 
-          <!-- BEGIN VPT_TEX_BODY -->
-          % Paste the body of vPT_derivation.tex here, e.g.:
+        <p>
+        \[
+          \hat{H}_\mathrm{s}
+          =
+          \sum_n \varepsilon_n \lvert n\rangle\langle n\rvert
+          +
+          \sum_{n}\sum_{m\neq n}
+          \Delta_{nm} \left(
+            \lvert n \rangle \langle m \rvert
+            + \lvert m \rangle \langle n \rvert
+          \right),
+        \]
+        </p>
 
-          % \subsection{Partial polaron transform}
-          % Lets define the polaron transform operator as,
-          % \begin{equation}
-          %   \hat{S} = \sum_{k,\mu} i f_{k,\mu} \hat{P}_{k,\mu} |k\rangle\langle k|
-          % \end{equation}
-          % ...
-          Lets take the general Frenkel exciton model
-\begin{align}\label{H_Frenkel_re}
-    \hat{H} 
-    = \sum_{n} &\left( \varepsilon_n + \sum_\nu\frac{g_{n,\nu}^2}{2\omega_{n,\nu}^2}\right)|n\rangle\langle n| 
-    + \sum_{n}\sum_{m> n}\Delta_{nm} \left( |n\rangle\langle m| + |m\rangle\langle n| \right) \nonumber \\ 
-    & + \underbrace{\sum_{n, \nu} \frac{1}{2} \left( \hat{P}_{n, \nu}^2 + \omega_{n, \nu}^2 \hat{R}_{n, \nu}^2 \right)}_{\hat{H}_\mathrm{b}} \underbrace{-\sum_{n, \nu}g_{n, \nu} \hat{R}_{n, \nu} |n\rangle \langle n|}_{\hat{H}_\mathrm{sb}}
-\end{align}
+        <p>
+          where $\lvert n\rangle$ denotes the singly excited state localized on site $n$, $\varepsilon_n$
+          are site energies, and $\Delta_{nm}$ are electronic couplings.
+        </p>
 
-\subsection{Partial Polaron Transform}
-Lets define the Polaron transform operator as,
-\begin{equation}
-    \hat{S} = \sum_{k,\mu} i f_{k,\mu} \hat{P}_{k,\mu} |k\rangle\langle k|
-\end{equation}
-The diagonal part remains untouched and we have
-\begin{equation}
-    \boxed{e^{\hat{S}} |n\rangle\langle n| e^{-\hat{S}} = |n\rangle\langle n|}
-\end{equation}
-The off-diagonal part becomes,
-\begin{equation}
-    e^{\hat{S}} |n\rangle\langle m| e^{-\hat{S}} 
-    = |n\rangle\langle m|
-    + \left[ \hat{S}, |n\rangle\langle m|\right] 
-    + \frac{1}{2!} \left[ \hat{S}, |n\rangle\langle m|\right]_2 
-    + ...
-\end{equation}
-The first commutator becomes,
-\begin{align}
-    \left[ \hat{S}, |n\rangle\langle m| \right] &= \sum_{k,\mu} i f_{k,\mu} \left[ \hat{P}_{k,\mu} |k\rangle\langle k|, |n\rangle\langle m| \right]
-    = \sum_{k,\mu} i f_{k,\mu} \hat{P}_{k,\mu} 
-      \left[ |k\rangle\langle k|, |n\rangle\langle m| \right] \nonumber \\
-    &= \sum_{k,\mu} i f_{k,\mu} \hat{P}_{k,\mu} \left( |k\rangle\langle k|n\rangle\langle m| 
-    - |n\rangle\langle m|k\rangle\langle k| \right) 
-    = \sum_{k,\mu} i f_{k,\mu} \hat{P}_{k,\mu} \Bigl( |k\rangle \delta_{kn} \langle m| 
-    - |n\rangle \delta_{mk} \langle k| \Bigl) \nonumber \\
-    &= \sum_{\mu} i f_{n,\mu} \hat{P}_{n,\mu} |n\rangle\langle m| 
-    - \sum_{\mu} i f_{m,\mu} \hat{P}_{m,\mu} |n\rangle\langle m| 
-    = \sum_{\mu} i \left( f_{n,\mu} \hat{P}_{n,\mu} - f_{m,\mu} \hat{P}_{m,\mu} \right) |n\rangle\langle m| \nonumber \\
-    &= i \left( \hat{X}_n - \hat{X}_m \right) |n\rangle\langle m|
-    = i \hat{X}_{nm} |n\rangle\langle m| 
-\end{align}
-where we defined $\hat{X}_n = \sum_{\mu} f_{n,\mu} \hat{P}_{n,\mu}$ and $\hat{X}_{nm} = \hat{X}_n - \hat{X}_m$. The second commutator can be computed as following,
-\begin{align}
-    \left[ \hat{S}, |n\rangle\langle m| \right]_2 &= i\sum_{k,\mu} f_{k,\mu} \left[ \hat{P}_{k,\mu} |k\rangle\langle k| , i\hat{X}_{nm} |n\rangle\langle m| \right]
-    = i^2\sum_{k,\mu} f_{k,\mu} \left( \left[ \hat{P}_{k,\mu} |k\rangle\langle k| , \hat{X}_{nm} \right] |n\rangle\langle m| 
-    + \hat{X}_{nm} \left[ \hat{P}_{k,\mu} |k\rangle\langle k| , |n\rangle\langle m| \right]  \right) \nonumber \\
-    &= i^2\sum_{k,\mu} f_{k,\mu} \left( \left[ \hat{P}_{k,\mu} , \hat{X}_{nm} \right] |k\rangle\langle k|n\rangle\langle m|
-    + \hat{X}_{nm} \hat{P}_{k,\mu} \left[ |k\rangle\langle k|, |n\rangle\langle m| \right] \right) 
-    = i^2\sum_{k,\mu} f_{k,\mu} \hat{X}_{nm} \hat{P}_{k,\mu} \Bigl[ |k\rangle\langle k|, |n\rangle\langle m| \Bigl] \nonumber \\
-    &= i^2\sum_{k,\mu} f_{k,\mu} \hat{X}_{nm} \hat{P}_{k,\mu} \Bigl( |k\rangle\langle k|n\rangle\langle m| - |n\rangle\langle m|k\rangle\langle k| \Bigl)
-    = i^2\sum_{k,\mu} f_{k,\mu} \hat{X}_{nm} \hat{P}_{k,\mu} \Bigl( |k\rangle \delta_{kn} \langle m| - |n\rangle \delta_{mk} \langle k| \Bigl) \nonumber \\
-    &= i^2\sum_{\mu} f_{n,\mu} \hat{X}_{nm} \hat{P}_{n,\mu} |n\rangle \langle m|
-    + \sum_{\mu} f_{m,\mu} \hat{X}_{nm} \hat{P}_{m,\mu} |n\rangle \langle m|
-    = i^2\sum_{\mu} f_{n,\mu} \hat{X}_{nm} \left( \hat{P}_{n,\mu} - \hat{P}_{m,\mu} \right) |n\rangle \langle m| \nonumber \\
-    &= i^2\hat{X}_{nm} \hat{X}_{nm} |n\rangle \langle m| 
-    = i^2 \hat{X}_{nm}^2 |n\rangle \langle m| 
-    = i^2 \hat{X}_{nm}^2 |n\rangle \langle m|
-\end{align}
-Following the pattern we can write
-\begin{equation}\label{Hnm_PT}
-    \boxed{e^{\hat{S}} |n\rangle\langle m| e^{-\hat{S}} = \sum_{a=0}^{\infty} \frac{(i\hat{X}_{nm})^a}{a!} |n\rangle\langle m| = e^{i\hat{X}_{nm}} |n\rangle\langle m|}
-\end{equation}
-For the bath operators the momentum operator commutes with any othe momentum operator, so it remains invariant under the polaron transform. Thus,
-\begin{equation}
-    \boxed{ e^{\hat{S}} \hat{P}_{n,\nu} e^{-\hat{S}} = \hat{P}_{n,\nu} }
-\end{equation}
-For the bath position operator,
-we have
-\begin{equation}
-    e^{\hat{S}} \hat{R}_{n,\nu} e^{-\hat{S}} 
-    = \hat{R}_{n,\nu}
-    + \left[ \hat{S}, \hat{R}_{n,\nu} \right] 
-    + \frac{1}{2!} \left[ \hat{S}, \hat{R}_{n,\nu} \right]_2 
-    + ...
-\end{equation}
-The first commutator can be computed as,
-\begin{align}
-    \left[ \hat{S}, \hat{R}_{n,\nu} \right] 
-    &= \sum_{k, \mu} i f_{k,\mu} \left[ \hat{P}_{k,\mu} |n\rangle\langle n|, \hat{R}_{n,\nu} \right] 
-    = \sum_{k, \mu} i f_{k,\mu} \left[ \hat{P}_{k,\mu}, \hat{R}_{n,\nu} \right] |n\rangle\langle n| 
-    = \sum_{k, \mu} i f_{k,\mu} (-i)\delta_{kn}\delta_{\mu\nu} |n\rangle\langle n| \nonumber \\
-    &= f_{n,\nu} |n\rangle\langle n|
-\end{align}
-Since it no longer has any additional bath dependent term and $[\hat{S}, |n\rangle\langle n|] = 0$, all the higher order commutators vanish and we get,
-\begin{equation}
-    \boxed{e^{\hat{S}} \hat{R}_{n,\nu} e^{-\hat{S}} = \hat{R}_{n,\nu} + f_{n,\nu} |n\rangle\langle n|} 
-\end{equation}
-The bath hamiltonian can now be transformed as 
-\begin{align}
-    e^{\hat{S}} \hat{H}_{\mathrm{b}} e^{-\hat{S}} 
-    &= \frac{1}{2} \sum_{n, \nu} e^{\hat{S}} \left( \hat{P}_{n, \nu}^2 + \omega_{n, \nu}^2 \hat{R}_{n, \nu}^2 \right) e^{-\hat{S}}
-    = \frac{1}{2} \sum_{n, \nu} \left\{ e^{\hat{S}} \left( \hat{P}_{n, \nu}^2 \right) e^{-\hat{S}} 
-    + \omega_{n, \nu}^2 e^{\hat{S}} \left( \hat{R}_{n, \nu}^2 \right) e^{-\hat{S}} \right\} \nonumber \\
-    &= \frac{1}{2} \sum_{n, \nu} \left\{ \hat{P}_{n, \nu}^2 
-    + \omega_{n, \nu}^2 \left( e^{\hat{S}} \hat{R}_{n, \nu} e^{-\hat{S}} \right)  \left( e^{\hat{S}} \hat{R}_{n, \nu} e^{-\hat{S}} \right)  \right\} \nonumber \\
-    &= \frac{1}{2} \sum_{n, \nu} \left\{ \hat{P}_{n, \nu}^2 
-    + \omega_{n, \nu}^2 \left( \hat{R}_{n,\nu} + f_{n,\nu} |n\rangle\langle n| \right)  \left( \hat{R}_{n,\nu} + f_{n,\nu} |n\rangle\langle n| \right)  \right\} \nonumber \\
-    &= \frac{1}{2} \sum_{n, \nu} \left\{ \hat{P}_{n, \nu}^2 
-    + \omega_{n, \nu}^2 \left( \hat{R}_{n,\nu}^2 + 2f_{n,\nu}\hat{R}_{n,\nu} |n\rangle\langle n| + f_{n,\nu}^2 |n\rangle\langle n| \right) \right\} \nonumber \\
-    &= \frac{1}{2} \sum_{n, \nu} \left( \hat{P}_{n, \nu}^2 
-    + \omega_{n, \nu}^2 \hat{R}_{n,\nu}^2 \right)
-    + \sum_{n, \nu} f_{n,\nu} \omega_{n, \nu}^2 \hat{R}_{n,\nu} |n\rangle\langle n|
-    + \frac{1}{2} \sum_{n, \nu} \omega_{n, \nu}^2 f_{n,\nu}^2 |n\rangle\langle n| \nonumber \\
-    &= \hat{H}_{\mathrm{b}} 
-    + \sum_{n, \nu} f_{n,\nu} \omega_{n, \nu}^2 \hat{R}_{n,\nu} |n\rangle\langle n|
-    + \frac{1}{2} \sum_{n, \nu} \omega_{n, \nu}^2 f_{n,\nu}^2 |n\rangle\langle n|
-\end{align}
+        <p>The bath is a collection of independent harmonic oscillators,</p>
 
-The system bath Hamiltonian gets transformed as
-\begin{align}
-    e^{\hat{S}} \hat{H}_{\mathrm{sb}} e^{-\hat{S}} 
-    &= -\sum_{n, \nu}g_{n, \nu} \left( e^{\hat{S}} \hat{R}_{n, \nu} e^{-\hat{S}} \right) |n\rangle \langle n| 
-    = -\sum_{n, \nu}g_{n, \nu} \left(  \hat{R}_{n, \nu} + f_{n,\nu} |n\rangle\langle n| \right) |n\rangle \langle n| \nonumber \\
-    &= -\sum_{n, \nu} g_{n, \nu} \hat{R}_{n, \nu} |n\rangle\langle n| 
-    - \sum_{n, \nu} g_{n, \nu} f_{n,\nu} |n\rangle\langle n|
-\end{align}
+        <p>
+        \[
+          \hat{H}_\mathrm{b}
+          =
+          \sum_{n,\nu}
+          \frac{1}{2}
+          \left(
+            \hat{P}_{n,\nu}^2
+            + \omega_{n,\nu}^2 \hat{R}_{n,\nu}^2
+          \right),
+        \]
+        </p>
 
-Combining both we get,
-\begin{align}
-    e^{\hat{S}} \left( \hat{H}_{\mathrm{b}} + \hat{H}_{\mathrm{sb}} \right) e^{-\hat{S}} &= \hat{H}_{\mathrm{b}} 
-    + \sum_{n, \nu} f_{n,\nu} \omega_{n, \nu}^2 \hat{R}_{n,\nu} |n\rangle\langle n|
-    + \frac{1}{2} \sum_{n, \nu} \omega_{n, \nu}^2 f_{n,\nu}^2 |n\rangle\langle n|
-    -\sum_{n, \nu} g_{n, \nu} \hat{R}_{n, \nu} |n\rangle\langle n| 
-    - \sum_{n, \nu} g_{n, \nu} f_{n,\nu} |n\rangle\langle n| \nonumber \\
-    &= \hat{H}_{\mathrm{b}} 
-    + \sum_{n, \nu} \left( f_{n,\nu} \omega_{n, \nu}^2 - g_{n, \nu} \right) \hat{R}_{n,\nu} |n\rangle\langle n|
-    + \sum_{n, \nu} \left( \frac{\omega_{n, \nu}^2 f_{n,\nu}^2}{2} - g_{n, \nu} f_{n,\nu} \right) |n\rangle\langle n|
-\end{align}
-Performing a completion of square for the last term we obtain,
-\begin{align}
-    &\hat{H}_{\mathrm{b}} 
-    + \sum_{n, \nu} \Bigl( f_{n,\nu} \omega_{n, \nu}^2 - g_{n, \nu} \Bigl) \hat{R}_{n,\nu} |n\rangle\langle n|
-    + \sum_{n, \nu} \frac{\omega_{n, \nu}^2}{2}\left(  f_{n,\nu}^2 - 2 \frac{g_{n, \nu}}{\omega_{n, \nu}^2} f_{n,\nu} + \frac{g_{n, \nu}^2}{\omega_{n, \nu}^4} - \frac{g_{n, \nu}^2}{\omega_{n, \nu}^4} \right) |n\rangle\langle n| \nonumber \\
-    &= \hat{H}_{\mathrm{b}} 
-    + \sum_{n, \nu} \Bigl( f_{n,\nu} \omega_{n, \nu}^2 - g_{n, \nu} \Bigl) \hat{R}_{n,\nu} |n\rangle\langle n|
-    + \sum_{n, \nu} \frac{\omega_{n, \nu}^2}{2}\left(  f_{n,\nu} - \frac{g_{n, \nu}}{\omega_{n, \nu}^2} \right)^2 |n\rangle\langle n| 
-    - \sum_{n, \nu} \frac{g_{n, \nu}^2}{2 \omega_{n, \nu}^2} |n\rangle\langle n|
-\end{align}
-Adding the above to the diagonal part of the system Hamiltonian we see that the last term exactly cancels the reorganization energy of the initial system Hamiltonian. The polaron transform of the diagonal part of the Hamiltonian becomes, 
-\begin{align}
-    e^{\hat{S}} \hat{H}_{\mathrm{d}} e^{-\hat{S}} 
-    &= \sum_{n} \left( \varepsilon_n + \sum_\nu\frac{g_{n,\nu}^2}{2\omega_{n,\nu}^2}\right)|n\rangle\langle n|
-    + \sum_{n, \nu} \left\{ \frac{\omega_{n, \nu}^2}{2}\left(  f_{n,\nu} - \frac{g_{n, \nu}}{\omega_{n, \nu}^2} \right)^2 - \frac{g_{n, \nu}^2}{2 \omega_{n, \nu}^2} \right\} |n\rangle\langle n| \nonumber \\
-    &\hspace{2cm} + \hat{H}_{\mathrm{b}} 
-    + \sum_{n, \nu} \Bigl( f_{n,\nu} \omega_{n, \nu}^2 - g_{n, \nu} \Bigl) \hat{R}_{n,\nu} |n\rangle\langle n| \nonumber \\
-    &= \sum_{n} \left\{ \varepsilon_n + \sum_\nu \frac{\omega_{n, \nu}^2}{2}\left(  f_{n,\nu} - \frac{g_{n, \nu}}{\omega_{n, \nu}^2} \right)^2 \right\}|n\rangle\langle n|
-    + \sum_{n, \nu} \Bigl( f_{n,\nu} \omega_{n, \nu}^2 - g_{n, \nu} \Bigl) \hat{R}_{n,\nu} |n\rangle\langle n|
-    + \hat{H}_{\mathrm{b}}
-\end{align}
-The off-diagonal part of the system Hamiltonian gets transformed as,
-\begin{align}
-    e^{\hat{S}} \hat{H}_{\mathrm{off}} e^{-\hat{S}} 
-    &= \sum_{n}\sum_{m > n}\Delta_{n,m} e^{\hat{S}} \Bigl( |n\rangle\langle m| + |m\rangle\langle n| \Bigl) e^{-\hat{S}} 
-    = \sum_{n}\sum_{m > n}\Delta_{n,m}  \Bigl( e^{i\hat{X}_{nm}}|n\rangle\langle m| + e^{-i\hat{X}_{nm}}|m\rangle\langle n| \Bigl)
-\end{align}
-Thus the polaron transform of the Frenkel-exciton Hamiltonian becomes,
-\begin{align}\label{pPT_HFrenkel}
-    \hat{H}_{\mathrm{PT}} = e^{\hat{S}} \hat{H} e^{-\hat{S}} 
-    &= \sum_{n} \left\{ \varepsilon_n + \sum_\nu \frac{\omega_{n, \nu}^2}{2}\left(  f_{n,\nu} - \frac{g_{n, \nu}}{\omega_{n, \nu}^2} \right)^2 \right\}|n\rangle\langle n|
-    + \sum_{n, \nu} \Bigl( f_{n,\nu} \omega_{n, \nu}^2 - g_{n, \nu} \Bigl) \hat{R}_{n,\nu} |n\rangle\langle n| \nonumber \\
-    & \sum_{n}\sum_{m > n}\Delta_{n,m}  \Bigl( e^{i\hat{X}_{nm}}|n\rangle\langle m| + e^{-i\hat{X}_{nm}}|m\rangle\langle n| \Bigl) 
-    + \sum_{n, \nu} \frac{1}{2} \left( \hat{P}_{n, \nu}^2 + \omega_{n, \nu}^2 \hat{R}_{n, \nu}^2 \right)
-\end{align}
+        <p>
+          and the system–bath coupling is taken to be diagonal in the site basis:
+        </p>
 
-\subsection{Gibbs-Bogoliubov-Feynman free energy}
-We divide the above Hamiltonian into a non-interacting ($\hat{H}_{0}$) and interacting Hamiltonian ($\hat{H}_{I}$), $\hat{H}_{\mathrm{PT}} = \hat{H}_{0} + \hat{H}_{I}$,
-\begin{equation}
-    \hat{H}_{0} 
-    = \sum_{n} \left\{ \varepsilon_n + \sum_\nu \frac{\omega_{n, \nu}^2}{2}\left(  f_{n,\nu} - \frac{g_{n, \nu}}{\omega_{n, \nu}^2} \right)^2 \right\}|n\rangle\langle n|
-    + \sum_{n}\sum_{m > n} \kappa_{n,m} \Delta_{n,m}  \Bigl( |n\rangle\langle m| + |m\rangle\langle n| \Bigl)
-    + \hat{H}_{\mathrm{b}}
-\end{equation}
-and 
-\begin{align}
-    \hat{H}_{I}
-    &= \sum_{n, \nu} \Bigl( f_{n,\nu} \omega_{n, \nu}^2 - g_{n, \nu} \Bigl) \hat{R}_{n,\nu} |n\rangle\langle n| 
-    + \sum_{n}\sum_{m > n}\Delta_{n,m}  \Bigl( e^{i\hat{X}_{nm}}|n\rangle\langle m| + e^{-i\hat{X}_{nm}}|m\rangle\langle n| \Bigl) \nonumber \\
-    &\hspace{3cm}- \sum_{n}\sum_{m > n} \kappa_{n,m} \Delta_{n,m}  \Bigl( |n\rangle\langle m| + |m\rangle\langle n| \Bigl) 
-\end{align}
-where we defined a thermal averaged renormalisation factor for the inter-site off-diagonal cross-coupling as,
-\begin{equation}\label{vPT_renormFactor}
-    \kappa_{n,m} 
-    = \mathrm{Tr} \left[ e^{i\hat{X}_{nm}} e^{-\beta \hat{H}_{\mathrm{b}}} \right] 
-    = \mathrm{Tr} \left[ e^{-i\hat{X}_{nm}} e^{-\beta \hat{H}_{\mathrm{b}}} \right]
-    = \langle e^{\pm i\hat{X}_{nm}} \rangle_{\hat{H}_{\mathrm{b}}}
-\end{equation}
-By construction we not have 
-\begin{equation}\label{Avg_HI}
-    \langle \hat{H}_{I} \rangle_{\hat{H}_{\mathrm{b}}}
-    = \mathrm{Tr} \left[ \hat{H}_{I} e^{-\beta \hat{H}_{\mathrm{b}}} \right]
-    = 0
-\end{equation}
-The Gibbs-Bogoliubov-Feynman upper bound on the free energy is described by,
-\begin{equation}
-    A_B 
-    = -\frac{1}{\beta} \ln \left( \mathrm{Tr} \left\{ e^{-\beta \hat{H}_0} \right\} \right)
-    + \langle \hat{H}_{I} \rangle_{\hat{H}_{\mathrm{b}}}
-    %+ \mathcal{O} \left( \langle \hat{H}_{I}^2 \rangle_{\hat{H}_{\mathrm{b}}} \right)
-\end{equation}
-Using Eq.~\ref{Avg_HI}, this becomes,
-\begin{equation}\label{GBF_FreeEnergy}
-    A_B 
-    = -\frac{1}{\beta} \ln \left( \mathrm{Tr} \left\{ e^{-\beta \hat{H}_0} \right\} \right)
-\end{equation}
-Let us evaluate the thermal average of the renormalization factor for a simple Frenkel-biexciton model. Since the bath Hamiltonian is separable for different sites, we can write $\hat{H}_{\mathrm{b}} =  \hat{H}_{1,\mathrm{b}} \otimes \hat{\mathds{1}}_2 + \hat{\mathds{1}}_1 \otimes \hat{H}_{2,\mathrm{b}}$ where $\hat{H}_{n,\mathrm{b}}$ is the bath Hamiltonian for $n^{\mathrm{th}}$ excitonic site.
-\begin{align}
-    \kappa_{1,2} 
-    &= \mathrm{Tr} \left\{ \exp \left( i\left[ \hat{X}_{1} \otimes \hat{\mathds{1}}_2 - \hat{\mathds{1}}_1 \otimes \hat{X}_{2} \right] \right) \exp \left( -\beta \left[ \hat{H}_{1,\mathrm{b}} \otimes \hat{\mathds{1}}_2 + \hat{\mathds{1}}_1 \otimes \hat{H}_{2,\mathrm{b}} \right] \right) \right\} \nonumber \\
-    %
-    &= \mathrm{Tr} \left\{ \exp \left( \left[ i \hat{X}_{1} -\beta \hat{H}_{1,\mathrm{b}} \right] \otimes \hat{\mathds{1}}_2 \right) 
-    \exp \left( \hat{\mathds{1}}_{1} \otimes \left[-i\hat{X}_{2} -\beta \hat{H}_{2,\mathrm{b}}\right] \right) \right\} \nonumber \\
-\end{align}
-Now lets try to evaluate the exponential containing a tensor product between an operator in one subspace with an identity in another subspace,
-\begin{align}
-    \exp \left( \hat{A}_1 \otimes \hat{\mathds{1}}_2 \right)
-    &= \hat{\mathds{1}}_1 \otimes \hat{\mathds{1}}_2
-    + \hat{A}_1 \otimes \hat{\mathds{1}}_2
-    + \frac{1}{2!} \left( \hat{A}_1 \otimes \hat{\mathds{1}}_2 \right)^2 + ... 
-    = \hat{\mathds{1}}_1 \otimes \hat{\mathds{1}}_2
-    + \hat{A}_1 \otimes \hat{\mathds{1}}_2
-    + \frac{1}{2!} \hat{A}_1^2 \otimes \hat{\mathds{1}}_2 + ... \nonumber \\
-    %
-    &= \left( \hat{\mathds{1}}_1 + \hat{A}_1 + \frac{1}{2!} \hat{A}_1^2 + ... \right) \otimes \hat{\mathds{1}}_2 
-    = e^{\hat{A}} \otimes \hat{\mathds{1}}_2
-\end{align}
-Thus we can now write,
-\begin{align}
-    \kappa_{1,2} 
-    &= \mathrm{Tr} \left\{ \left( \exp \left( \left[ i \hat{X}_{1} -\beta \hat{H}_{1,\mathrm{b}} \right] \right) \otimes \hat{\mathds{1}}_2 \right) \cdot 
-    \left(\hat{\mathds{1}}_{1} \otimes \exp \left( \left[-i\hat{X}_{2} -\beta \hat{H}_{2,\mathrm{b}}\right] \right) \right) \right\} 
-\end{align}
-Using the identity $\left(\hat{A}_1 \otimes \hat{\mathds{1}}_2 \right) \cdot \left( \hat{\mathds{1}}_1 \otimes \hat{B}_2 \right) = \hat{A} \otimes \hat{B}$, we get
-\begin{align}
-    \kappa_{1,2}&= \mathrm{Tr} \left\{ \exp \left( \left[ i \hat{X}_{1} -\beta \hat{H}_{1,\mathrm{b}} \right] \right) \otimes  \exp \left( \left[-i\hat{X}_{2} -\beta \hat{H}_{2,\mathrm{b}}\right] \right) \right\} \nonumber \\
-    %
-    &= \mathrm{Tr} \left\{ \exp \left( i \hat{X}_{1} \right) \exp \left(-\beta \hat{H}_{1,\mathrm{b}} \right) \right\} \cdot
-    \mathrm{Tr}\left\{ \exp \left(-i\hat{X}_{2} \right) \left(-\beta \hat{H}_{2,\mathrm{b}} \right) \right\}
-\end{align}
-where in the last line we used the property $\mathrm{Tr}(\hat{A} \otimes \hat{B}) = \mathrm{Tr}(\hat{A}) \cdot \mathrm{Tr}(\hat{B})$. Using Eq.~\ref{vPT_renormFactor}, we thus get 
-\begin{equation}
-    \boxed{\kappa_{1,2} = \kappa_1 \cdot \kappa_2}
-\end{equation}
-where we define $\kappa_n = \mathrm{Tr}(e^{\pm i\hat{X}_n}e^{-\beta \hat{H}_{n,b}})$ as the renormalization contribution from the $n^{\mathrm{th}}$ exciton.
+        <p>
+        \[
+          \hat{H}_\mathrm{sb}
+          =
+          - \sum_{n,\nu}
+          g_{n,\nu}\,
+          \hat{R}_{n,\nu}\,
+          \lvert n\rangle \langle n\rvert.
+        \]
+        </p>
 
-\subsection{Renormalization of inter-site coupling}
-Let us try to analyze the bath momentum dependent term in the polaron transformed inter-site coupling.
-\begin{align}
-    \exp \left( i\hat{X}_1 \right) = \exp \left( i\sum_\nu f_{1,\nu} \hat{P}_{1, \nu} \right)
-    = \prod_{\nu} \exp \left( i f_{1,\nu} \hat{P}_{1,\nu} \right)
-    = \prod_{\nu} \hat{D}_{\nu} \Bigl( i f_{1,\nu} \Bigl)
-\end{align}
-where $\hat{D}_{\nu}$ is the displacement operator for the $\nu_{\mathrm{th}}$ mode, generating a position shift of $f_{1,\nu}$. To compute $\kappa_1$ with this, let us first try to evaluate the matrix elements of the density matrix of a thermal bath in the position representation.
-\begin{align}
-    \langle x| \hat{\rho}_{\mathrm{th}} | x' \rangle 
-    &= \frac{1}{Z} \langle x| e^{-\beta \hat{H}_{\mathrm{B}}} | x' \rangle
-    = \frac{1}{Z} \sum_{nm} \langle x|n \rangle \langle n| e^{-\beta \hat{H}_{\mathrm{B}}} | m\rangle\langle m|x' \rangle
-    = \frac{1}{Z} \sum_{nm} \langle x|n \rangle e^{-\beta \omega \left( n + \frac{1}{2} \right)} \langle n|m \rangle \langle m|x' \rangle \nonumber \\
-    &= \frac{1}{Z} \sum_{nm} \langle x|n \rangle e^{-\beta \omega \left( n + \frac{1}{2} \right)} \delta_{nm} \langle m|x' \rangle
-    = \frac{1}{Z} \sum_{n} \langle x|n \rangle e^{-\beta \omega \left( n + \frac{1}{2} \right)} \langle n|x' \rangle
-    = \frac{1}{Z} \sum_{n} e^{-\beta \omega \left( n + \frac{1}{2} \right)} \psi_{n}(x) \psi_{n}^*(x')  
-\end{align}
-Now we know that
-\begin{equation}
-    \psi_n(x) = \left( \frac{\omega}{\pi} \right)^\frac{1}{4} \left( \frac{1}{2^n n!} \right)^{\frac{1}{2}} e^{-\omega x^2 / 2} H_{n}\left(\sqrt{\omega} x\right)
-\end{equation}
-We can thus write,
-\begin{align}
-    \langle x| \hat{\rho}_{\mathrm{th}} | x' \rangle 
-    &= \frac{e^{-\beta\omega/2}}{Z} \sum_{n=0}^{\infty} 
-    \frac{(e^{-\beta \omega})^n}{2^n n!} \left(\frac{\omega}{\pi}\right)^{\frac{1}{2}} 
-    e^{-\frac{\omega}{2} \left( x^2 + x'^2 \right)} 
-    H_{n}\left( \sqrt{\omega}x \right) H_{n}\left( \sqrt{\omega}x' \right) \nonumber \\
-    %
-    &= \frac{e^{-\beta\omega/2}}{Z} \left(\frac{\omega}{\pi}\right)^{\frac{1}{2}}
-    e^{-\frac{\omega}{2} \left( x^2 + x'^2 \right)}
-    \sum_{n=0}^{\infty} 
-    \left( \frac{e^{-\beta \omega}}{2} \right)^n
-    \frac{1}{n!}
-    H_{n}\left( \sqrt{\omega}x \right) H_{n}\left( \sqrt{\omega}x' \right)
-\end{align}
-Now, according to Mehler's identity,
-\begin{equation}
-    \sum_{n=0}^{\infty} \left( \frac{\rho}{2} \right)^2 \frac{1}{n!} H_{n}(a) H_{n}(b)
-    = \frac{1}{\sqrt{1-\rho^2}}
-    \exp \left\{ \frac{-\rho^2 \left( a^2 + b^2 \right) + 2 \rho a b}{1-\rho^2} \right\}
-\end{equation}
-Identifying $\rho = e^{-\beta\omega}$, $a = \sqrt{\omega} x$ and $b = \sqrt{\omega} x'$, we get,
-\begin{align}
-    \langle x| \hat{\rho}_{\mathrm{th}} | x' \rangle 
-    &= \frac{e^{-\beta\omega/2}}{Z} \left(\frac{\omega}{\pi}\right)^{\frac{1}{2}} 
-    \frac{1}{\sqrt{1-e^{-2\beta\omega}}}
-    \exp \left\{ -\frac{\omega}{2} \left( x^2 + x'^2 \right) + 
-    \frac{-e^{-2\beta\omega} \omega \left( x^2 + x'^2 \right) + 2e^{-\beta\omega}\omega x x'}{1-e^{-2\beta\omega}} \right\} \nonumber \\
-    %
-    &= A \exp \left\{ -\omega \left( x^2 + x'^2 \right) \left( \frac{1}{2}+ 
-    \frac{e^{-2\beta\omega}}{1-e^{-2\beta\omega}}\right)
-    + \frac{2e^{-\beta\omega}}{1-e^{-2\beta\omega}}\omega x x'\right\} \nonumber \\
-    %
-    &= A \exp \left\{ - \frac{\omega}{2} \left( x^2 + x'^2 \right) \left(  
-    \frac{1 - e^{-2\beta\omega} + 2e^{-2\beta\omega}}{1-e^{-2\beta\omega}}\right)
-    + \frac{2e^{-\beta\omega}}{1-e^{-2\beta\omega}}\omega x x'\right\} \nonumber \\
-    %
-    &= A \exp \left\{ - \frac{\omega}{2} \left( x^2 + x'^2 \right) \left(  
-    \frac{1 + e^{-2\beta\omega} }{1-e^{-2\beta\omega}}\right)
-    + \frac{2e^{-\beta\omega}}{1-e^{-2\beta\omega}}\omega x x'\right\} \nonumber \\
-    %
-    &= A \exp \left( E \right)
-\end{align}
-where we just renamed the complicated prefactor and the exponential terms as A and E repectively as we simplify them below. The prefactor can be simplified as follows,
-\begin{align}
-    A &= \left(\frac{\omega}{\pi}\right)^{\frac{1}{2}} 
-    \frac{e^{-\beta\omega/2}}{Z}  
-    \frac{1}{\sqrt{1-e^{-2\beta\omega}}}
-    = \left(\frac{\omega}{\pi}\right)^{\frac{1}{2}} 
-    e^{-\beta\omega/2} \cdot \frac{1-e^{-\beta\omega}}{e^{-\beta\omega/2}}
-    \frac{1}{\sqrt{1-e^{-2\beta\omega}}} \nonumber \\
-    % 
-    &= \left(\frac{\omega}{\pi}\right)^{\frac{1}{2}}
-    e^{-\beta\omega/2} \left( e^{\beta\omega/2} - e^{-\beta\omega/2} \right) \cdot 
-    \frac{1}{e^{-\beta\omega/2} \left( e^{\beta\omega} - e^{-\beta\omega} \right)^{1/2}} \nonumber \\
-    %
-    &= \left(\frac{\omega}{\pi}\right)^{\frac{1}{2}} 
-    2\sinh \left( \frac{\beta\omega}{2} \right)
-    \cdot \frac{1}{\sqrt{2 \sinh \left( \beta\omega\right)}} \nonumber \\
-    &= \left(\frac{\omega}{\pi}\right)^{\frac{1}{2}} 
-    2\sinh \left( \frac{\beta\omega}{2} \right)
-    \cdot \frac{1}{\sqrt{4 \sinh \left( \beta\omega/2 \right) \cosh \left( \beta\omega/2 \right)}} \nonumber \\
-    &= \left[ \frac{\omega}{\pi} \tanh\left( \frac{\beta\omega}{2} \right) \right]^{\frac{1}{2}}
-\end{align}
-The term inside the exponential can be written as,
-\begin{align}
-    E &= -\frac{\omega}{2} \left( \frac{1+e^{-2\beta\omega}}{1-e^{-2\beta\omega}} \right) \left( x^2 + x'^2 \right)
-    + \frac{2e^{-\beta\omega}}{1-e^{-2\beta\omega}} \omega x x' 
-    = \frac{-\omega}{1-e^{-2\beta\omega}}
-    \left\{ \left(\frac{1+e^{-2\beta\omega}}{2}\right) \left( x^2 + x'^2 \right) 
-    - 2 e^{-\beta\omega} x x' \right\} \nonumber \\
-    %
-    &= \frac{-\omega e^{-\beta\omega}}{1-e^{-2\beta\omega}} 
-    \left\{ \left(\frac{e^{\beta\omega} + e^{-\beta\omega}}{2} \right) \left( x^2 + x'^2 \right) - 2 x x' \right\}
-    = \frac{-\omega e^{-\beta\omega}}{e^{-\beta\omega} \left(e^{\beta\omega} - e^{-\beta\omega} \right) } 
-    \left\{ \cosh \left( \beta \omega \right) \left( x^2 + x'^2 \right) - 2 x x' \right\} \nonumber \\
-    %
-    &= \frac{-\omega}{2\sinh \left( \beta \omega \right)}
-    \left\{ \left[ \sinh^2\left( \frac{\beta\omega}{2} \right) + \cosh^2\left( \frac{\beta\omega}{2} \right) \right] \left( x^2 + x'^2 \right) - 2 \left[ \cosh^2\left( \frac{\beta\omega}{2} \right) - \sinh^2\left( \frac{\beta\omega}{2} \right) \right] x x' \right\} \nonumber \\
-    %
-    &= \frac{-\omega}{4 \sinh \left( \frac{\beta \omega}{2}\right) \cosh \left( \frac{\beta \omega}{2} \right)}
-    \left\{ \sinh^2\left( \frac{\beta\omega}{2} \right) \left( x + x' \right)^2 + \cosh^2\left( \frac{\beta\omega}{2} \right) \left( x - x' \right)^2\right\} \nonumber \\
-    %
-    &= -\frac{\omega}{4}
-    \left[ \tanh\left( \frac{\beta\omega}{2} \right) \left( x + x' \right)^2 
-    + \coth\left( \frac{\beta\omega}{2} \right) \left( x - x' \right)^2
-    \right]
-\end{align}
-Thus the matrix element of the thermal bath density becomes,
-\begin{equation}\label{rho_x_xp}
-    \boxed{ \langle x| \hat{\rho}_{\mathrm{th}} | x' \rangle 
-    = \left[ \frac{\omega}{\pi} \tanh\left( \frac{\beta\omega}{2} \right) \right]^{\frac{1}{2}}
-    \exp \left\{ -\frac{\omega}{4}
-    \left[ \tanh\left( \frac{\beta\omega}{2} \right) \left( x + x' \right)^2 
-    + \coth\left( \frac{\beta\omega}{2} \right) \left( x - x' \right)^2
-    \right] \right\} }
-\end{equation}
-The thermal average of the displacement operator for a single mode can be written as 
-\begin{align}
-    \langle e^{if\hat{P}} \rangle 
-    &= \mathrm{Tr} \left\{ e^{if\hat{P}} \hat{\rho}_{\mathrm{th}} \right\}
-    = \int \mathrm{d}x \langle x| e^{if\hat{P}}\hat{\rho}_{\mathrm{th}} | x \rangle
-    = \int \mathrm{d}x \langle x+f| \hat{\rho}_{\mathrm{th}} | x \rangle
-\end{align}
-where we used the fact $e^{-if\hat{P}}|x\rangle = |x+f\rangle$. Using Eq.~\ref{rho_x_xp} we can write,
-\begin{align}
-    \langle x+f| \hat{\rho}_{\mathrm{th}} | x \rangle
-    &= \left[ \frac{\omega}{\pi} \tanh\left( \frac{\beta\omega}{2} \right) \right]^{\frac{1}{2}}
-    \exp \left\{ -\frac{\omega}{4}
-    \left[ \tanh\left( \frac{\beta\omega}{2} \right) \left( 2x + f \right)^2 
-    + \coth\left( \frac{\beta\omega}{2} \right) f^2
-    \right] \right\} \nonumber \\
-    %
-    &= \left[ \frac{\omega}{\pi} \tanh\left( \frac{\beta\omega}{2} \right) \right]^{\frac{1}{2}}
-    \exp \left[ -\frac{\omega}{4} \coth\left( \frac{\beta\omega}{2} \right) f^2 \right]
-    \exp \left\{ -\frac{\omega}{4}
-    \tanh\left( \frac{\beta\omega}{2} \right) \left( 2x + f \right)^2 \right\}
-\end{align}
-Now,
-\begin{align}
-    \int_{-\infty}^{\infty} \mathrm{d}x \exp \left\{ -\frac{\omega}{4}
-    \tanh\left( \frac{\beta\omega}{2} \right) \left( 2x + f \right)^2 \right\}
-    &= \frac{1}{2} \int_{-\infty}^{\infty} \mathrm{d}z \exp \left\{ -\frac{\omega}{4}
-    \tanh\left( \frac{\beta\omega}{2} \right) z^2 \right\} \nonumber \\
-    &= \frac{1}{2} \sqrt{\pi} \left[ \frac{\omega}{4} \tanh \left( \frac{\beta\omega}{2} \right) \right]^{-\frac{1}{2}} 
-    = \left[ \frac{\omega}{\pi} \tanh \left( \frac{\beta\omega}{2} \right) \right]^{-\frac{1}{2}}
-\end{align}
-Thus we get,
-\begin{equation}
-    \boxed{ \langle e^{if\hat{P}} \rangle
-    = \int \mathrm{d}x \langle x+f| \hat{\rho}_{\mathrm{th}} | x \rangle
-    = \exp \left[ -\frac{1}{4} f^2 \omega \coth\left( \frac{\beta\omega}{2} \right)  \right] }
-\end{equation}
-Finally,
-\begin{align}
-    \kappa_n = \left\langle e^{i\hat{X}_n} \right\rangle
-    &= \mathrm{Tr} \left\{ e^{i\hat{X}_n} e^{-\beta \hat{H}_{\mathrm{B}}} \right\}
-    = \mathrm{Tr} \left\{ \prod_\nu e^{if_{n,\nu}\hat{H}_{n,\nu}} e^{-\beta \hat{H}_{\mathrm{B}}} \right\}
-    = \prod_{\nu} \mathrm{Tr} \left\{ e^{if_{n,\nu}\hat{H}_{n,\nu}} e^{-\beta \hat{H}_{\mathrm{B}}} \right\} \nonumber \\
-    %
-    &= \prod_{\nu} \left\langle e^{i\hat{X}_{n,\nu}} \right\rangle
-    = \prod_{\nu} \exp \left\{ -\frac{1}{4} f_{n,\nu}^2 \omega_{n,\nu} \coth \left( \frac{\beta \omega_{n,\nu}}{2} \right) \right\}
-    = \exp \left\{ -\frac{1}{4} \sum_{\nu} f_{n,\nu}^2 \omega_{n,\nu} \coth \left( \frac{\beta \omega_{n,\nu}}{2} \right) \right\}
-\end{align}
-Now, $\kappa_{nm} = \kappa_n\kappa_m = \langle e^{i\hat{X}_n}\rangle \langle e^{-i\hat{X}_m}\rangle$. Thus,
-\begin{equation}\label{kappa_nm}
-    \boxed{ \kappa_{nm} = \exp \left[ -\frac{1}{4} \sum_{a\in n,m} \sum_{\nu} f_{a,\nu}^2 \omega_{a,\nu} \coth \left( \frac{\beta \omega_{a,\nu}}{2} \right) \right] }
-\end{equation}
+        <p>
+          It is convenient to write the full Hamiltonian so that the system energies already contain
+          the reorganization shifts,
+        </p>
 
-\subsection{Minimization of GBF free energy}
-Using Eq.~\ref{GBF_FreeEnergy} for the non-interacting Hamiltonian we get,
-\begin{align}
-    A_{B} &= -\frac{1}{\beta} \ln \left( \mathrm{Tr}\left\{ e^{-\beta \left( \hat{H}_{\mathrm{S}} + \hat{H}_{\mathrm{B}} \right)}  \right\} \right)
-    = -\frac{1}{\beta} \ln \left( \mathrm{Tr}\left\{ e^{-\beta \hat{H}_{\mathrm{S}}}  e^{-\beta\hat{H}_{\mathrm{B}}} \right\} \right) \nonumber \\
-    &= -\frac{1}{\beta} \ln \left( \mathrm{Tr} \left\{ e^{-\beta \hat{H}_{\mathrm{S}}} \right\} \right) 
-    -\frac{1}{\beta} \ln \left( \mathrm{Tr} \left\{ e^{-\beta \hat{H}_{\mathrm{B}}} \right\} \right) 
-    = -\frac{1}{\beta} \ln \left( \mathrm{Tr} \left\{ e^{-\beta \hat{H}_{\mathrm{S}}} \right\} \right)
-    - \frac{1}{\beta} \ln(Z)
-\end{align}
-Now, the system Hamiltonian for the Frenkel bi-exciton system can be diagonalized as,
-\begin{equation}
-    \mathrm{Tr} \left\{ e^{-\beta \hat{H}_{\mathrm{S}}} \right\} 
-    = \mathrm{Tr} \left\{ \hat{U}^\dagger \hat{U} e^{-\beta \hat{H}_{\mathrm{S}}} \right\} 
-    = \mathrm{Tr} \left\{  \hat{U} e^{-\beta \hat{H}_{\mathrm{S}}} \hat{U}^\dagger \right\}
-    = \mathrm{Tr} \left\{ e^{-\beta \hat{U}\hat{H}_{\mathrm{S}} \hat{U}^\dagger } \right\} 
-    = \mathrm{Tr} \left\{ e^{-\beta \hat{\Tilde{H}}_{\mathrm{S}}} \right\}
-    = e^{-\beta \lambda_1} + e^{-\beta \lambda_2}
-\end{equation}
-where $\lambda_1$ and $\lambda_2$ are the eigenvalues of $\hat{H}_{\mathrm{S}}$. The matrix form of $\hat{H}_{\mathrm{S}}$ in the excitonic basis is,
-\begin{equation}
-    \hat{H}_{\mathrm{S}} 
-    = \begin{bmatrix}
-        \varepsilon_1 + \delta_1 & \Delta_{12} \kappa_{12} \\
-        \Delta_{12} \kappa_{12} & \varepsilon_2 + \delta_2
-      \end{bmatrix}
-    = \begin{bmatrix}
-        \Tilde{\varepsilon}_1 & \Delta_{\kappa} \\
-        \Delta_{\kappa} & \Tilde{\varepsilon}_2
-      \end{bmatrix}
-\end{equation}
-where we defined $\Delta_\kappa = \Delta_{12} \kappa_{12}$ and $\Tilde{\varepsilon}_m = \varepsilon_m + \delta_m$ with
-\begin{equation}\label{delta_m}
-    \delta_m = \sum_{\mu} \frac{\omega_{m,\mu}^2}{2} \left( f_{m, \mu} - \frac{g_{m,\mu}}{\omega_{m,\mu}^2} \right)^2
-\end{equation}
-Now, the characteristic polynomial for $\hat{H}_{\mathrm{S}}$ is,
-\begin{equation}
-    |\hat{H}_{\mathrm{S}} - \lambda \hat{\mathds{1}}| = 0
-    \implies 
-    \begin{vmatrix} 
-        \Tilde{\varepsilon}_1 - \lambda & \Delta_{\kappa} \\
-        \Delta_{\kappa} & \Tilde{\varepsilon}_2 -\lambda 
-    \end{vmatrix} = 0
-    \implies 
-    (\Tilde{\varepsilon}_1 - \lambda) (\Tilde{\varepsilon}_2 - \lambda) - \Delta_\kappa^2 = 0
-\end{equation}
-The roots of the equation is,
-\begin{align}
-    \lambda_{\pm} 
-    = \frac{\Tilde{\varepsilon}_1 + \Tilde{\varepsilon}_2}{2} \pm \frac{1}{2} \sqrt{\left( \Tilde{\varepsilon}_1 + \Tilde{\varepsilon}_2 \right)^2 - 4 \Tilde{\varepsilon}_1 \Tilde{\varepsilon}_2 + 4 \Delta_{\kappa}^2}
-    = \frac{\Tilde{\varepsilon}_1 + \Tilde{\varepsilon}_2}{2} \pm \frac{1}{2} \sqrt{\left( \Tilde{\varepsilon}_1 - \Tilde{\varepsilon}_2 \right)^2 + 4 \Delta_{\kappa}^2}
-    = \Bar{\varepsilon} \pm \frac{\eta}{2}
-\end{align}
-Where we defined $\Bar{\varepsilon} = (\Tilde{\varepsilon}_1 + \Tilde{\varepsilon}_2)/2$ and $\eta = \sqrt{\left( \Tilde{\varepsilon}_1 - \Tilde{\varepsilon}_2 \right)^2 + 4 \Delta_{\kappa}^2}$. Thus we can now write,
-\begin{equation}
-    \mathrm{Tr} \left\{ e^{-\beta \hat{H}_{\mathrm{S}}} \right\} 
-    = e^{-\beta \left( \Bar{\varepsilon} + \frac{\eta}{2} \right)} 
-    + e^{-\beta \left( \Bar{\varepsilon} - \frac{\eta}{2} \right)}
-    = e^{-\beta\Bar{\varepsilon}} \left( e^{-\beta\eta/2} + e^{\beta\eta/2} \right)
-    = 2e^{-\beta\Bar{\varepsilon}} \cosh \left( \frac{\beta \eta}{2} \right)
-\end{equation}
-The free energy becomes,
-\begin{equation}\label{GBE_FreeEnergy}
-    \boxed{A_B = -\frac{1}{\beta} \ln \left[ 2e^{-\beta\Bar{\varepsilon}} \cosh \left( \frac{\beta \eta}{2} \right) \right] 
-    -\frac{1}{\beta} \ln(Z)
-    = \Bar{\varepsilon} - \frac{1}{\beta} \ln \left[ \cosh \left( \frac{\beta \eta}{2} \right) \right] - \frac{1}{\beta} \ln (2Z)}
-\end{equation}
-Let us now define a dimensionless parameter
-\begin{equation}\label{phi_n_nu}
-    \phi_{n,\nu} = \frac{f_{n,\nu}}{g_{n,\nu}} \omega_{n,\nu}^2
-\end{equation}
-The onsite energy shift contributions from bath is thus given by,
-\begin{equation}\label{delta_n_phi}
-    \delta_{n} 
-    = \sum_{\nu} \frac{\omega_{n,\nu}^2}{2} \left( \frac{g_{n,\nu}^2}{\omega_{n,\nu}^4} \right) 
-    \left( \frac{f_{n,\nu}}{g_{n,\nu}} \omega_{n,\nu}^2 - 1 \right)^2 
-    = \sum_{\nu} \frac{g_{n,\nu}^2}{2\omega_{n,\nu}^2} \left( \phi_{n,\nu} -1 \right)^2
-\end{equation}
-Similarly Eq.~\ref{kappa_nm} can also be written as (assuming both the excitons have the same spectral density),
-\begin{align}\label{kappa_12_phi}
-    \kappa_{12} 
-    = \exp \left[ -\frac{1}{4} \sum_{a\in 1,2} \sum_{\nu} f_{a,\nu}^2 \omega_{a,\nu} \coth \left( \frac{\beta \omega_{a,\nu}}{2} \right) \right]
-    = \exp \left[ -\sum_{\nu} \left(\phi_{1,\nu}^2 + \phi_{2,\nu}^2 \right) 
-    \left( \frac{g_{1,\nu}}{2\omega_{1,\nu}^2} \right)^2 
-    \omega_{1,\nu} \coth \left( \frac{\beta \omega_{1,\nu}}{2} \right) \right]
-\end{align}
-We can directly do a numerical minimization of Eq.~\ref{GBE_FreeEnergy} using Eq.~\ref{delta_n_phi} and Eq.~\ref{kappa_12_phi}. The diagonal part of the partial polaron transformed Hamiltonian (Eq.~\ref{pPT_HFrenkel}) in terms of this parameter can be written as,
-\begin{equation}
-    \hat{H}_{\mathrm{S}}^{\mathrm{vPT}} 
-    = \sum_{n} \left[ \varepsilon_n + \sum_{\nu} \frac{\omega_{n,\nu}^2}{2} \left( f_{m, \mu} - \frac{g_{n,\nu}}{\omega_{n,\nu}^2} \right)^2 \right] |n\rangle\langle n| 
-    = \sum_{n} \left[ \varepsilon_n + \sum_{\nu} \frac{g_{n,\nu}^2}{2\omega_{n,\nu}^2} \Bigl( \phi_{n,\nu} -1 \Bigl)^2 \right] |n\rangle\langle n|
-\end{equation}
-The system bath interaction can be written as,
-\begin{equation}
-    \hat{H}_{\mathrm{SB}}^{\mathrm{vPT}}
-    = \sum_{n,\nu} \Bigl( f_{n,\nu} \omega_{n, \nu}^2 - g_{n, \nu} \Bigl) \hat{R}_{n,\nu} |n\rangle\langle n| 
-    = \sum_{n,\nu} g_{n,\nu} \Bigl( \phi_{n,\nu} - 1 \Bigl) \hat{R}_{n,\nu} |n\rangle\langle n|
-\end{equation}
-The modified inter-system coupling can also be expressed by recognising that,
-\begin{equation}
-    \hat{X}_n = \sum_{\nu} f_{n,\nu} \hat{P}_{n,\nu} 
-    = \sum_{\nu} \phi_{n,\nu} \left( \frac{g_{n,\nu}}{\omega_{n,\nu}^2} \right) \hat{P}_{n,\nu}
-\end{equation}
-Thus we can also write,
-\begin{equation}
-    \hat{X}_{12} = \hat{X}_{1} - \hat{X}_{2}  
-    = \sum_{\nu} \left( \frac{g_{1,\nu}}{\omega_{1,\nu}^2} \right) \Bigl( \phi_{1,\nu} \hat{P}_{1,\nu} - \phi_{2,\nu} \hat{P}_{2,\nu} \Bigl)
-\end{equation}
-The partial polaron transformed Hamiltonian can be expressed as,
-\begin{align}\label{pPT_HFrenkel_phi}
-    \hat{H}_{\mathrm{vPT}} 
-    &= \sum_{n} \left[ \varepsilon_n + \sum_{\nu} \frac{g_{n,\nu}^2}{2\omega_{n,\nu}^2} \Bigl( \phi_{n,\nu} -1 \Bigl)^2 \right] |n\rangle\langle n|
-    + \sum_{n,\nu} g_{n,\nu} \Bigl( \phi_{n,\nu} - 1 \Bigl) \hat{R}_{n,\nu} |n\rangle\langle n| \nonumber \\
-    & \hspace{1.5cm} \Delta_{12}  \Bigl( e^{i\hat{X}_{12}}|1\rangle\langle 2| + e^{-i\hat{X}_{12}}|2\rangle\langle 1| \Bigl) 
-    + \sum_{n, \nu} \frac{1}{2} \left( \hat{P}_{n, \nu}^2 + \omega_{n, \nu}^2 \hat{R}_{n, \nu}^2 \right)
-\end{align}
+        <p>
+        \[
+          \varepsilon_n
+          =
+          \varepsilon_n^\mathrm{bare}
+          + \sum_{\nu}
+          \frac{g_{n,\nu}^2}{2\omega_{n,\nu}^2},
+        \]
+        </p>
 
-% \iffalse
-Instead of minimizing Eq.~\ref{GBE_FreeEnergy}, we can also minimize $A_B$ with respect to $f_{n,\nu}$ by setting the derivative to 0 and obtaining expressions to numerically evaluate $f_{n,\nu}$ with root searching algorithms. We need,
-\begin{equation}\label{minimize_AB}
-    \sum_{n}\sum_{\nu} \frac{\partial A_B}{\partial f_{n,\nu}} 
-    = \sum_{\nu} \frac{\partial A_B}{\partial f_{1,\nu}} 
-    + \sum_{\nu} \frac{\partial A_B}{\partial f_{2,\nu}} = 0
-\end{equation}
+        <p>
+          in analogy with the standard non-variational polaron transform.
+        </p>
+      </div>
+    </section>
 
-\subsubsection{$A_B$ minimization with respect to exciton-1}
-Let's take a derivative with respect to the shift parameters of the exciton-1,
-\begin{align}\label{AB_derivative1}
-    \frac{\partial A_B}{\partial f_{1,\nu}} &= \frac{\partial \Bar{\varepsilon}}{\partial f_{1,\nu}}
-    - \frac{1}{\beta} \frac{\partial}{\partial f_{1,\nu}} \ln \left[ \cosh \left( \frac{\beta \eta}{2} \right) \right]
-    = \frac{1}{2} \frac{\partial \Tilde{\varepsilon}_1}{\partial f_{1,\nu}}
-    - \frac{1}{\beta \cosh \left( \beta \eta / 2 \right)} \frac{\partial}{\partial f_{1,\nu}} \cosh \left( \frac{\beta \eta}{2} \right) \nonumber \\
-    &= \frac{1}{2} \frac{\partial \delta_1}{\partial f_{1,\nu}}
-    - \frac{\beta \sinh \left( \beta \eta / 2 \right)}{2 \beta \cosh \left( \beta \eta / 2 \right)} \frac{\partial \eta}{\partial f_{1,\nu}}
-    = \frac{1}{2} \frac{\partial \delta_1}{\partial f_{1,\nu}}
-    - \frac{1}{2} \tanh \left( \frac{\beta \eta}{2} \right) \frac{\partial \eta}{\partial f_{1,\nu}}
-\end{align}
-Lets evaluate the above expression term by term,
-\begin{align}\label{delta1_derivative1}
-    \frac{1}{2} \frac{\partial \delta_1}{\partial f_{1,\nu}}
-    &= \frac{1}{2} \frac{\partial}{\partial f_{1,\nu}} \sum_{\mu} \frac{\omega_{1,\mu}^2}{2} \left( f_{1, \mu} - \frac{g_{1,\mu}}{\omega_{1,\mu}^2} \right)^2
-    = \sum_{\mu} \frac{\omega_{1,\mu}^2}{4} \frac{\partial}{\partial f_{1,\nu}} \left( f_{1, \mu} - \frac{g_{1,\mu}}{\omega_{1,\mu}^2} \right)^2 \nonumber \\
-    &= \sum_{\mu} \frac{\omega_{1,\mu}^2}{2} \left( f_{1, \mu} - \frac{g_{1,\mu}}{\omega_{1,\mu}^2} \right) \frac{\partial}{\partial f_{1,\nu}} \left( f_{1, \mu} - \frac{g_{1,\mu}}{\omega_{1,\mu}^2} \right)
-    = \sum_{\mu} \frac{\omega_{1,\mu}^2}{2} \left( f_{1, \mu} - \frac{g_{1,\mu}}{\omega_{1,\mu}^2} \right) \delta_{\nu,\mu} \nonumber \\
-    &= \frac{\omega_{1,\nu}^2}{2} \left( f_{1, \nu} - \frac{g_{1,\nu}}{\omega_{1,\nu}^2} \right)
-\end{align}
-The derivative of $\eta$ can be simplified as,
-\begin{align}\label{eta_derivative1}
-    \frac{\partial \eta}{\partial f_{1,\nu}}
-    &= \frac{\partial}{\partial f_{1,\nu}} \sqrt{\left( \Tilde{\varepsilon}_1 - \Tilde{\varepsilon}_2 \right)^2 + 4 \Delta_{\kappa}^2}
-    %
-    = \frac{1}{2 \sqrt{\left( \Tilde{\varepsilon}_1 - \Tilde{\varepsilon}_2 \right)^2 + 4 \Delta_{\kappa}^2}} \frac{\partial}{\partial f_{1,\nu}} \left[ \left( \Tilde{\varepsilon}_1 - \Tilde{\varepsilon}_2 \right)^2 + 4 \Delta_{\kappa}^2 \right] \nonumber \\
-    %
-    &= \frac{1}{2\eta} \left( 2\left( \Tilde{\varepsilon}_1 - \Tilde{\varepsilon}_2 \right)\frac{\partial \Tilde{\varepsilon}_1}{\partial f_{1,\nu}} + 8 \Delta_{\kappa} \frac{\partial \Delta_{\kappa}}{\partial f_{1,\nu}}\right) 
-    %
-    = \frac{\Tilde{\varepsilon}_1 - \Tilde{\varepsilon}_2}{\eta} \frac{\partial \delta_1}{\partial f_{1,\nu}}
-    + \frac{4\Delta_{\kappa} \Delta \kappa_{2}} {\eta} \frac{\partial \kappa_{1}}{\partial f_{1,\nu}}
-\end{align}
-Lets evaluate the second term,
-\begin{align}\label{kappa1_derivative1}
-    \frac{\partial \kappa_{1}}{\partial f_{1,\nu}}
-    &= \frac{\partial}{\partial f_{1,\nu}} \left( \prod_{\mu} \exp\left[ -\frac{1}{4} f_{1, \mu}^2 \omega_{1, \mu} \coth \left( \frac{\beta \omega_{1, \mu}}{2} \right) \right] \right) \nonumber \\
-    %
-    &= -\frac{2}{4} f_{1, \nu} \omega_{1, \nu} \coth \left( \frac{\beta \omega_{1, \nu}}{2} \right) 
-    \left( \prod_{\mu} \exp\left[ -\frac{1}{4} f_{1, \mu}^2 \omega_{1, \mu} \coth \left( \frac{\beta \omega_{1, \mu}}{2} \right) \right] \right) \nonumber \\
-    %
-    &= -\frac{\kappa_1}{2} f_{1, \nu} \omega_{1, \nu} \coth \left( \frac{\beta \omega_{1, \nu}}{2} \right)
-\end{align}
-Using Eq.~\ref{delta1_derivative1} and Eq.~\ref{kappa1_derivative1} in Eq.~\ref{eta_derivative1},
-\begin{equation}\label{eta_derivative_1_final}
-    \frac{\partial \eta}{\partial f_{1,\nu}}
-    = \frac{\left( \Tilde{\varepsilon}_1 - \Tilde{\varepsilon}_2 \right) \omega_{1,\nu}^2}{\eta}
-    \left( f_{1, \nu} - \frac{g_{1,\nu}}{\omega_{1,\nu}^2} \right)
-    - \frac{2\Delta_{\kappa}^2}{\eta} f_{1, \nu} \omega_{1, \nu} \coth \left( \frac{\beta \omega_{1, \nu}}{2} \right)
-\end{equation}
-Using Eq.~\ref{delta1_derivative1} and Eq.~\ref{eta_derivative_1_final} in Eq.~\ref{AB_derivative1}, we get,
-\begin{align}
-    \frac{\partial A_B}{\partial f_{1,\nu}} &= \frac{\omega_{1,\nu}^2}{2} \left( f_{1, \nu} - \frac{g_{1,\nu}}{\omega_{1,\nu}^2} \right)
-    - \frac{1}{2} \tanh \left( \frac{\beta \eta}{2} \right) \left[ \frac{\left( \Tilde{\varepsilon}_1 
-    - \Tilde{\varepsilon}_2 \right) \omega_{1,\nu}^2}{\eta}
-    \left( f_{1, \nu} - \frac{g_{1,\nu}}{\omega_{1,\nu}^2} \right)
-    - \frac{2\Delta_{\kappa}^2}{\eta} f_{1, \nu} \omega_{1, \nu} \coth \left( \frac{\beta \omega_{1, \nu}}{2} \right) \right]
-\end{align}
-To minimise the free energy we set the derivative to 0, thus,
-\begin{align}
-    \frac{\omega_{1,\nu}^2}{2} \left( f_{1, \nu} - \frac{g_{1,\nu}}{\omega_{1,\nu}^2} \right)
-    %
-    &= \frac{1}{2} \tanh \left( \frac{\beta \eta}{2} \right) \left[ \frac{\left( \Tilde{\varepsilon}_1 
-    - \Tilde{\varepsilon}_2 \right) \omega_{1,\nu}^2}{\eta}
-    \left( f_{1, \nu} - \frac{g_{1,\nu}}{\omega_{1,\nu}^2} \right)
-    - \frac{2\Delta_{\kappa}^2}{\eta} f_{1, \nu} \omega_{1, \nu} \coth \left( \frac{\beta \omega_{1, \nu}}{2} \right) \right] \nonumber \\
-    %
-    f_{1, \nu} - \frac{g_{1,\nu}}{\omega_{1,\nu}^2}
-    &= \tanh \left( \frac{\beta \eta}{2} \right) \left[ \frac{\left( \Tilde{\varepsilon}_1 
-    - \Tilde{\varepsilon}_2 \right)}{\eta}
-    \left( f_{1, \nu} - \frac{g_{1,\nu}}{\omega_{1,\nu}^2} \right)
-    - \frac{2\Delta_{\kappa}^2}{\eta} \frac{f_{1, \nu}}{\omega_{1, \nu}} \coth \left( \frac{\beta \omega_{1, \nu}}{2} \right) \right]
-\end{align}
-Rearranging the terms,
-\begin{align}
-    f_{1, \nu} 
-    - f_{1, \nu} \tanh &\left( \frac{\beta \eta}{2} \right) \frac{\left( \Tilde{\varepsilon}_1 
-    - \Tilde{\varepsilon}_2 \right)}{\eta}
-    + f_{1, \nu} \frac{2\Delta_{\kappa}^2}{\eta \omega_{1, \nu}} \coth \left( \frac{\beta \omega_{1, \nu}}{2} \right) \tanh \left( \frac{\beta \eta}{2} \right) \nonumber \\
-    &= \frac{g_{1,\nu}}{\omega_{1,\nu}^2} - \frac{g_{1,\nu}}{\omega_{1,\nu}^2} \tanh \left( \frac{\beta \eta}{2} \right) \frac{\left( \Tilde{\varepsilon}_1 
-    - \Tilde{\varepsilon}_2 \right)}{\eta}
-\end{align}
-Thus,
-\begin{equation}
-    f_{1, \nu} \left\{ 1 - \frac{1}{\eta} \tanh \left( \frac{\beta \eta}{2} \right) \left[ \left( \Tilde{\varepsilon}_1 
-    - \Tilde{\varepsilon}_2 \right) 
-    - \frac{2\Delta_{\kappa}^2}{\omega_{1, \nu}} \coth \left( \frac{\beta \omega_{1, \nu}}{2} \right) \right] \right\} = \frac{g_{1,\nu}}{\omega_{1,\nu}^2} \left[ 1 - \frac{\left( \Tilde{\varepsilon}_1 
-    - \Tilde{\varepsilon}_2 \right)}{\eta} \tanh \left( \frac{\beta \eta}{2} \right) \right]
-\end{equation}
-Defining $\Delta_{\Tilde{\varepsilon}} = \Tilde{\varepsilon}_1 -\Tilde{\varepsilon}_2$,
-\begin{align}
-    f_{1, \nu} \left\{ 1 - \frac{1}{\eta} \tanh \left( \frac{\beta \eta}{2} \right) \left[ \Delta_{\Tilde{\varepsilon}} 
-    - \frac{2\Delta_{\kappa}^2}{\omega_{1, \nu}} \coth \left( \frac{\beta \omega_{1, \nu}}{2} \right) \right] \right\} 
-    = \frac{g_{1,\nu}}{\omega_{1,\nu}^2} \left[ 1 - \frac{\Delta_{\Tilde{\varepsilon}}}{\eta} \tanh \left( \frac{\beta \eta}{2} \right) \right]
-\end{align}
-Rearranging the terms we get,
-\begin{equation}\label{f1nu_rootsearch}
-    \boxed{f_{1, \nu} 
-    = \frac{g_{1,\nu}}{\omega_{1,\nu}^2} \cdot \frac{ 1 - \frac{\Delta_{\Tilde{\varepsilon}}}{\eta} \tanh \left( \frac{\beta \eta}{2} \right)}
-    {
-    1 - \frac{1}{\eta} \tanh \left( \frac{\beta \eta}{2} \right) 
-    \left[ \Delta_{\Tilde{\varepsilon}}
-    -
-    2\frac{\Delta_{\kappa}^2}{ \omega_{1, \nu}} 
-    \coth \left( \frac{\beta \omega_{1, \nu}}{2} \right) 
-    \right]}
-    }
-\end{equation}
+    <!-- 2. Non-variational polaron transform (recap) -->
+    <section class="section">
+      <div class="container">
+        <h2>2. Recap: full (non-variational) polaron transform</h2>
 
+        <p>
+          For later comparison, recall the full polaron transformation generated by
+        </p>
 
-\subsubsection{$A_B$ minimization with respect to exciton-2}
-Let us now try take a derivative with respect to the shift parameters of the exciton-2,
-\begin{align}\label{AB_derivative2}
-    \frac{\partial A_B}{\partial f_{2,\nu}} &= \frac{\partial \Bar{\varepsilon}}{\partial f_{2,\nu}}
-    - \frac{1}{\beta} \frac{\partial}{\partial f_{2,\nu}} \ln \left[ \cosh \left( \frac{\beta \eta}{2} \right) \right] \nonumber \\
-    %
-    &= \frac{1}{2} \frac{\partial \Tilde{\varepsilon}_2}{\partial f_{2,\nu}}
-    - \frac{1}{\beta \cosh \left( \beta \eta / 2 \right)} \frac{\partial}{\partial f_{2,\nu}} \cosh \left( \frac{\beta \eta}{2} \right) 
-    = \frac{1}{2} \frac{\partial \delta_2}{\partial f_{2,\nu}}
-    - \frac{\beta \sinh \left( \beta \eta / 2 \right)}{2 \beta \cosh \left( \beta \eta / 2 \right)} \frac{\partial \eta}{\partial f_{2,\nu}} \nonumber \\
-    %
-    &= \frac{1}{2} \frac{\partial \delta_2}{\partial f_{2,\nu}}
-    - \frac{1}{2} \tanh \left( \frac{\beta \eta}{2} \right) \frac{\partial \eta}{\partial f_{2,\nu}}
-\end{align}
-Similar to Eq.~\ref{delta1_derivative1}, we can evaluate
-\begin{align}\label{delta2_derivative2}
-    \frac{1}{2} \frac{\partial \delta_2}{\partial f_{2,\nu}}
-    &= \frac{1}{2} \frac{\partial}{\partial f_{2,\nu}} \sum_{\mu} \frac{\omega_{2,\mu}^2}{2} \left( f_{2, \mu} - \frac{g_{2,\mu}}{\omega_{2,\mu}^2} \right)^2
-    %
-    = \sum_{\mu} \frac{\omega_{2,\mu}^2}{4} \frac{\partial}{\partial f_{2,\nu}} \left( f_{2, \mu} - \frac{g_{2,\mu}}{\omega_{2,\mu}^2} \right)^2 \nonumber \\
-    %
-    &= \sum_{\mu} \frac{\omega_{2,\mu}^2}{2} \left( f_{2, \mu} - \frac{g_{2,\mu}}{\omega_{2,\mu}^2} \right) \frac{\partial}{\partial f_{2,\nu}} \left( f_{2, \mu} - \frac{g_{2,\mu}}{\omega_{2,\mu}^2} \right)
-    %
-    = \sum_{\mu} \frac{\omega_{2,\mu}^2}{2} \left( f_{2, \mu} - \frac{g_{2,\mu}}{\omega_{2,\mu}^2} \right) \delta_{\nu,\mu} \nonumber \\
-    %
-    &= \frac{\omega_{2,\nu}^2}{2} \left( f_{2, \nu} - \frac{g_{2,\nu}}{\omega_{2,\nu}^2} \right)
-\end{align}
-Similar to Eq.~\ref{eta_derivative1}, we simplify the derivative of $\eta$ w.r.t. $f_{2, \nu}$ as,
-The derivative of $\eta$ can be simplified as,
-\begin{align}\label{eta_derivative2}
-    \frac{\partial \eta}{\partial f_{2,\nu}}
-    &= \frac{\partial}{\partial f_{2,\nu}} \sqrt{\left( \Tilde{\varepsilon}_1 - \Tilde{\varepsilon}_2 \right)^2 + 4 \Delta_{\kappa}^2}
-    %
-    = \frac{1}{2 \sqrt{\left( \Tilde{\varepsilon}_1 - \Tilde{\varepsilon}_2 \right)^2 + 4 \Delta_{\kappa}^2}} \frac{\partial}{\partial f_{2,\nu}} \left[ \left( \Tilde{\varepsilon}_1 - \Tilde{\varepsilon}_2 \right)^2 + 4 \Delta_{\kappa}^2 \right] \nonumber \\
-    %
-    &= \frac{1}{2\eta} \left( -2\left( \Tilde{\varepsilon}_1 - \Tilde{\varepsilon}_2 \right) \frac{\partial \Tilde{\varepsilon}_2}{\partial f_{2,\nu}} + 8 \Delta_{\kappa} \frac{\partial \Delta_{\kappa}}{\partial f_{2,\nu}}\right) 
-    %
-    = \frac{\Tilde{\varepsilon}_2 - \Tilde{\varepsilon}_1}{\eta} \frac{\partial \delta_2}{\partial f_{2,\nu}}
-    + \frac{4\Delta_{\kappa} \Delta \kappa_{1}} {\eta} \frac{\partial \kappa_{2}}{\partial f_{2,\nu}}
-\end{align}
-Let us assess the second term,
-\begin{align}\label{kappa2_derivative2}
-    \frac{\partial \kappa_{2}}{\partial f_{2,\nu}}
-    &= \frac{\partial}{\partial f_{2,\nu}} \left( \prod_{\mu} \exp\left[ -\frac{1}{4} f_{2, \mu}^2 \omega_{2, \mu} \coth \left( \frac{\beta \omega_{2, \mu}}{2} \right) \right] \right) \nonumber \\
-    %
-    &= -\frac{2}{4} f_{2, \nu} \omega_{2, \nu} \coth \left( \frac{\beta \omega_{2, \nu}}{2} \right) 
-    \left( \prod_{\mu} \exp\left[ -\frac{1}{4} f_{2, \mu}^2 \omega_{2, \mu} \coth \left( \frac{\beta \omega_{2, \mu}}{2} \right) \right] \right) \nonumber \\
-    %
-    &= -\frac{\kappa_2}{2} f_{2, \nu} \omega_{2, \nu} \coth \left( \frac{\beta \omega_{2, \nu}}{2} \right)
-\end{align}
-Using Eq.~\ref{delta2_derivative2} and Eq.~\ref{kappa2_derivative2} we can simplify Eq.~\ref{eta_derivative2} as,
-\begin{align}\label{eta_derivative2_final}
-    \frac{\partial \eta}{\partial f_{2,\nu}}
-    &= \frac{(\Tilde{\varepsilon}_2 - \Tilde{\varepsilon}_1) \omega_{2,\nu}^2}{\eta} 
-    \left( f_{2, \nu} - \frac{g_{2,\nu}}{\omega_{2,\nu}^2} \right)
-    -\frac{2\Delta_{\kappa}^{2}}{\eta} f_{2, \nu} \omega_{2, \nu} \coth \left( \frac{\beta \omega_{2, \nu}}{2} \right)
-\end{align}
-Using Eq.~\ref{delta2_derivative2} and Eq.~\ref{eta_derivative2_final} in Eq.~\ref{AB_derivative2} we can further simplify,
-\begin{align}
-    \frac{\partial A_B}{\partial f_{2,\nu}} 
-    &= \frac{\omega_{2,\nu}^2}{2} \left( f_{2, \nu} - \frac{g_{2,\nu}}{\omega_{2,\nu}^2} \right)
-    - \frac{1}{2} \tanh \left( \frac{\beta \eta}{2} \right) \left[ \frac{(\Tilde{\varepsilon}_2 - \Tilde{\varepsilon}_1) \omega_{2,\nu}^2}{\eta} 
-    \left( f_{2, \nu} - \frac{g_{2,\nu}}{\omega_{2,\nu}^2} \right)
-    -\frac{2\Delta_{\kappa}^{2}}{\eta} f_{2, \nu} \omega_{2, \nu} \coth \left( \frac{\beta \omega_{2, \nu}}{2} \right) \right] \nonumber \\
-    %
-    &= \frac{\omega_{2,\nu}^2}{2} \left( f_{2, \nu} - \frac{g_{2,\nu}}{\omega_{2,\nu}^2} \right)
-    - \frac{1}{2} \tanh \left( \frac{\beta \eta}{2} \right) \left[ - \frac{\Delta_{\Tilde{\varepsilon}} \omega_{2,\nu}^2}{\eta} 
-    \left( f_{2, \nu} - \frac{g_{2,\nu}}{\omega_{2,\nu}^2} \right)
-    -\frac{2\Delta_{\kappa}^{2}}{\eta} f_{2, \nu} \omega_{2, \nu} \coth \left( \frac{\beta \omega_{2, \nu}}{2} \right) \right]
-\end{align}
-To minimize the free energy we set this derivative to 0, \textit{i.e.} $\partial A_B/\partial f_{2,\nu} = 0$. Thus we get,
-\begin{align}
-    \frac{\omega_{2,\nu}^2}{2} \left( f_{2, \nu} - \frac{g_{2,\nu}}{\omega_{2,\nu}^2} \right)
-    &= \frac{1}{2} \tanh \left( \frac{\beta \eta}{2} \right) 
-    \left[ - \frac{\Delta_{\Tilde{\varepsilon}} \omega_{2,\nu}^2}{\eta} 
-    \left( f_{2, \nu} - \frac{g_{2,\nu}}{\omega_{2,\nu}^2} \right)
-    -\frac{2\Delta_{\kappa}^{2}}{\eta} f_{2, \nu} \omega_{2, \nu} \coth \left( \frac{\beta \omega_{2, \nu}}{2} \right) 
-    \right] \nonumber \\
-    %
-    f_{2, \nu} - \frac{g_{2,\nu}}{\omega_{2,\nu}^2}
-    &= - \tanh 
-    \left( 
-    \frac{\beta \eta}{2} \right) 
-    \left[ \frac{\Delta_{\Tilde{\varepsilon}}}{\eta} 
-    \left( f_{2, \nu} - \frac{g_{2,\nu}}{\omega_{2,\nu}^2} \right)
-    + \frac{2 \Delta_{\kappa}^{2}}{\eta} \frac{f_{2, \nu}}{\omega_{2, \nu}} \coth \left( \frac{\beta \omega_{2, \nu}}{2} \right) 
-    \right]
-\end{align}
-Rearranging the terms to separate $f_{2,\nu}$ and $g_{2,\nu}$ containing terms,
-\begin{align}
-    f_{2,\nu} \left\{ 1 + \frac{1}{\eta} \tanh 
-    \left( \frac{\beta \eta}{2} \right) 
-    \left[
-    \Delta_{\Tilde{\varepsilon}}
-    + \frac{2\Delta_{\kappa}^{2}}{ \omega_{2, \nu}} \coth \left( \frac{\beta \omega_{2, \nu}}{2} \right)
-    \right]
-    \right\}
-    = \frac{g_{2,\nu}}{\omega_{2,\nu}^2} \left[ 
-    1 + \frac{\Delta_{\Tilde{\varepsilon}}}{\eta} \tanh 
-    \left( \frac{\beta \eta}{2} \right)
-    \right]
-\end{align}
-Thus we can finally simplify the expression for $f_{2,\nu}$ which minimizes $A_B$,
-\begin{equation}\label{f2nu_rootsearch}
-    \boxed{f_{2,\nu} 
-    = 
-    \frac{g_{2,\nu}}{\omega_{2,\nu}^2} \cdot
-    \frac{
-        1 + \frac{\Delta_{\Tilde{\varepsilon}}}{\eta} 
-        \tanh 
-        \left( 
-            \frac{\beta \eta}{2} 
-        \right)
-    }
-    {
-    1 + \frac{1}{\eta} \tanh 
-    \left( \frac{\beta \eta}{2} \right) 
-    \left[
-        \Delta_{\Tilde{\varepsilon}}
-        + 2\frac{\Delta_{\kappa}^{2}}{ \omega_{2, \nu}} \coth 
-        \left( 
-        \frac{\beta \omega_{2, \nu}}{2} \right)
-    \right]}
-    }
-\end{equation}
-Eq.~\ref{f1nu_rootsearch} and Eq.~\ref{f2nu_rootsearch} should be used together to search for optimal parameters $\{ f_{n,\nu} \}$ for the variational polaron transform that minimizes the Gibbs-Bogoliubov-Feynman Free energy $A_B$.
-          <!-- END VPT_TEX_BODY -->
+        <p>
+        \[
+          \hat{S}_\mathrm{P}
+          =
+          i \sum_{n,\nu}
+          \frac{g_{n,\nu}}{\omega_{n,\nu}^2}
+          \hat{P}_{n,\nu}
+          \lvert n\rangle\langle n\rvert.
+        \]
+        </p>
 
-        </div>
+        <p>
+          With this choice, the transformed Hamiltonian
+        </p>
+
+        <p>
+        \[
+          \hat{H}_\mathrm{P}
+          =
+          e^{\hat{S}_\mathrm{P}}
+          \hat{H}\,
+          e^{-\hat{S}_\mathrm{P}}
+        \]
+        </p>
+
+        <p>
+          has no linear system–bath coupling, at the cost of introducing bath-dependent dressing
+          factors in the excitonic couplings:
+        </p>
+
+        <p>
+        \[
+          \hat{H}_\mathrm{P}
+          =
+          \sum_n \varepsilon_n \lvert n\rangle\langle n\rvert
+          +
+          \sum_{n}\sum_{m\neq n}
+          \Delta_{nm}
+          \left(
+            e^{\hat{X}_{nm}}\lvert n\rangle\langle m\rvert
+            +
+            e^{-\hat{X}_{nm}}\lvert m\rangle\langle n\rvert
+          \right)
+          +
+          \hat{H}_\mathrm{b},
+        \]
+        </p>
+
+        <p>
+          where
+        </p>
+
+        <p>
+        \[
+          \hat{X}_n
+          =
+          i \sum_\nu
+          \frac{g_{n,\nu}}{\omega_{n,\nu}^2} \hat{P}_{n,\nu},
+          \qquad
+          \hat{X}_{nm} = \hat{X}_n - \hat{X}_m.
+        \]
+        </p>
+
+        <p>
+          This “full” polaron frame is exact, but may be suboptimal in regimes where the
+          displacement is too large (e.g. weak coupling / high temperature), leading to strong
+          dressing and possibly slow perturbative convergence in the transformed frame. This
+          motivates a <em>variational</em> generalization.
+        </p>
+      </div>
+    </section>
+
+    <!-- 3. Variational polaron generator -->
+    <section class="section section-alt">
+      <div class="container">
+        <h2>3. Variational polaron transformation</h2>
+
+        <p>
+          In the variational polaron approach we replace the fixed displacements
+          $g_{n,\nu}/\omega_{n,\nu}^2$ by variational parameters $f_{n,\nu}$:
+        </p>
+
+        <p>
+        \[
+          \hat{S}
+          =
+          i \sum_{n,\nu}
+          f_{n,\nu}\,
+          \hat{P}_{n,\nu}\,
+          \lvert n\rangle\langle n\rvert.
+        \]
+        </p>
+
+        <p>
+          The transformed Hamiltonian is
+        </p>
+
+        <p>
+        \[
+          \hat{H}_\mathrm{vPT}
+          =
+          e^{\hat{S}}
+          \hat{H}\,
+          e^{-\hat{S}},
+        \]
+        </p>
+
+        <p>
+          and we will later determine $\{f_{n,\nu}\}$ by minimizing an approximate free energy
+          functional. The transformation rules for bath operators follow exactly as in the full
+          polaron case, but with $f_{n,\nu}$ instead of $g_{n,\nu}/\omega_{n,\nu}^2$.
+        </p>
+
+        <h3>3.1 Transformation of bath operators</h3>
+
+        <p>Using the Baker–Campbell–Hausdorff expansion, we obtain</p>
+
+        <p>
+        \[
+          e^{\hat{S}} \hat{P}_{n,\nu} e^{-\hat{S}}
+          =
+          \hat{P}_{n,\nu},
+        \]
+        </p>
+
+        <p>
+        \[
+          e^{\hat{S}} \hat{R}_{n,\nu} e^{-\hat{S}}
+          =
+          \hat{R}_{n,\nu}
+          + \left[\hat{S},\hat{R}_{n,\nu}\right]
+          =
+          \hat{R}_{n,\nu}
+          +
+          \sum_{k,\mu}
+          i f_{k,\mu}
+          [\hat{P}_{k,\mu}\lvert k\rangle\langle k\rvert,\hat{R}_{n,\nu}].
+        \]
+        </p>
+
+        <p>
+          Using $[\hat{P}_{k,\mu},\hat{R}_{n,\nu}] = -i\,\delta_{kn}\delta_{\mu\nu}$ and
+          $[\lvert k\rangle\langle k\rvert,\hat{R}_{n,\nu}] = 0$, this gives
+        </p>
+
+        <p>
+        \[
+          e^{\hat{S}} \hat{R}_{n,\nu} e^{-\hat{S}}
+          =
+          \hat{R}_{n,\nu}
+          + f_{n,\nu}\,
+          \lvert n\rangle\langle n\rvert.
+        \]
+        </p>
+
+        <p>
+          The projectors themselves are invariant:
+        </p>
+
+        <p>
+        \[
+          e^{\hat{S}} \lvert n\rangle\langle n\rvert e^{-\hat{S}}
+          =
+          \lvert n\rangle\langle n\rvert.
+        \]
+        </p>
+      </div>
+    </section>
+
+    <!-- 4. Transform of H_b + H_sb -->
+    <section class="section">
+      <div class="container">
+        <h2>4. Transformed bath and system–bath Hamiltonian</h2>
+
+        <h3>4.1 Transform of $\hat{H}_\mathrm{b}$</h3>
+
+        <p>We write</p>
+
+        <p>
+        \[
+          \hat{H}_\mathrm{b}
+          =
+          \sum_{n,\nu}
+          \frac{1}{2}
+          \left(
+            \hat{P}_{n,\nu}^2 +
+            \omega_{n,\nu}^2 \hat{R}_{n,\nu}^2
+          \right).
+        \]
+        </p>
+
+        <p>
+          Using the transformed operators,
+        </p>
+
+        <p>
+        \[
+          e^{\hat{S}} \hat{H}_\mathrm{b} e^{-\hat{S}}
+          =
+          \sum_{n,\nu}
+          \frac{1}{2}
+          \left(
+            \hat{P}_{n,\nu}^2 +
+            \omega_{n,\nu}^2
+            \big(
+              \hat{R}_{n,\nu} + f_{n,\nu}\lvert n\rangle\langle n\rvert
+            \big)^2
+          \right).
+        \]
+        </p>
+
+        <p>Expanding the square,</p>
+
+        <p>
+        \[
+          \big(
+            \hat{R}_{n,\nu} + f_{n,\nu}\lvert n\rangle\langle n\rvert
+          \big)^2
+          =
+          \hat{R}_{n,\nu}^2
+          +
+          2 f_{n,\nu}\hat{R}_{n,\nu}\lvert n\rangle\langle n\rvert
+          +
+          f_{n,\nu}^2 \lvert n\rangle\langle n\rvert,
+        \]
+        </p>
+
+        <p>
+          and noting that $\hat{R}_{n,\nu}$ commutes with $\lvert n\rangle\langle n\rvert$, we obtain
+        </p>
+
+        <p>
+        \[
+          e^{\hat{S}} \hat{H}_\mathrm{b} e^{-\hat{S}}
+          =
+          \sum_{n,\nu}
+          \frac{1}{2}
+          \big(
+            \hat{P}_{n,\nu}^2 +
+            \omega_{n,\nu}^2 \hat{R}_{n,\nu}^2
+          \big)
+          +
+          \sum_{n,\nu}
+          \omega_{n,\nu}^2 f_{n,\nu}
+          \hat{R}_{n,\nu} \lvert n\rangle\langle n\rvert
+        \]
+        </p>
+
+        <p>
+        \[
+          \quad
+          +
+          \frac{1}{2}
+          \sum_{n,\nu}
+          \omega_{n,\nu}^2 f_{n,\nu}^2 \lvert n\rangle\langle n\rvert.
+        \]
+        </p>
+
+        <h3>4.2 Transform of $\hat{H}_\mathrm{sb}$</h3>
+
+        <p>
+          The system–bath coupling transforms as
+        </p>
+
+        <p>
+        \[
+          e^{\hat{S}} \hat{H}_\mathrm{sb} e^{-\hat{S}}
+          =
+          - \sum_{n,\nu}
+          g_{n,\nu}\,
+          e^{\hat{S}} \hat{R}_{n,\nu} e^{-\hat{S}}\,
+          e^{\hat{S}} \lvert n\rangle\langle n\rvert e^{-\hat{S}},
+        \]
+        </p>
+
+        <p>which, using the above results, yields</p>
+
+        <p>
+        \[
+          e^{\hat{S}} \hat{H}_\mathrm{sb} e^{-\hat{S}}
+          =
+          - \sum_{n,\nu}
+          g_{n,\nu}
+          \big(
+            \hat{R}_{n,\nu} + f_{n,\nu}\lvert n\rangle\langle n\rvert
+          \big)
+          \lvert n\rangle\langle n\rvert.
+        \]
+        </p>
+
+        <p>
+          Since $\hat{R}_{n,\nu}$ commutes with the projector, this becomes
+        </p>
+
+        <p>
+        \[
+          e^{\hat{S}} \hat{H}_\mathrm{sb} e^{-\hat{S}}
+          =
+          - \sum_{n,\nu}
+          g_{n,\nu}
+          \hat{R}_{n,\nu} \lvert n\rangle\langle n\rvert
+          - \sum_{n,\nu}
+          g_{n,\nu} f_{n,\nu}
+          \lvert n\rangle\langle n\rvert.
+        \]
+        </p>
+
+        <h3>4.3 Effective diagonal and residual coupling</h3>
+
+        <p>
+          Adding the contributions from $e^{\hat{S}}\hat{H}_\mathrm{b}e^{-\hat{S}}$ and
+          $e^{\hat{S}}\hat{H}_\mathrm{sb}e^{-\hat{S}}$, the coefficient of
+          $\hat{R}_{n,\nu}\lvert n\rangle\langle n\rvert$ is
+        </p>
+
+        <p>
+        \[
+          \omega_{n,\nu}^2 f_{n,\nu} - g_{n,\nu}.
+        \]
+        </p>
+
+        <p>
+          Thus, if we chose $f_{n,\nu} = g_{n,\nu}/\omega_{n,\nu}^2$, this term would vanish and we
+          would recover the full polaron transform. In the variational case we allow residual
+          linear couplings:
+        </p>
+
+        <p>
+        \[
+          \hat{H}_\mathrm{vPT}
+          \supset
+          \sum_{n,\nu}
+          \big(
+            \omega_{n,\nu}^2 f_{n,\nu} - g_{n,\nu}
+          \big)
+          \hat{R}_{n,\nu} \lvert n\rangle\langle n\rvert.
+        \]
+        </p>
+
+        <p>
+          The diagonal projector terms combine as
+        </p>
+
+        <p>
+        \[
+          \frac{1}{2}\omega_{n,\nu}^2 f_{n,\nu}^2
+          - g_{n,\nu} f_{n,\nu},
+        \]
+        </p>
+
+        <p>
+          which can be absorbed into a renormalized site energy:
+        </p>
+
+        <p>
+        \[
+          \tilde{\varepsilon}_n
+          =
+          \varepsilon_n
+          +
+          \sum_{\nu}
+          \left(
+            \frac{1}{2}\omega_{n,\nu}^2 f_{n,\nu}^2
+            - g_{n,\nu} f_{n,\nu}
+          \right).
+        \]
+        </p>
+      </div>
+    </section>
+
+    <!-- 5. Transform of off-diagonal couplings -->
+    <section class="section section-alt">
+      <div class="container">
+        <h2>5. Transformed off-diagonal excitonic couplings</h2>
+
+        <p>
+          For $n\neq m$, the operator $\lvert n\rangle\langle m\rvert$ transforms as
+        </p>
+
+        <p>
+        \[
+          e^{\hat{S}} \lvert n\rangle\langle m\rvert e^{-\hat{S}}
+          =
+          e^{\hat{X}_{nm}} \lvert n\rangle\langle m\rvert,
+        \]
+        </p>
+
+        <p>
+          where we define the collective momentum operators
+        </p>
+
+        <p>
+        \[
+          \hat{X}_n
+          =
+          i \sum_\nu f_{n,\nu}\hat{P}_{n,\nu},
+          \qquad
+          \hat{X}_{nm} = \hat{X}_n - \hat{X}_m.
+        \]
+        </p>
+
+        <p>
+          The proof is identical to the full polaron case: the first commutator is
+        </p>
+
+        <p>
+        \[
+          [\hat{S},\lvert n\rangle\langle m\rvert]
+          =
+          (\hat{X}_n - \hat{X}_m)\lvert n\rangle\langle m\rvert,
+        \]
+        </p>
+
+        <p>
+          and nested commutators generate powers of $(\hat{X}_n - \hat{X}_m)$, which resum to
+          $e^{\hat{X}_{nm}}$.
+        </p>
+
+        <p>
+          Thus the transformed system Hamiltonian becomes
+        </p>
+
+        <p>
+        \[
+          e^{\hat{S}}\hat{H}_\mathrm{s}e^{-\hat{S}}
+          =
+          \sum_n \varepsilon_n \lvert n\rangle\langle n\rvert
+          +
+          \sum_{n}\sum_{m\neq n}
+          \Delta_{nm}
+          \left(
+            e^{\hat{X}_{nm}} \lvert n\rangle\langle m\rvert
+            +
+            e^{-\hat{X}_{nm}} \lvert m\rangle\langle n\rvert
+          \right).
+        \]
+        </p>
+
+        <p>
+          Combining everything, the variationally transformed Hamiltonian can be written as
+        </p>
+
+        <p>
+        \[
+          \hat{H}_\mathrm{vPT}
+          =
+          \sum_n
+          \tilde{\varepsilon}_n
+          \lvert n\rangle\langle n\rvert
+          +
+          \sum_{n}\sum_{m\neq n}
+          \Delta_{nm}
+          \left(
+            e^{\hat{X}_{nm}} \lvert n\rangle\langle m\rvert
+            +
+            e^{-\hat{X}_{nm}} \lvert m\rangle\langle n\rvert
+          \right)
+        \]
+        </p>
+
+        <p>
+        \[
+          \quad
+          +
+          \sum_{n,\nu}
+          \frac{1}{2}
+          \big(
+            \hat{P}_{n,\nu}^2 + \omega_{n,\nu}^2 \hat{R}_{n,\nu}^2
+          \big)
+          +
+          \sum_{n,\nu}
+          \big(
+            \omega_{n,\nu}^2 f_{n,\nu} - g_{n,\nu}
+          \big)
+          \hat{R}_{n,\nu} \lvert n\rangle\langle n\rvert.
+        \]
+        </p>
+      </div>
+    </section>
+
+    <!-- 6. Variational principle -->
+    <section class="section">
+      <div class="container">
+        <h2>6. Variational determination of the displacement parameters</h2>
+
+        <p>
+          The set of parameters $\{f_{n,\nu}\}$ is chosen to optimize some variational criterion.
+          A common choice is the Feynman–Bogoliubov upper bound on the free energy. We split
+          the transformed Hamiltonian into
+        </p>
+
+        <p>
+        \[
+          \hat{H}_\mathrm{vPT}
+          =
+          \hat{H}_0
+          + \hat{H}_\mathrm{I},
+        \]
+        </p>
+
+        <p>
+          where $\hat{H}_0$ is a solvable reference Hamiltonian and $\hat{H}_\mathrm{I}$ is treated
+          perturbatively. A convenient choice is to include in $\hat{H}_0$ the renormalized
+          exciton energies and the bare bath,
+        </p>
+
+        <p>
+        \[
+          \hat{H}_0
+          =
+          \sum_n \tilde{\varepsilon}_n \lvert n\rangle\langle n\rvert
+          +
+          \sum_{n,\nu}
+          \frac{1}{2}
+          \big(
+            \hat{P}_{n,\nu}^2 + \omega_{n,\nu}^2 \hat{R}_{n,\nu}^2
+          \big),
+        \]
+        </p>
+
+        <p>
+          while $\hat{H}_\mathrm{I}$ collects the bath-dressed off-diagonal couplings and the
+          residual site-diagonal system–bath coupling,
+        </p>
+
+        <p>
+        \[
+          \hat{H}_\mathrm{I}
+          =
+          \sum_{n}\sum_{m\neq n}
+          \Delta_{nm}
+          \left(
+            e^{\hat{X}_{nm}} \lvert n\rangle\langle m\rvert
+            +
+            e^{-\hat{X}_{nm}} \lvert m\rangle\langle n\rvert
+          \right)
+          +
+          \sum_{n,\nu}
+          \big(
+            \omega_{n,\nu}^2 f_{n,\nu} - g_{n,\nu}
+          \big)
+          \hat{R}_{n,\nu} \lvert n\rangle\langle n\rvert.
+        \]
+        </p>
+
+        <p>
+          The Feynman–Bogoliubov free energy functional at temperature $T = 1/\beta$ is
+        </p>
+
+        <p>
+        \[
+          F_\mathrm{FB}
+          =
+          F_0
+          + \langle \hat{H}_\mathrm{I} \rangle_0,
+        \]
+        </p>
+
+        <p>
+          where
+        </p>
+
+        <p>
+        \[
+          F_0
+          =
+          -\frac{1}{\beta}
+          \ln \mathrm{Tr}
+          \left[
+            e^{-\beta \hat{H}_0}
+          \right],
+          \qquad
+          \langle \cdots \rangle_0
+          =
+          \frac{
+            \mathrm{Tr}
+            \left[
+              (\cdots)\,
+              e^{-\beta \hat{H}_0}
+            \right]
+          }{
+            \mathrm{Tr}
+            \left[
+              e^{-\beta \hat{H}_0}
+            \right]
+          }.
+        \]
+        </p>
+
+        <p>
+          The optimal $\{f_{n,\nu}\}$ are obtained from the variational conditions
+        </p>
+
+        <p>
+        \[
+          \frac{\partial F_\mathrm{FB}}{\partial f_{n,\nu}} = 0
+          \quad
+          \text{for all } (n,\nu).
+        \]
+        </p>
+
+        <p>
+          Evaluating these derivatives requires the expectation values
+        </p>
+
+        <ul>
+          <li>
+            $\langle e^{\pm \hat{X}_{nm}} \rangle_0$, which give the usual polaronic renormalization
+            of the excitonic couplings;
+          </li>
+          <li>
+            $\langle \hat{R}_{n,\nu}\rangle_0 = 0$ (for harmonic baths at equilibrium);
+          </li>
+          <li>
+            $\langle \hat{X}_n^2 \rangle_0$, which are directly related to the bath spectral
+            densities and temperature.
+          </li>
+        </ul>
+
+        <p>
+          In particular, the renormalized couplings take the form
+        </p>
+
+        <p>
+        \[
+          \Delta_{nm}^\mathrm{eff}
+          =
+          \Delta_{nm}
+          \, \langle e^{\hat{X}_{nm}} \rangle_0
+          =
+          \Delta_{nm}
+          \exp\big[
+            -\tfrac{1}{2}
+            \langle \hat{X}_{nm}^2 \rangle_0
+          \big],
+        \]
+        </p>
+
+        <p>
+          where
+        </p>
+
+        <p>
+        \[
+          \langle \hat{X}_{nm}^2 \rangle_0
+          =
+          \sum_\nu f_{n,\nu}^2
+          \langle \hat{P}_{n,\nu}^2 \rangle_0
+          +
+          \sum_\nu f_{m,\nu}^2
+          \langle \hat{P}_{m,\nu}^2 \rangle_0
+          -
+          2 \sum_\nu f_{n,\nu} f_{m,\nu}
+          \langle \hat{P}_{n,\nu}\hat{P}_{m,\nu} \rangle_0,
+        \]
+        </p>
+
+        <p>
+          which simplifies because different baths are independent.
+        </p>
+
+        <p>
+          The resulting self-consistency equations for $f_{n,\nu}$ balance the gain in diagonal
+          energy (through $\tilde{\varepsilon}_n$) against the suppression of coherent couplings
+          (through $\Delta_{nm}^\mathrm{eff}$) and any residual linear system–bath interaction.
+          In limiting cases:
+        </p>
+
+        <ul>
+          <li>
+            Weak system–bath coupling $\Rightarrow f_{n,\nu}\to 0$: we recover the bare exciton
+            Hamiltonian.
+          </li>
+          <li>
+            Strong coupling / low temperature $\Rightarrow f_{n,\nu}\to g_{n,\nu}/\omega_{n,\nu}^2$:
+            we recover the full polaron transform.
+          </li>
+        </ul>
+
+        <p>
+          The variational polaron frame thus smoothly interpolates between these two regimes and
+          often provides a more accurate starting point for perturbative or approximate treatments
+          of the residual interactions.
+        </p>
+
+        <p style="margin-top:1.5rem;">
+          <a href="../notes.html">&larr; Back to Notes</a>
+        </p>
       </div>
     </section>
   </main>
