@@ -16,7 +16,10 @@
       }
     };
   </script>
-  <script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  <script
+    async
+    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+  ></script>
 </head>
 <body>
   <header class="site-header">
@@ -42,28 +45,27 @@
         <h1>Fast Fourier Transform (FFT)</h1>
         <p>
           These notes present the discrete Fourier transform (DFT) as a linear operator on an
-          $N$-dimensional Hilbert space, and derive the radix-2 fast Fourier transform (FFT)
-          factorization using Dirac notation. The derivation uses an even&ndash;odd decomposition
-          of the Hilbert space $\\mathcal{H}_N$ into $\\mathcal{H}_2 \\otimes \\mathcal{H}_M$ with $N=2M$,
-          followed by a sequence of unitary operators that correspond to smaller Fourier transforms,
-          diagonal twiddle factors, and a Hadamard on the first qubit.
+          $N$-dimensional Hilbert space and derive the radix-2 fast Fourier transform (FFT)
+          factorization using Dirac notation. The key idea is to decompose the Hilbert space
+          into even and odd subspaces, express the DFT in terms of two smaller DFTs, and then
+          identify the block-matrix structure that leads to the familiar FFT butterfly.
         </p>
       </div>
     </section>
 
-    <!-- I. DFT as operator -->
+    <!-- I. DFT as an operator -->
     <section class="section section-alt">
       <div class="container">
         <h2>I. Discrete Fourier transform as an operator</h2>
 
         <p>
-          Let $\\mathcal{H}_N$ be an $N$-dimensional Hilbert space with orthonormal basis
+          Let $\mathcal{H}_N$ be an $N$-dimensional Hilbert space with orthonormal basis
         </p>
 
         <p>
-        \\[
-          \\{\\lvert 0\\rangle,\\lvert 1\\rangle,\\dots,\\lvert N-1\\rangle\\}.
-        \\]
+        \[
+          \{\,\lvert 0\rangle,\lvert 1\rangle,\dots,\lvert N-1\rangle\,\}.
+        \]
         </p>
 
         <p>
@@ -71,25 +73,24 @@
         </p>
 
         <p>
-        \\[
-          \\lvert x\\rangle
+        \[
+          \lvert x\rangle
           =
-          \\sum_{n=0}^{N-1} x_n \\lvert n\\rangle.
-        \\]
+          \sum_{n=0}^{N-1} x_n \lvert n\rangle.
+        \]
         </p>
 
         <p>
-          We define the discrete Fourier transform (DFT) operator $\\hat{F}_N$ via
+          The discrete Fourier transform is the linear map
         </p>
 
         <p>
-        \\[
-          \\lvert X\\rangle
+        \[
+          \lvert X\rangle
+          = \hat{F}_N \lvert x\rangle
           =
-          \\hat{F}_N \\lvert x\\rangle,
-          \\qquad
-          X_k = \\langle k\\vert X\\rangle,
-        \\]
+          \sum_{k=0}^{N-1} X_k \lvert k\rangle,
+        \]
         </p>
 
         <p>
@@ -97,248 +98,168 @@
         </p>
 
         <p>
-        \\[
-          \\langle k\\vert \\hat{F}_N \\vert n\\rangle
+        \[
+          \langle k\vert \hat{F}_N \vert n\rangle
           =
-          \\frac{1}{\\sqrt{N}}\\,\\omega_N^{kn},
-          \\qquad
-          \\omega_N := e^{-2\\pi i / N}.
-        \\]
+          \frac{1}{\sqrt{N}}\,
+          \omega_N^{kn},
+          \qquad
+          \omega_N := e^{- 2\pi i / N}.
+        \]
         </p>
 
         <p>
-          Thus, in the $\\{\\lvert n\\rangle\\}$ basis, the DFT matrix $F_N$ has entries
+          Therefore
         </p>
 
         <p>
-        \\[
-          (F_N)_{k n}
+        \[
+          X_k
           =
-          \\frac{1}{\\sqrt{N}}\\,\\omega_N^{k n},
-        \\]
-        </p>
-
-        <p>
-          and can be written as
-        </p>
-
-        <p>
-        \\[
-          F_N
+          \langle k\vert \hat{F}_N \vert x\rangle
           =
-          \\frac{1}{\\sqrt{N}}
-          \\begin{pmatrix}
-            1 & 1 & 1 & \\cdots & 1 \\\\
-            1 & \\omega_N & \\omega_N^2 & \\cdots & \\omega_N^{N-1} \\\\
-            1 & \\omega_N^2 & \\omega_N^4 & \\cdots & \\omega_N^{2(N-1)} \\\\
-            \\vdots & \\vdots & \\vdots & \\ddots & \\vdots \\\\
-            1 & \\omega_N^{N-1} & \\omega_N^{2(N-1)} & \\cdots & \\omega_N^{(N-1)(N-1)}
-          \\end{pmatrix}.
-        \\]
+          \frac{1}{\sqrt{N}}
+          \sum_{n=0}^{N-1}
+          x_n \omega_N^{kn},
+          \qquad
+          k = 0,\dots,N-1.
+        \tag{1}
+        \]
         </p>
       </div>
     </section>
 
-    <!-- II. Even-odd decomposition -->
+    <!-- II. Even–odd decomposition -->
     <section class="section">
       <div class="container">
         <h2>II. Even–odd decomposition of the Hilbert space</h2>
 
         <p>
-          Assume $N = 2M$. We identify
+          Assume $N$ is even, $N = 2M$. Then we can identify
         </p>
 
         <p>
-        \\[
-          \\mathcal{H}_N
-          \\cong
-          \\mathcal{H}_2 \\otimes \\mathcal{H}_M,
-        \\]
+        \[
+          \mathcal{H}_N \cong \mathcal{H}_2 \otimes \mathcal{H}_M,
+        \]
         </p>
 
         <p>
-          via
+          by mapping
         </p>
 
         <p>
-        \\[
-          \\lvert 2m\\rangle \\leftrightarrow \\lvert 0\\rangle \\otimes \\lvert m\\rangle,
-          \\qquad
-          \\lvert 2m+1\\rangle \\leftrightarrow \\lvert 1\\rangle \\otimes \\lvert m\\rangle,
-          \\qquad
-          m = 0,\\dots,M-1.
-        \\]
+        \[
+          \lvert 2m\rangle \longleftrightarrow \lvert 0\rangle \otimes \lvert m\rangle,
+          \qquad
+          \lvert 2m+1\rangle \longleftrightarrow \lvert 1\rangle \otimes \lvert m\rangle,
+          \quad
+          m = 0,\dots,M-1.
+        \tag{2}
+        \]
         </p>
 
         <p>
-          A general input vector is
+          A general state becomes
         </p>
 
         <p>
-        \\[
-          \\lvert x\\rangle
+        \[
+        \begin{aligned}
+          \lvert x\rangle
+          &=
+          \sum_{n=0}^{N-1} x_n \lvert n\rangle
           =
-          \\sum_{n=0}^{N-1} x_n \\lvert n\\rangle
-          =
-          \\sum_{m=0}^{M-1} x_{2m}\\lvert 2m\\rangle
+          \sum_{m=0}^{M-1} x_{2m}\lvert 2m\rangle
           +
-          \\sum_{m=0}^{M-1} x_{2m+1}\\lvert 2m+1\\rangle.
-        \\]
-        </p>
-
-        <p>
-          Using the tensor-product structure,
-        </p>
-
-        <p>
-        \\[
-          \\lvert 2m\\rangle = \\lvert 0\\rangle \\otimes \\lvert m\\rangle,
-          \\qquad
-          \\lvert 2m+1\\rangle = \\lvert 1\\rangle \\otimes \\lvert m\\rangle,
-        \\]
-        </p>
-
-        <p>
-          we obtain
-        </p>
-
-        <p>
-        \\[
-          \\lvert x\\rangle
-          =
-          \\lvert 0\\rangle \\otimes
-          \\sum_{m=0}^{M-1} x_{2m}\\lvert m\\rangle
+          \sum_{m=0}^{M-1} x_{2m+1}\lvert 2m+1\rangle
+          \\
+          &=
+          \lvert 0\rangle \otimes
+          \left(
+            \sum_{m=0}^{M-1} x_{2m}\lvert m\rangle
+          \right)
           +
-          \\lvert 1\\rangle \\otimes
-          \\sum_{m=0}^{M-1} x_{2m+1}\\lvert m\\rangle.
-        \\]
+          \lvert 1\rangle \otimes
+          \left(
+            \sum_{m=0}^{M-1} x_{2m+1}\lvert m\rangle
+          \right).
+        \end{aligned}
+        \tag{3}
+        \]
         </p>
 
         <p>
-          Define the even and odd subvectors
+          Define the even and odd components
         </p>
 
         <p>
-        \\[
-          \\lvert x^{(e)}\\rangle
+        \[
+          \lvert x^{(e)}\rangle
           :=
-          \\sum_{m=0}^{M-1} x_{2m}\\lvert m\\rangle,
-          \\qquad
-          \\lvert x^{(o)}\\rangle
+          \sum_{m=0}^{M-1} x_{2m}\lvert m\rangle,
+          \qquad
+          \lvert x^{(o)}\rangle
           :=
-          \\sum_{m=0}^{M-1} x_{2m+1}\\lvert m\\rangle.
-        \\]
+          \sum_{m=0}^{M-1} x_{2m+1}\lvert m\rangle.
+        \tag{4}
+        \]
         </p>
 
         <p>
-          Then the full state can be written as
+          Then we can write
         </p>
 
         <p>
-        \\[
-          \\lvert x\\rangle
+        \[
+          \lvert x\rangle
           =
-          \\lvert 0\\rangle \\otimes \\lvert x^{(e)}\\rangle
+          \lvert 0\rangle \otimes \lvert x^{(e)}\rangle
           +
-          \\lvert 1\\rangle \\otimes \\lvert x^{(o)}\\rangle.
-        \\]
+          \lvert 1\rangle \otimes \lvert x^{(o)}\rangle.
+        \tag{5}
+        \]
         </p>
       </div>
     </section>
 
-    <!-- III. Action of F_N on decomposed state -->
+    <!-- III. Radix-2 FFT formula -->
     <section class="section section-alt">
       <div class="container">
-        <h2>III. Action of $\\hat{F}_N$ on the decomposed state</h2>
+        <h2>III. Radix-2 FFT: splitting into two $M$-point DFTs</h2>
 
         <p>
-          Let
+          Starting from Eq. (1), we split the sum over $n$ into even and odd parts:
         </p>
 
         <p>
-        \\[
-          \\lvert X\\rangle
-          =
-          \\hat{F}_N \\lvert x\\rangle
-          =
-          \\sum_{k=0}^{N-1} X_k \\lvert k\\rangle.
-        \\]
-        </p>
-
-        <p>
-          By definition,
-        </p>
-
-        <p>
-        \\[
-          X_k
-          =
-          \\langle k\\vert \\hat{F}_N \\vert x\\rangle
-          =
-          \\frac{1}{\\sqrt{N}}
-          \\sum_{n=0}^{N-1} x_n\\,\\omega_N^{k n}.
-        \\]
-        </p>
-
-        <h3>A. Even and odd indices</h3>
-
-        <p>
-          Split the sum over $n$ into even and odd parts:
-        </p>
-
-        <p>
-        \\[
-        \\begin{aligned}
+        \[
+        \begin{aligned}
           X_k
           &=
-          \\frac{1}{\\sqrt{N}}
-          \\left(
-            \\sum_{m=0}^{M-1} x_{2m}\\,\\omega_N^{k(2m)}
-            +
-            \\sum_{m=0}^{M-1} x_{2m+1}\\,\\omega_N^{k(2m+1)}
-          \\right)
-          \\\\
+          \frac{1}{\sqrt{N}}
+          \sum_{n=0}^{N-1}
+          x_n \omega_N^{kn}
+          \\
           &=
-          \\frac{1}{\\sqrt{N}}
-          \\left(
-            \\sum_{m=0}^{M-1} x_{2m}\\,\\omega_N^{2km}
+          \frac{1}{\sqrt{N}}
+          \left(
+            \sum_{m=0}^{M-1} x_{2m}\omega_N^{k(2m)}
             +
-            \\omega_N^k
-            \\sum_{m=0}^{M-1} x_{2m+1}\\,\\omega_N^{2km}
-          \\right).
-        \\end{aligned}
-        \\]
-        </p>
-
-        <p>
-          Define
-        </p>
-
-        <p>
-        \\[
-          \\tilde{E}_k
-          :=
-          \\sum_{m=0}^{M-1} x_{2m}\\,\\omega_N^{2km},
-          \\qquad
-          \\tilde{O}_k
-          :=
-          \\sum_{m=0}^{M-1} x_{2m+1}\\,\\omega_N^{2km},
-        \\]
-        </p>
-
-        <p>
-          so that
-        </p>
-
-        <p>
-        \\[
-          X_k
-          =
-          \\frac{1}{\\sqrt{N}}
-          \\left(
-            \\tilde{E}_k + \\omega_N^k \\tilde{O}_k
-          \\right).
-        \\]
+            \sum_{m=0}^{M-1} x_{2m+1}\omega_N^{k(2m+1)}
+          \right)
+          \\
+          &=
+          \frac{1}{\sqrt{N}}
+          \left(
+            \sum_{m=0}^{M-1} x_{2m}(\omega_N^2)^{km}
+            +
+            \omega_N^{k}
+            \sum_{m=0}^{M-1} x_{2m+1}(\omega_N^2)^{km}
+          \right).
+        \end{aligned}
+        \tag{6}
+        \]
         </p>
 
         <p>
@@ -346,328 +267,230 @@
         </p>
 
         <p>
-        \\[
-          \\omega_N^2
+        \[
+          \omega_N^2
           =
-          e^{-2\\pi i / N \\cdot 2}
+          e^{-2\pi i (2)/N}
           =
-          e^{-2\\pi i / (N/2)}
+          e^{-2\pi i /(N/2)}
           =
-          \\omega_{N/2},
-        \\]
+          \omega_{N/2}
+          =
+          \omega_M.
+        \tag{7}
+        \]
         </p>
 
         <p>
-          so we can rewrite
+          Define
         </p>
 
         <p>
-        \\[
-          \\tilde{E}_k
+        \[
+          \tilde{E}_k
+          :=
+          \sum_{m=0}^{M-1} x_{2m}\omega_M^{km},
+          \qquad
+          \tilde{O}_k
+          :=
+          \sum_{m=0}^{M-1} x_{2m+1}\omega_M^{km}.
+        \tag{8}
+        \]
+        </p>
+
+        <p>
+          Then Eq. (6) becomes
+        </p>
+
+        <p>
+        \[
+          X_k
           =
-          \\sum_{m=0}^{M-1} x_{2m}\\,\\omega_{N/2}^{km},
-          \\qquad
-          \\tilde{O}_k
-          =
-          \\sum_{m=0}^{M-1} x_{2m+1}\\,\\omega_{N/2}^{km}.
-        \\]
-        </p>
-
-        <h3>B. Relation to the smaller Fourier transform $\\hat{F}_M$</h3>
-
-        <p>
-          Define $\\hat{F}_M$ on $\\mathcal{H}_M$ by
+          \frac{1}{\sqrt{N}}
+          \left(
+            \tilde{E}_k + \omega_N^k \tilde{O}_k
+          \right).
+        \tag{9}
+        \]
         </p>
 
         <p>
-        \\[
-          \\hat{F}_M \\lvert m\\rangle
-          =
-          \\frac{1}{\\sqrt{M}}
-          \\sum_{k=0}^{M-1} \\omega_M^{km} \\lvert k\\rangle,
-          \\qquad
-          \\omega_M := e^{-2\\pi i/M} = \\omega_{N/2}.
-        \\]
+          Now define the $M$-point DFT acting on the even and odd subsequences:
         </p>
 
         <p>
-          Let
-        </p>
-
-        <p>
-        \\[
-          \\lvert E\\rangle := \\hat{F}_M \\lvert x^{(e)}\\rangle
-          =
-          \\sum_{k=0}^{M-1} E_k \\lvert k\\rangle,
-          \\qquad
-          \\lvert O\\rangle := \\hat{F}_M \\lvert x^{(o)}\\rangle
-          =
-          \\sum_{k=0}^{M-1} O_k \\lvert k\\rangle.
-        \\]
-        </p>
-
-        <p>
-          Then
-        </p>
-
-        <p>
-        \\[
-        \\begin{aligned}
+        \[
           E_k
-          &=
-          \\langle k\\vert \\hat{F}_M \\vert x^{(e)}\\rangle
-          =
-          \\frac{1}{\\sqrt{M}}
-          \\sum_{m=0}^{M-1} x_{2m}\\,\\omega_M^{km}
-          =
-          \\frac{1}{\\sqrt{M}}\\,\\tilde{E}_k,
-          \\\\
+          :=
+          \frac{1}{\sqrt{M}}\,\tilde{E}_k,
+          \qquad
           O_k
-          &=
-          \\langle k\\vert \\hat{F}_M \\vert x^{(o)}\\rangle
-          =
-          \\frac{1}{\\sqrt{M}}
-          \\sum_{m=0}^{M-1} x_{2m+1}\\,\\omega_M^{km}
-          =
-          \\frac{1}{\\sqrt{M}}\\,\\tilde{O}_k.
-        \\end{aligned}
-        \\]
+          :=
+          \frac{1}{\sqrt{M}}\,\tilde{O}_k.
+        \tag{10}
+        \]
         </p>
 
         <p>
-          Hence
+          Since $N = 2M$, we have $\sqrt{M/N} = 1/\sqrt{2}$ and therefore
         </p>
 
         <p>
-        \\[
-          \\tilde{E}_k = \\sqrt{M}\\,E_k,
-          \\qquad
-          \\tilde{O}_k = \\sqrt{M}\\,O_k.
-        \\]
-        </p>
-
-        <p>
-          Substituting into $X_k$,
-        </p>
-
-        <p>
-        \\[
-        \\begin{aligned}
-          X_k
-          &=
-          \\frac{1}{\\sqrt{N}}
-          \\left(
-            \\sqrt{M}\\,E_k
-            +
-            \\omega_N^k \\sqrt{M}\\,O_k
-          \\right)
-          =
-          \\sqrt{\\frac{M}{N}}
-          \\left(
-            E_k + \\omega_N^k O_k
-          \\right).
-        \\end{aligned}
-        \\]
-        </p>
-
-        <p>
-          Since $N=2M$, we have $\\sqrt{M/N} = 1/\\sqrt{2}$, so
-        </p>
-
-        <p>
-        \\[
+        \[
           X_k
           =
-          \\frac{1}{\\sqrt{2}}
-          \\left(
-            E_k + \\omega_N^k O_k
-          \\right),
-          \\qquad
-          k = 0,\\dots,M-1.
-        \\]
+          \frac{1}{\sqrt{2}}
+          \left(
+            E_k + \omega_N^k O_k
+          \right),
+          \qquad
+          k = 0,\dots,M-1.
+        \tag{11}
+        \]
         </p>
 
         <p>
-          A similar calculation for $X_{k+M}$ yields
+          A similar calculation for $X_{k+M}$ gives
         </p>
 
         <p>
-        \\[
-        \\begin{aligned}
-          X_{k+M}
-          &=
-          \\frac{1}{\\sqrt{N}}
-          \\sum_{n=0}^{N-1} x_n\\,\\omega_N^{(k+M)n}
-          =
-          \\frac{1}{\\sqrt{N}}
-          \\sum_{n=0}^{N-1} x_n\\,\\omega_N^{kn} \\omega_N^{Mn}.
-        \\end{aligned}
-        \\]
-        </p>
-
-        <p>
-          Using $M = N/2$ and $\\omega_N^{M} = e^{-2\\pi i M/N} = e^{-\\pi i} = -1$, we have
-          $\\omega_N^{Mn} = (-1)^n$, and one finds
-        </p>
-
-        <p>
-        \\[
+        \[
           X_{k+M}
           =
-          \\frac{1}{\\sqrt{2}}
-          \\left(
-            E_k - \\omega_N^k O_k
-          \\right),
-          \\qquad
-          k = 0,\\dots,M-1.
-        \\]
+          \frac{1}{\sqrt{2}}
+          \left(
+            E_k - \omega_N^k O_k
+          \right),
+          \qquad
+          k = 0,\dots,M-1.
+        \tag{12}
+        \]
         </p>
 
         <p>
-          These are the standard radix-2 FFT “butterfly” relations:
-        </p>
-
-        <p>
-        \\[
-          X_k
-          =
-          \\frac{1}{\\sqrt{2}}\\big(E_k + \\omega_N^k O_k\\big),
-          \\qquad
-          X_{k+M}
-          =
-          \\frac{1}{\\sqrt{2}}\\big(E_k - \\omega_N^k O_k\\big).
-        \\]
+          Equations (11) and (12) are the standard radix-2 FFT “butterfly” relations.
         </p>
       </div>
     </section>
 
-    <!-- IV. Operator factorization -->
+    <!-- IV. Operator form in Dirac notation -->
     <section class="section">
       <div class="container">
-        <h2>IV. Operator factorization in Dirac notation</h2>
-
-        <h3>A. Two smaller Fourier transforms</h3>
+        <h2>IV. Operator form in Dirac notation</h2>
 
         <p>
-          On the decomposed space $\\mathcal{H}_N \\cong \\mathcal{H}_2 \\otimes \\mathcal{H}_M$, define
+          On $\mathcal{H}_N \cong \mathcal{H}_2 \otimes \mathcal{H}_M$, define
         </p>
 
         <p>
-        \\[
-          \\hat{G}
+        \[
+          \hat{G}
           :=
-          \\hat{I}_2 \\otimes \\hat{F}_M.
-        \\]
+          \hat{I}_2 \otimes \hat{F}_M.
+        \tag{13}
+        \]
         </p>
 
         <p>
-          Acting on $\\lvert x\\rangle = \\lvert 0\\rangle \\otimes \\lvert x^{(e)}\\rangle
-          + \\lvert 1\\rangle \\otimes \\lvert x^{(o)}\\rangle$,
+          Acting on $\lvert x\rangle$ from Eq. (5), we obtain
         </p>
 
         <p>
-        \\[
-        \\begin{aligned}
-          \\hat{G}\\lvert x\\rangle
+        \[
+        \begin{aligned}
+          \hat{G}\lvert x\rangle
           &=
-          (\\hat{I}_2 \\otimes \\hat{F}_M)
-          \\big(
-            \\lvert 0\\rangle \\otimes \\lvert x^{(e)}\\rangle
+          (\hat{I}_2 \otimes \hat{F}_M)
+          \left(
+            \lvert 0\rangle \otimes \lvert x^{(e)}\rangle
             +
-            \\lvert 1\\rangle \\otimes \\lvert x^{(o)}\\rangle
-          \\big)
-          \\\\
+            \lvert 1\rangle \otimes \lvert x^{(o)}\rangle
+          \right)
+          \\
           &=
-          \\lvert 0\\rangle \\otimes \\hat{F}_M\\lvert x^{(e)}\\rangle
+          \lvert 0\rangle \otimes \hat{F}_M\lvert x^{(e)}\rangle
           +
-          \\lvert 1\\rangle \\otimes \\hat{F}_M\\lvert x^{(o)}\\rangle
-          \\\\
+          \lvert 1\rangle \otimes \hat{F}_M\lvert x^{(o)}\rangle
+          \\
           &=
-          \\lvert 0\\rangle \\otimes \\lvert E\\rangle
+          \lvert 0\rangle \otimes \lvert E\rangle
           +
-          \\lvert 1\\rangle \\otimes \\lvert O\\rangle.
-        \\end{aligned}
-        \\]
-        </p>
-
-        <h3>B. Twiddle-factor operator</h3>
-
-        <p>
-          Define the diagonal “twiddle-factor” operator on $\\mathcal{H}_M$:
+          \lvert 1\rangle \otimes \lvert O\rangle,
+        \end{aligned}
+        \tag{14}
+        \]
         </p>
 
         <p>
-        \\[
-          \\hat{D}
+          where
+        </p>
+
+        <p>
+        \[
+          \lvert E\rangle
           :=
-          \\sum_{k=0}^{M-1} \\omega_N^k \\lvert k\\rangle\\langle k\\rvert.
-        \\]
-        </p>
-
-        <p>
-          Now define
-        </p>
-
-        <p>
-        \\[
-          \\hat{T}
+          \hat{F}_M\lvert x^{(e)}\rangle
+          =
+          \sum_{k=0}^{M-1} E_k \lvert k\rangle,
+          \qquad
+          \lvert O\rangle
           :=
-          \\lvert 0\\rangle\\langle 0\\rvert \\otimes \\hat{I}_M
+          \hat{F}_M\lvert x^{(o)}\rangle
+          =
+          \sum_{k=0}^{M-1} O_k \lvert k\rangle.
+        \tag{15}
+        \]
+        </p>
+
+        <h3>Twiddle factor operator</h3>
+
+        <p>
+          Define the diagonal “twiddle” operator on $\mathcal{H}_M$,
+        </p>
+
+        <p>
+        \[
+          \hat{D}
+          :=
+          \sum_{k=0}^{M-1}
+          \omega_N^k\,\lvert k\rangle\langle k\rvert.
+        \tag{16}
+        \]
+        </p>
+
+        <p>
+          Then define
+        </p>
+
+        <p>
+        \[
+          \hat{T}
+          :=
+          \lvert 0\rangle\langle 0\rvert \otimes \hat{I}_M
           +
-          \\lvert 1\\rangle\\langle 1\\rvert \\otimes \\hat{D}.
-        \\]
+          \lvert 1\rangle\langle 1\rvert \otimes \hat{D}.
+        \tag{17}
+        \]
         </p>
 
         <p>
-          Acting on $\\lvert 0\\rangle \\otimes \\lvert E\\rangle + \\lvert 1\\rangle \\otimes \\lvert O\\rangle$,
+          Acting on Eq. (14),
         </p>
 
         <p>
-        \\[
-          \\hat{T}
-          \\big(
-            \\lvert 0\\rangle \\otimes \\lvert E\\rangle
+        \[
+          \hat{T}
+          \left(
+            \lvert 0\rangle \otimes \lvert E\rangle
             +
-            \\lvert 1\\rangle \\otimes \\lvert O\\rangle
-          \\big)
+            \lvert 1\rangle \otimes \lvert O\rangle
+          \right)
           =
-          \\lvert 0\\rangle \\otimes \\lvert E\\rangle
+          \lvert 0\rangle \otimes \lvert E\rangle
           +
-          \\lvert 1\\rangle \\otimes \\hat{D}\\lvert O\\rangle.
-        \\]
-        </p>
-
-        <p>
-          Write $\\lvert O'\\rangle := \\hat{D} \\lvert O\\rangle$.
-        </p>
-
-        <h3>C. Hadamard on the first qubit</h3>
-
-        <p>
-          Define the Hadamard operator on $\\mathcal{H}_2$:
-        </p>
-
-        <p>
-        \\[
-          \\hat{H}
-          =
-          \\frac{1}{\\sqrt{2}}
-          \\big(
-            \\lvert 0\\rangle\\langle 0\\rvert
-            +
-            \\lvert 0\\rangle\\langle 1\\rvert
-            +
-            \\lvert 1\\rangle\\langle 0\\rvert
-            -
-            \\lvert 1\\rangle\\langle 1\\rvert
-          \\big)
-          =
-          \\frac{1}{\\sqrt{2}}
-          \\begin{pmatrix}
-            1 & 1 \\\\
-            1 & -1
-          \\end{pmatrix}.
-        \\]
+          \lvert 1\rangle \otimes \hat{D}\lvert O\rangle.
+        \tag{18}
+        \]
         </p>
 
         <p>
@@ -675,503 +498,200 @@
         </p>
 
         <p>
-        \\[
-          \\hat{U}
+        \[
+          \lvert O'\rangle
           :=
-          \\hat{H} \\otimes \\hat{I}_M.
-        \\]
+          \hat{D}\lvert O\rangle
+          =
+          \sum_{k=0}^{M-1}
+          \omega_N^k O_k \lvert k\rangle.
+        \tag{19}
+        \]
+        </p>
+
+        <h3>Hadamard on the first qubit</h3>
+
+        <p>
+          The Hadamard operator on $\mathcal{H}_2$ is
+        </p>
+
+        <p>
+        \[
+          \hat{H}
+          =
+          \frac{1}{\sqrt{2}}
+          \big(
+            \lvert 0\rangle\langle 0\rvert
+            +
+            \lvert 0\rangle\langle 1\rvert
+            +
+            \lvert 1\rangle\langle 0\rvert
+            -
+            \lvert 1\rangle\langle 1\rvert
+          \big).
+        \tag{20}
+        \]
+        </p>
+
+        <p>
+          On $\mathcal{H}_2 \otimes \mathcal{H}_M$ we define
+        </p>
+
+        <p>
+        \[
+          \hat{U}
+          :=
+          \hat{H} \otimes \hat{I}_M.
+        \tag{21}
+        \]
         </p>
 
         <p>
           Acting on
-          $\\lvert \\psi\\rangle = \\lvert 0\\rangle \\otimes \\lvert E\\rangle + \\lvert 1\\rangle \\otimes \\lvert O'\\rangle$,
         </p>
 
         <p>
-        \\[
-        \\begin{aligned}
-          \\hat{U}\\lvert \\psi\\rangle
-          &=
-          (\\hat{H} \\otimes \\hat{I}_M)
-          \\big(
-            \\lvert 0\\rangle \\otimes \\lvert E\\rangle
-            +
-            \\lvert 1\\rangle \\otimes \\lvert O'\\rangle
-          \\big)
-          \\\\
-          &=
-          (\\hat{H}\\lvert 0\\rangle) \\otimes \\lvert E\\rangle
+        \[
+          \lvert \psi\rangle
+          :=
+          \lvert 0\rangle \otimes \lvert E\rangle
           +
-          (\\hat{H}\\lvert 1\\rangle) \\otimes \\lvert O'\\rangle
-          \\\\
+          \lvert 1\rangle \otimes \lvert O'\rangle,
+        \tag{22}
+        \]
+        </p>
+
+        <p>
+        \[
+        \begin{aligned}
+          \hat{U}\lvert \psi\rangle
           &=
-          \\frac{1}{\\sqrt{2}}
-          (\\lvert 0\\rangle + \\lvert 1\\rangle) \\otimes \\lvert E\\rangle
-          +
-          \\frac{1}{\\sqrt{2}}
-          (\\lvert 0\\rangle - \\lvert 1\\rangle) \\otimes \\lvert O'\\rangle
-          \\\\
-          &=
-          \\frac{1}{\\sqrt{2}}
-          \\Big[
-            \\lvert 0\\rangle \\otimes (\\lvert E\\rangle + \\lvert O'\\rangle)
+          (\hat{H} \otimes \hat{I}_M)
+          \left(
+            \lvert 0\rangle \otimes \lvert E\rangle
             +
-            \\lvert 1\\rangle \\otimes (\\lvert E\\rangle - \\lvert O'\\rangle)
-          \\Big].
-        \\end{aligned}
-        \\]
+            \lvert 1\rangle \otimes \lvert O'\rangle
+          \right)
+          \\
+          &=
+          \frac{1}{\sqrt{2}}
+          \left[
+            \lvert 0\rangle \otimes (\lvert E\rangle + \lvert O'\rangle)
+            +
+            \lvert 1\rangle \otimes (\lvert E\rangle - \lvert O'\rangle)
+          \right].
+        \end{aligned}
+        \tag{23}
+        \]
         </p>
 
         <p>
-          Writing
-          $\\lvert E\\rangle = \\sum_{k=0}^{M-1} E_k \\lvert k\\rangle$ and
-          $\\lvert O'\\rangle = \\sum_{k=0}^{M-1} \\omega_N^k O_k \\lvert k\\rangle$, the coefficient
-          of $\\lvert 0\\rangle \\otimes \\lvert k\\rangle$ is
+          Reading off the coefficients in the computational basis
+          $\{\lvert 0\rangle\otimes\lvert k\rangle,\lvert 1\rangle\otimes\lvert k\rangle\}$, we
+          recover precisely Eqs. (11)–(12) for $X_k$ and $X_{k+M}$.
         </p>
 
         <p>
-        \\[
-          \\frac{1}{\\sqrt{2}}
-          \\big(
-            E_k + \\omega_N^k O_k
-          \\big)
+          Up to a simple permutation $\hat{P}$ that reorders the basis states between the
+          “interleaved” and “even–odd” orderings, the resulting factorization is
+        </p>
+
+        <p>
+        \[
+          \hat{F}_N
           =
-          X_k,
-        \\]
-        </p>
-
-        <p>
-          and the coefficient of $\\lvert 1\\rangle \\otimes \\lvert k\\rangle$ is
-        </p>
-
-        <p>
-        \\[
-          \\frac{1}{\\sqrt{2}}
-          \\big(
-            E_k - \\omega_N^k O_k
-          \\big)
-          =
-          X_{k+M}.
-        \\]
-        </p>
-
-        <p>
-          Identifying $\\lvert 0\\rangle \\otimes \\lvert k\\rangle$ with $\\lvert k\\rangle$ and
-          $\\lvert 1\\rangle \\otimes \\lvert k\\rangle$ with $\\lvert k+M\\rangle$, we see that
-          the composite operator $\\hat{U}\\,\\hat{T}\\,(\\hat{I}_2 \\otimes \\hat{F}_M)$ reproduces the DFT coefficients.
-        </p>
-
-        <p>
-          Up to a permutation $\\hat{P}$ that maps the standard basis $\\{\\lvert n\\rangle\\}$ to
-          the even–odd tensor basis, the factorization is
-        </p>
-
-        <p>
-        \\[
-          \\hat{F}_N
-          =
-          (\\hat{H} \\otimes \\hat{I}_M)
-          \\,\\hat{T}\\,
-          (\\hat{I}_2 \\otimes \\hat{F}_M)
-          \\,\\hat{P}.
-        \\]
+          \hat{U}\,\hat{T}\,(\hat{I}_2 \otimes \hat{F}_M)\,\hat{P}.
+        \tag{24}
+        \]
         </p>
       </div>
     </section>
 
-    <!-- V. Block-matrix form -->
+    <!-- V. N = 4 example -->
     <section class="section section-alt">
       <div class="container">
-        <h2>V. Block-matrix form in the even–odd basis</h2>
+        <h2>V. Explicit example: $N = 4$</h2>
 
         <p>
-          In the even–odd basis (where $\\hat{P} = \\hat{I}$), the matrices have the form:
-        </p>
-
-        <ul>
-          <li>
-            \\(\\hat{I}_2 \\otimes \\hat{F}_M\\):
-            \\[
-              I_2 \\otimes F_M
-              =
-              \\begin{pmatrix}
-                F_M & 0 \\\\
-                0   & F_M
-              \\end{pmatrix}.
-            \\]
-          </li>
-          <li>
-            Twiddle operator:
-            \\[
-              T
-              =
-              \\begin{pmatrix}
-                I_M & 0 \\\\
-                0   & D
-              \\end{pmatrix},
-              \\qquad
-              D = \\mathrm{diag}(1,\\omega_N^1,\\dots,\\omega_N^{M-1}).
-            \\]
-          </li>
-          <li>
-            \\(H \\otimes I_M\\):
-            \\[
-              H \\otimes I_M
-              =
-              \\frac{1}{\\sqrt{2}}
-              \\begin{pmatrix}
-                I_M & I_M \\\\
-                I_M & -I_M
-              \\end{pmatrix}.
-            \\]
-          </li>
-        </ul>
-
-        <p>
-          Therefore,
+          For $N = 4$ we have $M = 2$ and
         </p>
 
         <p>
-        \\[
-        \\begin{aligned}
-          F_N^{(\\mathrm{even\\text{-}odd})}
-          &=
-          (H \\otimes I_M)
-          \\,T\\,
-          (I_2 \\otimes F_M)
-          \\\\
-          &=
-          \\frac{1}{\\sqrt{2}}
-          \\begin{pmatrix}
-            I_M & I_M \\\\
-            I_M & -I_M
-          \\end{pmatrix}
-          \\begin{pmatrix}
-            F_M & 0 \\\\
-            0   & D F_M
-          \\end{pmatrix}
-          \\\\
-          &=
-          \\frac{1}{\\sqrt{2}}
-          \\begin{pmatrix}
-            F_M & D F_M \\\\
-            F_M & -D F_M
-          \\end{pmatrix},
-          \\qquad
-          M = N/2.
-        \\end{aligned}
-        \\]
+        \[
+          \omega_4 = e^{-2\pi i / 4} = e^{-i\pi/2} = -i.
+        \tag{25}
+        \]
         </p>
 
         <p>
-          To return to the standard ordering $\\lvert 0\\rangle,\\dots,\\lvert N-1\\rangle$,
-          one composes with the permutation matrix $P$ implementing the even–odd reordering.
-        </p>
-      </div>
-    </section>
-
-    <!-- VI. Explicit examples -->
-    <section class="section">
-      <div class="container">
-        <h2>VI. Explicit examples: $N=4$ and $N=8$</h2>
-
-        <h3>A. The case $N = 4$</h3>
-
-        <p>
-          For $N=4$ we have $M = N/2 = 2$ and
+          The $2 \times 2$ Fourier matrix is
         </p>
 
         <p>
-        \\[
-          \\omega_4 = e^{-2\\pi i / 4} = e^{-i\\pi/2} = -i.
-        \\]
-        </p>
-
-        <p>
-          The $2\\times 2$ Fourier matrix $F_2$ is
-        </p>
-
-        <p>
-        \\[
+        \[
           F_2
           =
-          \\frac{1}{\\sqrt{2}}
-          \\begin{pmatrix}
-            1 & 1 \\\\
+          \frac{1}{\sqrt{2}}
+          \begin{pmatrix}
+            1 & 1 \\
             1 & -1
-          \\end{pmatrix}.
-        \\]
+          \end{pmatrix}.
+        \tag{26}
+        \]
         </p>
 
         <p>
-          The $2\\times 2$ twiddle-factor matrix $D_2$ for $N=4$ is
+          The $2 \times 2$ twiddle-factor matrix is
         </p>
 
         <p>
-        \\[
+        \[
           D_2
           =
-          \\mathrm{diag}(1,\\omega_4^1)
+          \mathrm{diag}(1,\omega_4)
           =
-          \\mathrm{diag}(1,-i)
-          =
-          \\begin{pmatrix}
-            1 & 0 \\\\
+          \begin{pmatrix}
+            1 & 0 \\
             0 & -i
-          \\end{pmatrix}.
-        \\]
+          \end{pmatrix}.
+        \tag{27}
+        \]
         </p>
 
         <p>
-          Then
+          In the even–odd ordered basis $(x_0,x_2,x_1,x_3)^T$, the block-structured matrix is
         </p>
 
         <p>
-        \\[
-          D_2 F_2
+        \[
+          F_4^{(\mathrm{even\text{-}odd})}
           =
-          \\begin{pmatrix}
-            1 & 0 \\\\
-            0 & -i
-          \\end{pmatrix}
-          \\frac{1}{\\sqrt{2}}
-          \\begin{pmatrix}
-            1 & 1 \\\\
-            1 & -1
-          \\end{pmatrix}
-          =
-          \\frac{1}{\\sqrt{2}}
-          \\begin{pmatrix}
-            1 & 1 \\\\
-            -i & i
-          \\end{pmatrix}.
-        \\]
+          \frac{1}{\sqrt{2}}
+          \begin{pmatrix}
+            F_2 & D_2 F_2 \\
+            F_2 & - D_2 F_2
+          \end{pmatrix}.
+        \tag{28}
+        \]
         </p>
 
         <p>
-          In the even–odd basis, where the input is ordered as
-          $\\big(x_0,x_2,x_1,x_3\\big)^T$, the factorization
-        </p>
-
-        <p>
-        \\[
-          F_4^{(\\mathrm{even\\text{-}odd})}
-          =
-          \\frac{1}{\\sqrt{2}}
-          \\begin{pmatrix}
-            F_2 & D_2 F_2 \\\\
-            F_2 & -D_2 F_2
-          \\end{pmatrix}
-        \\]
-        </p>
-
-        <p>
-          gives, after simplifying,
-        </p>
-
-        <p>
-        \\[
-          F_4^{(\\mathrm{even\\text{-}odd})}
-          =
-          \\frac{1}{2}
-          \\begin{pmatrix}
-            1 & 1 & 1  & 1 \\\\
-            1 & -1 & -i & i \\\\
-            1 & 1 & -1 & -1 \\\\
-            1 & -1 & i  & -i
-          \\end{pmatrix}.
-        \\]
-        </p>
-
-        <p>
-          To relate this to the standard 4-point DFT in the natural ordering
-          $\\big(x_0,x_1,x_2,x_3\\big)^T$, introduce the permutation matrix
-        </p>
-
-        <p>
-        \\[
-          P
-          =
-          \\begin{pmatrix}
-            1 & 0 & 0 & 0 \\\\
-            0 & 0 & 1 & 0 \\\\
-            0 & 1 & 0 & 0 \\\\
-            0 & 0 & 0 & 1
-          \\end{pmatrix},
-          \\qquad
-          P
-          \\begin{pmatrix}
-            x_0 \\\\ x_1 \\\\ x_2 \\\\ x_3
-          \\end{pmatrix}
-          =
-          \\begin{pmatrix}
-            x_0 \\\\ x_2 \\\\ x_1 \\\\ x_3
-          \\end{pmatrix}.
-        \\]
-        </p>
-
-        <p>
-          Then
-        </p>
-
-        <p>
-        \\[
-          F_4
-          =
-          F_4^{(\\mathrm{even\\text{-}odd})} P
-          =
-          \\frac{1}{2}
-          \\begin{pmatrix}
-            1 & 1  & 1  & 1 \\\\
-            1 & -i & -1 & i \\\\
-            1 & -1 & 1  & -1 \\\\
-            1 & i  & -1 & -i
-          \\end{pmatrix},
-        \\]
-        </p>
-
-        <p>
-          which is precisely the 4-point DFT matrix with normalization $1/\\sqrt{N} = 1/2$.
-        </p>
-
-        <h3>B. The case $N = 8$</h3>
-
-        <p>
-          For $N=8$ we have $M = N/2 = 4$ and
-        </p>
-
-        <p>
-        \\[
-          \\omega_8 = e^{-2\\pi i/8} = e^{-i\\pi/4}.
-        \\]
-        </p>
-
-        <p>
-          The $4\\times 4$ Fourier matrix $F_4$ in the standard ordering is
-        </p>
-
-        <p>
-        \\[
-          F_4
-          =
-          \\frac{1}{2}
-          \\begin{pmatrix}
-            1 & 1  & 1  & 1 \\\\
-            1 & \\omega_4 & \\omega_4^2 & \\omega_4^3 \\\\
-            1 & \\omega_4^2 & \\omega_4^4 & \\omega_4^6 \\\\
-            1 & \\omega_4^3 & \\omega_4^6 & \\omega_4^9
-          \\end{pmatrix},
-          \\qquad
-          \\omega_4 = e^{-2\\pi i/4} = -i.
-        \\]
-        </p>
-
-        <p>
-          Using $\\omega_4^2 = -1$ and $\\omega_4^3 = i$, this simplifies to
-        </p>
-
-        <p>
-        \\[
-          F_4
-          =
-          \\frac{1}{2}
-          \\begin{pmatrix}
-            1 & 1  & 1  & 1 \\\\
-            1 & -i & -1 & i \\\\
-            1 & -1 & 1  & -1 \\\\
-            1 & i  & -1 & -i
-          \\end{pmatrix}.
-        \\]
-        </p>
-
-        <p>
-          For $N=8$, the $4\\times 4$ twiddle-factor matrix $D_4$ is
-        </p>
-
-        <p>
-        \\[
-          D_4
-          =
-          \\mathrm{diag}\\big(
-            1, \\omega_8^1, \\omega_8^2, \\omega_8^3
-          \\big)
-          =
-          \\mathrm{diag}\\big(
-            1, e^{-i\\pi/4}, e^{-i\\pi/2}, e^{-3i\\pi/4}
-          \\big).
-        \\]
-        </p>
-
-        <p>
-          In the even–odd basis for $N=8$, the block factorization reads
-        </p>
-
-        <p>
-        \\[
-          F_8^{(\\mathrm{even\\text{-}odd})}
-          =
-          \\frac{1}{\\sqrt{2}}
-          \\begin{pmatrix}
-            F_4   & D_4 F_4 \\\\
-            F_4   & -D_4 F_4
-          \\end{pmatrix}.
-        \\]
-        </p>
-
-        <p>
-          This $8\\times 8$ matrix acts on the input ordered as
-        </p>
-
-        <p>
-        \\[
-          (x_0,x_2,x_4,x_6,x_1,x_3,x_5,x_7)^T,
-        \\]
-        </p>
-
-        <p>
-          and its block structure directly encodes the top-level radix-2 FFT step:
-          (i) $F_4$ applied independently to the even and odd subsequences,
-          (ii) multiplication of the “odd” 4-point transform by $D_4$, and
-          (iii) a final “butterfly” layer given by
-        </p>
-
-        <p>
-        \\[
-          \\frac{1}{\\sqrt{2}}
-          \\begin{pmatrix}
-            I_4 & I_4 \\\\
-            I_4 & -I_4
-          \\end{pmatrix}.
-        \\]
-        </p>
-
-        <p>
-          To obtain the standard 8-point DFT matrix $F_8$ in the natural ordering
-          $(x_0,x_1,\\dots,x_7)^T$, one composes $F_8^{(\\mathrm{even\\text{-}odd})}$ with the
-          corresponding even–odd permutation matrix $P_8$:
-        </p>
-
-        <p>
-        \\[
-          F_8
-          =
-          F_8^{(\\mathrm{even\\text{-}odd})} P_8.
-        \\]
-        </p>
-
-        <p>
-          This makes the recursive structure of the FFT explicit: $F_8$ is built from smaller
-          Fourier transforms ($F_4$) and diagonal twiddle-factor matrices ($D_4$), combined by a
-          simple $2\\times 2$ Hadamard-like block.
+          Evaluating $D_2 F_2$ and simplifying leads to the usual $4$-point DFT matrix
+          (up to the permutation that reorders $(x_0,x_2,x_1,x_3)$ back to
+          $(x_0,x_1,x_2,x_3)$). This makes the FFT structure manifest: $F_4$ is built from
+          one $F_2$ acting on the even indices, one $F_2$ acting on the odd indices, a twiddle
+          factor, and a final “butterfly” mixing step.
         </p>
 
         <p style="margin-top:1.5rem;">
-          <a href="../notes.html">&larr; Back to Notes</a>
+          <a class="pub-title" href="../notes.html">&larr; Back to Notes</a>
         </p>
       </div>
     </section>
   </main>
 
+  <!-- Dark mode + utilities -->
   <script src="../main.js?v=2"></script>
 </body>
 </html>
+
