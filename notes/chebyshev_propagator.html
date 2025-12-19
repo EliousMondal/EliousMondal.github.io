@@ -1,0 +1,900 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Chebyshev Propagator — Fully Detailed Derivation</title>
+
+  <!-- Site-wide CSS/JS (keep paths absolute so they work from /notes/) -->
+  <link rel="stylesheet" href="/style.css" />
+  <script defer src="/main.js"></script>
+
+  <!-- Small page-local styles for equation numbers / readability -->
+  <style>
+    .notes-container { max-width: 980px; margin: 0 auto; padding: 2rem 1.25rem; }
+    .notes-title { margin: 0.25rem 0 1.25rem; }
+    .notes-subtitle { margin: 0 0 2rem; opacity: 0.85; }
+    .sec { margin-top: 2.25rem; }
+    .eqwrap { position: relative; margin: 0.75rem 0 1.0rem; }
+    .eqno { position: absolute; right: 0; top: 0; font-size: 0.95em; opacity: 0.8; }
+    .eq { padding-right: 4.5rem; } /* space for eq number */
+    .note-box { border-left: 4px solid rgba(128,128,128,0.35); padding: 0.75rem 1rem; margin: 1rem 0; }
+    code.kbd { padding: 0.1rem 0.35rem; border-radius: 6px; background: rgba(127,127,127,0.15); }
+    .hr { height: 1px; background: rgba(127,127,127,0.25); margin: 2rem 0; }
+  </style>
+
+  <!-- MathJax (LaTeX) -->
+  <script>
+    window.MathJax = {
+      tex: {
+        inlineMath: [['\\(','\\)'], ['$', '$']],
+        displayMath: [['\\[','\\]']],
+        processEscapes: true
+      },
+      options: { skipHtmlTags: ['script','noscript','style','textarea','pre','code'] }
+    };
+  </script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+</head>
+
+<body>
+  <!-- Simple navbar that matches the site structure (your /style.css controls styling) -->
+  <header class="navbar">
+    <nav class="nav-container">
+      <a class="nav-logo" href="/index.html">M. Elious Mondal</a>
+      <ul class="nav-links">
+        <li><a class="nav-link" href="/index.html">Home</a></li>
+        <li><a class="nav-link" href="/research.html">Research</a></li>
+        <li><a class="nav-link" href="/publications.html">Publications</a></li>
+        <li><a class="nav-link active" href="/notes.html">Notes</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main class="notes-container">
+    <h1 class="notes-title">A Fully Detailed, Beginner-Friendly Derivation of the Chebyshev Propagator</h1>
+    <p class="notes-subtitle">
+      This page is a faithful HTML + MathJax conversion of the complete PDF notes (all sections, all equations, all steps, and both 2×2 examples).
+    </p>
+
+    <div class="hr"></div>
+
+    <!-- 1 -->
+    <section class="sec" id="sec1">
+      <h2>1. When is Chebyshev propagator needed?</h2>
+
+      <h3>1.1 Time evolution as an operator exponential</h3>
+      <p>
+        In quantum mechanics (setting \\(\\hbar = 1\\)), a time-independent Hamiltonian \\(\\hat{H}\\) generates dynamics via
+        the Schrödinger equation
+      </p>
+
+      <div class="eqwrap">
+        <div class="eq">\\[ i\\,\\frac{d}{dt}\\,|\\psi(t)\\rangle = \\hat{H}\\,|\\psi(t)\\rangle. \\]</div>
+        <div class="eqno">(1)</div>
+      </div>
+
+      <p>The formal solution is</p>
+      <div class="eqwrap">
+        <div class="eq">\\[ |\\psi(t)\\rangle = e^{-i\\hat{H}t}\\,|\\psi(0)\\rangle. \\]</div>
+        <div class="eqno">(2)</div>
+      </div>
+
+      <p>Thus, the central computational task is:</p>
+      <div class="note-box">
+        <strong>Task:</strong> Given \\(\\hat{H}\\) and \\(|\\psi(0)\\rangle\\), compute \\(|\\psi(t)\\rangle = e^{-i\\hat{H}t}|\\psi(0)\\rangle\\).
+      </div>
+
+      <h3>1.2 Why we do not want to diagonalize</h3>
+      <p>
+        If the Hilbert space dimension is large, diagonalizing \\(\\hat{H}\\) or forming the dense matrix \\(e^{-i\\hat{H}t}\\)
+        is impractical. However, we only need the <em>action</em> of the propagator on a vector:
+      </p>
+      <div class="eqwrap">
+        <div class="eq">\\[ |\\psi(t)\\rangle = \\big(e^{-i\\hat{H}t}\\big)|\\psi(0)\\rangle. \\]</div>
+        <div class="eqno">(3)</div>
+      </div>
+      <p>
+        Chebyshev propagation achieves this by approximating the operator exponential by a polynomial
+        series in \\(\\hat{H}\\) (after rescaling), and evaluating the series using a stable three-term recurrence that
+        requires only repeated matrix–vector multiplications.
+      </p>
+
+      <h3>1.3 High-level plan</h3>
+      <p>We will proceed in the following logically connected steps:</p>
+      <ol>
+        <li>Define Chebyshev polynomials \\(T_n(x)\\), prove their boundedness on \\([-1,1]\\), and derive their recurrence.</li>
+        <li>Explain why the Hamiltonian must be rescaled so its spectrum lies in \\([-1,1]\\).</li>
+        <li>Derive the scalar Chebyshev expansion of \\(e^{-i\\tau x}\\) for \\(x\\in[-1,1]\\): \\(e^{-i\\tau x}=J_0(\\tau)+2\\sum_{n\\ge1}(-i)^nJ_n(\\tau)T_n(x)\\).</li>
+        <li>Lift the scalar identity to an operator identity \\(x\\mapsto\\hat{H}'\\) via the eigenbasis of \\(\\hat{H}'\\).</li>
+        <li>Derive the Chebyshev propagation algorithm (vector recurrence).</li>
+        <li>Derive a truncation error bound and explain why \\(J_n(\\tau)\\) becomes small for \\(n\\gtrsim\\tau\\).</li>
+        <li>Work through explicit \\(2\\times2\\) examples, including nontrivial rescaling.</li>
+      </ol>
+    </section>
+
+    <!-- 2 -->
+    <section class="sec" id="sec2">
+      <h2>2. Chebyshev Polynomials: Definition, Properties, and Recurrence</h2>
+
+      <h3>2.1 Step 1: The cosine parametrization of \\([-1,1]\\)</h3>
+      <p>A key observation is that any \\(x\\in[-1,1]\\) can be written as</p>
+      <div class="eqwrap">
+        <div class="eq">\\[ x = \\cos\\theta,\\qquad \\theta\\in[0,\\pi]. \\]</div>
+        <div class="eqno">(4)</div>
+      </div>
+      <p>This is simply the fact that \\(\\cos\\theta\\) maps \\([0,\\pi]\\) onto \\([-1,1]\\).</p>
+
+      <h3>2.2 Step 2: Definition of Chebyshev polynomials</h3>
+      <p><strong>Definition.</strong> The Chebyshev polynomial of the first kind is defined by</p>
+      <div class="eqwrap">
+        <div class="eq">\\[ T_n(x) \\equiv \\cos(n\\theta)\\quad\\text{where }x=\\cos\\theta. \\]</div>
+        <div class="eqno">(5)</div>
+      </div>
+      <p>This definition immediately implies that \\(T_n(x)\\) is a polynomial in \\(x\\) (provable by trigonometric identities).</p>
+
+      <h3>2.3 Step 3: First few polynomials (explicit)</h3>
+      <p>Using \\(\\cos(2\\theta)=2\\cos^2\\theta-1\\) and \\(\\cos(3\\theta)=4\\cos^3\\theta-3\\cos\\theta\\), we obtain</p>
+
+      <div class="eqwrap"><div class="eq">\\[ T_0(x)=\\cos(0)=1. \\]</div><div class="eqno">(6)</div></div>
+      <div class="eqwrap"><div class="eq">\\[ T_1(x)=\\cos\\theta=x. \\]</div><div class="eqno">(7)</div></div>
+      <div class="eqwrap"><div class="eq">\\[ T_2(x)=\\cos(2\\theta)=2x^2-1. \\]</div><div class="eqno">(8)</div></div>
+      <div class="eqwrap"><div class="eq">\\[ T_3(x)=\\cos(3\\theta)=4x^3-3x. \\]</div><div class="eqno">(9)</div></div>
+
+      <h3>2.4 Step 4: Boundedness on \\([-1,1]\\)</h3>
+      <p>From the definition (5), for \\(x=\\cos\\theta\\in[-1,1]\\),</p>
+      <div class="eqwrap"><div class="eq">\\[ |T_n(x)|=|\\cos(n\\theta)|\\le 1. \\]</div><div class="eqno">(10)</div></div>
+      <p>This boundedness is crucial for numerical stability: the polynomials do not blow up on \\([-1,1]\\).</p>
+
+      <h3>2.5 Step 5: The three-term recurrence (derived)</h3>
+      <p>Start from the cosine identity</p>
+      <div class="eqwrap">
+        <div class="eq">\\[ \\cos\\big((n+1)\\theta\\big)=2\\cos\\theta\\cos(n\\theta)-\\cos\\big((n-1)\\theta\\big). \\]</div>
+        <div class="eqno">(11)</div>
+      </div>
+      <p>Now substitute \\(\\cos\\theta=x\\), \\(\\cos(n\\theta)=T_n(x)\\), and \\(\\cos((n-1)\\theta)=T_{n-1}(x)\\):</p>
+      <div class="eqwrap">
+        <div class="eq">\\[ T_{n+1}(x)=2x\\,T_n(x)-T_{n-1}(x). \\]</div>
+        <div class="eqno">(12)</div>
+      </div>
+      <p>This recurrence lets us build high-degree \\(T_n(x)\\) efficiently and stably.</p>
+    </section>
+
+    <!-- 3 -->
+    <section class="sec" id="sec3">
+      <h2>3. Why We Rescale the Hamiltonian to \\([-1,1]\\)</h2>
+
+      <h3>3.1 Step 1: Eigenvalues determine operator functions</h3>
+      <p>
+        Let \\(\\hat{H}\\) be Hermitian. Then it has orthonormal eigenstates \\(\\{|E_k\\rangle\\}\\) with real eigenvalues \\(\\{E_k\\}\\):
+      </p>
+      <div class="eqwrap"><div class="eq">\\[ \\hat{H}|E_k\\rangle = E_k|E_k\\rangle,\\qquad E_k\\in\\mathbb{R}. \\]</div><div class="eqno">(13)</div></div>
+      <p>The propagator acts on eigenstates as</p>
+      <div class="eqwrap"><div class="eq">\\[ e^{-i\\hat{H}t}|E_k\\rangle = e^{-iE_k t}|E_k\\rangle. \\]</div><div class="eqno">(14)</div></div>
+      <p>
+        So approximating \\(e^{-i\\hat{H}t}\\) reduces to approximating the scalar function \\(e^{-iEt}\\) for all eigenvalues \\(E\\) in the spectrum.
+      </p>
+
+      <h3>3.2 Step 2: Why Chebyshev polynomials demand \\(x\\in[-1,1]\\)</h3>
+      <p>
+        Chebyshev polynomials are bounded on \\([-1,1]\\) by (10). Outside that interval, \\(T_n(x)\\) grows rapidly with \\(n\\) (in fact exponentially).
+        Thus, to ensure numerical stability when evaluating \\(T_n(\\hat{H}')\\) at large \\(n\\), we want the spectrum of the operator to lie inside \\([-1,1]\\).
+      </p>
+
+      <h3>3.3 Step 3: Rescaling the spectrum</h3>
+      <p>Assume we have bounds</p>
+      <div class="eqwrap"><div class="eq">\\[ E_{\\min}\\le E_k\\le E_{\\max}\\quad\\text{for all eigenvalues}. \\]</div><div class="eqno">(15)</div></div>
+
+      <p>Define</p>
+      <div class="eqwrap">
+        <div class="eq">\\[ a=\\frac{E_{\\max}+E_{\\min}}{2},\\qquad b=\\frac{E_{\\max}-E_{\\min}}{2}>0, \\]</div>
+        <div class="eqno">(16)</div>
+      </div>
+
+      <p>and the shifted/rescaled Hamiltonian</p>
+      <div class="eqwrap">
+        <div class="eq">\\[ \\hat{H}'=\\frac{\\hat{H}-a\\hat{I}}{b}. \\]</div>
+        <div class="eqno">(17)</div>
+      </div>
+
+      <p>If \\(\\hat{H}|E_k\\rangle=E_k|E_k\\rangle\\), then</p>
+      <div class="eqwrap">
+        <div class="eq">\\[ \\hat{H}'|E_k\\rangle = \\frac{E_k-a}{b}|E_k\\rangle \\equiv E_k'|E_k\\rangle. \\]</div>
+        <div class="eqno">(18)</div>
+      </div>
+
+      <p>Now check endpoints:</p>
+      <p>
+        If \\(E_k=E_{\\max}\\), then \\(E_k'=(E_{\\max}-a)/b=+1\\). If \\(E_k=E_{\\min}\\), then \\(E_k'=(E_{\\min}-a)/b=-1\\).
+        Hence
+      </p>
+      <div class="eqwrap"><div class="eq">\\[ E_k'\\in[-1,1]. \\]</div><div class="eqno">(19)</div></div>
+
+      <h3>3.4 Step 4: Factorizing the propagator</h3>
+      <p>Rewrite \\(\\hat{H}=a\\hat{I}+b\\hat{H}'\\). Then</p>
+      <div class="eqwrap"><div class="eq">\\[ e^{-i\\hat{H}t}=e^{-i(a\\hat{I}+b\\hat{H}')t}. \\]</div><div class="eqno">(20)</div></div>
+      <p>
+        Because \\(\\hat{I}\\) commutes with \\(\\hat{H}'\\) and \\(e^{X+Y}=e^Xe^Y\\) when \\([X,Y]=0\\), we get
+      </p>
+      <div class="eqwrap"><div class="eq">\\[ e^{-i\\hat{H}t}=e^{-iat}\\,e^{-i(bt)\\hat{H}'}. \\]</div><div class="eqno">(21)</div></div>
+
+      <p>Define the scaled time</p>
+      <div class="eqwrap"><div class="eq">\\[ \\tau\\equiv bt. \\]</div><div class="eqno">(22)</div></div>
+      <p>Then the numerical problem becomes computing \\(e^{-i\\tau\\hat{H}'}\\) with \\(\\mathrm{spec}(\\hat{H}')\\subset[-1,1]\\).</p>
+    </section>
+
+    <!-- 4 -->
+    <section class="sec" id="sec4">
+      <h2>4. Scalar Chebyshev Expansion of \\(e^{-i\\tau x}\\) on \\([-1,1]\\)</h2>
+      <p>We now derive the key scalar identity:</p>
+      <div class="eqwrap">
+        <div class="eq">\\[ e^{-i\\tau x}=J_0(\\tau)+2\\sum_{n=1}^{\\infty}(-i)^n J_n(\\tau)\\,T_n(x),\\qquad x\\in[-1,1]. \\]</div>
+        <div class="eqno">(23)</div>
+      </div>
+
+      <h3>4.1 Step 1: Change variables \\(x=\\cos\\theta\\)</h3>
+      <p>Let \\(x\\in[-1,1]\\) and write \\(x=\\cos\\theta\\) with \\(\\theta\\in[0,\\pi]\\). Then</p>
+      <div class="eqwrap"><div class="eq">\\[ e^{-i\\tau x}=e^{-i\\tau\\cos\\theta}. \\]</div><div class="eqno">(24)</div></div>
+      <p>The function \\(g(\\theta)=e^{-i\\tau\\cos\\theta}\\) is a smooth function of \\(\\theta\\).</p>
+
+      <h3>4.2 Step 2: Why the Fourier expansion has only cosines (no sines)</h3>
+      <p>
+        Consider extending \\(g(\\theta)=e^{-i\\tau\\cos\\theta}\\) to \\([ -\\pi,\\pi ]\\). Because \\(\\cos(-\\theta)=\\cos\\theta\\), we have
+      </p>
+      <div class="eqwrap"><div class="eq">\\[ g(-\\theta)=e^{-i\\tau\\cos(-\\theta)}=e^{-i\\tau\\cos\\theta}=g(\\theta). \\]</div><div class="eqno">(25)</div></div>
+      <p>
+        So \\(g(\\theta)\\) is an even function. In Fourier series, even functions contain only cosine terms.
+      </p>
+
+      <p><strong>Integral proof (explicit).</strong> The sine Fourier coefficient over a symmetric interval is</p>
+      <div class="eqwrap"><div class="eq">\\[ b_n=\\frac{1}{\\pi}\\int_{-\\pi}^{\\pi} g(\\theta)\\,\\sin(n\\theta)\\,d\\theta. \\]</div><div class="eqno">(26)</div></div>
+      <p>
+        Here \\(g(\\theta)\\) is even, \\(\\sin(n\\theta)\\) is odd, so their product is odd. The integral of an odd function over \\([-\\pi,\\pi]\\) is zero, hence \\(b_n=0\\) for all \\(n\\).
+      </p>
+      <p>Therefore we expand \\(g(\\theta)\\) as a cosine series:</p>
+      <div class="eqwrap"><div class="eq">\\[ e^{-i\\tau\\cos\\theta}=a_0(\\tau)+2\\sum_{n=1}^{\\infty} a_n(\\tau)\\cos(n\\theta). \\]</div><div class="eqno">(27)</div></div>
+
+      <h3>4.3 Step 3: Compute the cosine coefficients by orthogonality</h3>
+      <p>On \\([0,\\pi]\\), cosine functions satisfy orthogonality:</p>
+      <div class="eqwrap">
+        <div class="eq">\\[
+          \\int_{0}^{\\pi} \\cos(n\\theta)\\cos(m\\theta)\\,d\\theta =
+          \\begin{cases}
+            0, & n\\ne m,\\\\
+            \\dfrac{\\pi}{2}, & n=m\\ge 1,\\\\
+            \\pi, & n=m=0.
+          \\end{cases}
+        \\]</div>
+        <div class="eqno">(28)</div>
+      </div>
+
+      <p>Multiply both sides of (27) by \\(\\cos(m\\theta)\\) and integrate from \\(0\\) to \\(\\pi\\).</p>
+
+      <p><strong>Case \\(m=0\\).</strong> Integrate:</p>
+      <div class="eqwrap">
+        <div class="eq">\\[
+          \\int_{0}^{\\pi} e^{-i\\tau\\cos\\theta}\\,d\\theta
+          = a_0(\\tau)\\int_{0}^{\\pi}1\\,d\\theta
+          + 2\\sum_{n=1}^{\\infty} a_n(\\tau)\\int_{0}^{\\pi}\\cos(n\\theta)\\,d\\theta.
+        \\]</div>
+        <div class="eqno">(29)</div>
+      </div>
+      <p>But \\(\\int_{0}^{\\pi}\\cos(n\\theta)\\,d\\theta=0\\) for \\(n\\ge 1\\). Thus</p>
+      <div class="eqwrap">
+        <div class="eq">\\[
+          \\int_{0}^{\\pi} e^{-i\\tau\\cos\\theta}\\,d\\theta = a_0(\\tau)\\,\\pi,
+          \\qquad\\Rightarrow\\qquad
+          a_0(\\tau)=\\frac{1}{\\pi}\\int_{0}^{\\pi} e^{-i\\tau\\cos\\theta}\\,d\\theta.
+        \\]</div>
+        <div class="eqno">(30)</div>
+      </div>
+
+      <p><strong>Case \\(m\\ge 1\\).</strong> Multiply (27) by \\(\\cos(m\\theta)\\) and integrate:</p>
+      <div class="eqwrap">
+        <div class="eq">\\[
+          \\int_{0}^{\\pi} e^{-i\\tau\\cos\\theta}\\cos(m\\theta)\\,d\\theta
+          = a_0(\\tau)\\int_{0}^{\\pi}\\cos(m\\theta)\\,d\\theta
+          + 2\\sum_{n=1}^{\\infty} a_n(\\tau)\\int_{0}^{\\pi}\\cos(n\\theta)\\cos(m\\theta)\\,d\\theta.
+        \\]</div>
+        <div class="eqno">(31)</div>
+      </div>
+      <p>
+        The first term vanishes because \\(\\int_0^{\\pi}\\cos(m\\theta)\\,d\\theta=0\\) for \\(m\\ge 1\\).
+        Using orthogonality (28), only the \\(n=m\\) term survives:
+      </p>
+      <div class="eqwrap">
+        <div class="eq">\\[
+          \\int_{0}^{\\pi} e^{-i\\tau\\cos\\theta}\\cos(m\\theta)\\,d\\theta
+          = 2a_m(\\tau)\\cdot\\frac{\\pi}{2}=a_m(\\tau)\\pi.
+        \\]</div>
+        <div class="eqno">(32)</div>
+      </div>
+      <p>Hence</p>
+      <div class="eqwrap">
+        <div class="eq">\\[ a_m(\\tau)=\\frac{1}{\\pi}\\int_{0}^{\\pi} e^{-i\\tau\\cos\\theta}\\cos(m\\theta)\\,d\\theta,\\qquad m\\ge 1. \\]</div>
+        <div class="eqno">(33)</div>
+      </div>
+
+      <h3>4.4 Step 4: Define Bessel functions using these integrals</h3>
+      <p>
+        At this point we define the Bessel function of the first kind via the standard integral representation:
+      </p>
+      <div class="eqwrap">
+        <div class="eq">\\[ J_n(\\tau)\\equiv \\frac{1}{\\pi}\\int_{0}^{\\pi}\\cos\\big(n\\theta-\\tau\\sin\\theta\\big)\\,d\\theta. \\]</div>
+        <div class="eqno">(34)</div>
+      </div>
+
+      <p>
+        A closely related (and equally standard) representation implies the identity
+      </p>
+      <div class="eqwrap">
+        <div class="eq">\\[ \\frac{1}{\\pi}\\int_{0}^{\\pi} e^{-i\\tau\\cos\\theta}\\cos(n\\theta)\\,d\\theta = (-i)^n J_n(\\tau). \\]</div>
+        <div class="eqno">(35)</div>
+      </div>
+      <p>
+        (You can regard (35) as a known theorem about Bessel functions or as an equivalent definition; the point is that the Fourier coefficients of \\(e^{-i\\tau\\cos\\theta}\\) are proportional to \\(J_n(\\tau)\\).)
+      </p>
+      <p>Combining (33) with (35) gives</p>
+      <div class="eqwrap"><div class="eq">\\[ a_n(\\tau)=(-i)^n J_n(\\tau). \\]</div><div class="eqno">(36)</div></div>
+
+      <p>Substitute into (27):</p>
+      <div class="eqwrap">
+        <div class="eq">\\[ e^{-i\\tau\\cos\\theta} = J_0(\\tau)+2\\sum_{n=1}^{\\infty} (-i)^n J_n(\\tau)\\cos(n\\theta). \\]</div>
+        <div class="eqno">(37)</div>
+      </div>
+
+      <h3>4.5 Step 5: Convert cosines to Chebyshev polynomials</h3>
+      <p>Recall \\(x=\\cos\\theta\\). By the Chebyshev definition (5),</p>
+      <div class="eqwrap"><div class="eq">\\[ \\cos(n\\theta)=T_n(\\cos\\theta)=T_n(x). \\]</div><div class="eqno">(38)</div></div>
+      <p>Thus (37) becomes the desired Chebyshev series:</p>
+      <div class="eqwrap">
+        <div class="eq">\\[ e^{-i\\tau x}=J_0(\\tau)+2\\sum_{n=1}^{\\infty} (-i)^n J_n(\\tau)T_n(x),\\qquad x\\in[-1,1]. \\]</div>
+        <div class="eqno">(39)</div>
+      </div>
+    </section>
+
+    <!-- 5 -->
+    <section class="sec" id="sec5">
+      <h2>5. Lifting the Scalar Identity to an Operator Identity</h2>
+      <p>We now show carefully why replacing \\(x\\to\\hat{H}'\\) is valid.</p>
+
+      <h3>5.1 Step 1: Eigen-decomposition of \\(\\hat{H}'\\)</h3>
+      <p>Because \\(\\hat{H}'\\) is Hermitian, it has eigenpairs \\(\\{E_k',|E_k\\rangle\\}\\) with \\(E_k'\\in[-1,1]\\):</p>
+      <div class="eqwrap"><div class="eq">\\[ \\hat{H}'|E_k\\rangle = E_k'|E_k\\rangle. \\]</div><div class="eqno">(40)</div></div>
+      <p>Completeness:</p>
+      <div class="eqwrap"><div class="eq">\\[ \\hat{I} = \\sum_k |E_k\\rangle\\langle E_k|. \\]</div><div class="eqno">(41)</div></div>
+
+      <h3>5.2 Step 2: Action of \\(e^{-i\\tau\\hat{H}'}\\) on eigenstates</h3>
+      <p>By definition of operator functions for Hermitian operators,</p>
+      <div class="eqwrap"><div class="eq">\\[ e^{-i\\tau\\hat{H}'}|E_k\\rangle = e^{-i\\tau E_k'}|E_k\\rangle. \\]</div><div class="eqno">(42)</div></div>
+
+      <h3>5.3 Step 3: Apply the scalar identity to each eigenvalue</h3>
+      <p>Since \\(E_k'\\in[-1,1]\\), apply (39) with \\(x=E_k'\\):</p>
+      <div class="eqwrap">
+        <div class="eq">\\[ e^{-i\\tau E_k'} = J_0(\\tau)+2\\sum_{n=1}^{\\infty} (-i)^n J_n(\\tau) T_n(E_k'). \\]</div>
+        <div class="eqno">(43)</div>
+      </div>
+      <p>Plug into (42):</p>
+      <div class="eqwrap">
+        <div class="eq">\\[
+          e^{-i\\tau\\hat{H}'}|E_k\\rangle =
+          \\Big[J_0(\\tau)+2\\sum_{n=1}^{\\infty} (-i)^n J_n(\\tau) T_n(E_k')\\Big]|E_k\\rangle.
+        \\]</div>
+        <div class="eqno">(44)</div>
+      </div>
+
+      <h3>5.4 Step 4: Define \\(T_n(\\hat{H}')\\) via spectral calculus</h3>
+      <p>Define the operator polynomial \\(T_n(\\hat{H}')\\) as</p>
+      <div class="eqwrap">
+        <div class="eq">\\[ T_n(\\hat{H}')\\equiv \\sum_k T_n(E_k')|E_k\\rangle\\langle E_k|. \\]</div>
+        <div class="eqno">(45)</div>
+      </div>
+      <p>Then by construction,</p>
+      <div class="eqwrap"><div class="eq">\\[ T_n(\\hat{H}')|E_k\\rangle = T_n(E_k')|E_k\\rangle. \\]</div><div class="eqno">(46)</div></div>
+
+      <p>Hence (44) can be rewritten as</p>
+      <div class="eqwrap">
+        <div class="eq">\\[
+          e^{-i\\tau\\hat{H}'}|E_k\\rangle =
+          \\Big[ J_0(\\tau)\\hat{I} + 2\\sum_{n=1}^{\\infty} (-i)^n J_n(\\tau) T_n(\\hat{H}') \\Big]|E_k\\rangle.
+        \\]</div>
+        <div class="eqno">(47)</div>
+      </div>
+      <p>
+        Because \\(|E_k\\rangle\\) form a basis, two operators that act identically on all basis vectors are equal. Therefore,
+      </p>
+      <div class="eqwrap">
+        <div class="eq">\\[ e^{-i\\tau\\hat{H}'} = J_0(\\tau)\\hat{I} + 2\\sum_{n=1}^{\\infty} (-i)^n J_n(\\tau) T_n(\\hat{H}'). \\]</div>
+        <div class="eqno">(48)</div>
+      </div>
+
+      <p>Finally, restore the original Hamiltonian using (21) and \\(\\tau=bt\\):</p>
+      <div class="eqwrap">
+        <div class="eq">\\[
+          e^{-i\\hat{H}t}
+          = e^{-iat}\\Big[ J_0(bt)\\hat{I} + 2\\sum_{n=1}^{\\infty} (-i)^n J_n(bt) T_n(\\hat{H}') \\Big].
+        \\]</div>
+        <div class="eqno">(49)</div>
+      </div>
+    </section>
+
+    <!-- 6 -->
+    <section class="sec" id="sec6">
+      <h2>6. Chebyshev Propagation Algorithm (Vector Recurrence)</h2>
+
+      <h3>6.1 Step 1: Apply the expansion to \\(|\\psi(0)\\rangle\\)</h3>
+      <p>Define</p>
+      <div class="eqwrap"><div class="eq">\\[ |\\psi(t)\\rangle = e^{-i\\hat{H}t}|\\psi(0)\\rangle. \\]</div><div class="eqno">(50)</div></div>
+      <p>Using (49),</p>
+      <div class="eqwrap">
+        <div class="eq">\\[
+          |\\psi(t)\\rangle = e^{-iat}\\Big[ J_0(\\tau)|\\psi(0)\\rangle
+          + 2\\sum_{n=1}^{\\infty} (-i)^n J_n(\\tau)\\,T_n(\\hat{H}')|\\psi(0)\\rangle \\Big],
+          \\quad \\tau=bt.
+        \\]</div>
+        <div class="eqno">(51)</div>
+      </div>
+
+      <h3>6.2 Step 2: Define Chebyshev vectors</h3>
+      <p>Define the Chebyshev vectors</p>
+      <div class="eqwrap"><div class="eq">\\[ |\\phi_n\\rangle \\equiv T_n(\\hat{H}')|\\psi(0)\\rangle. \\]</div><div class="eqno">(52)</div></div>
+      <p>Then (51) becomes</p>
+      <div class="eqwrap">
+        <div class="eq">\\[
+          |\\psi(t)\\rangle = e^{-iat}\\Big[ J_0(\\tau)|\\phi_0\\rangle
+          + 2\\sum_{n=1}^{\\infty} (-i)^n J_n(\\tau)|\\phi_n\\rangle \\Big].
+        \\]</div>
+        <div class="eqno">(53)</div>
+      </div>
+
+      <h3>6.3 Step 3: Initialize \\(|\\phi_0\\rangle\\), \\(|\\phi_1\\rangle\\)</h3>
+      <p>Since \\(T_0(x)=1\\) and \\(T_1(x)=x\\),</p>
+      <div class="eqwrap"><div class="eq">\\[ |\\phi_0\\rangle = T_0(\\hat{H}')|\\psi(0)\\rangle = \\hat{I}|\\psi(0)\\rangle = |\\psi(0)\\rangle. \\]</div><div class="eqno">(54)</div></div>
+      <div class="eqwrap"><div class="eq">\\[ |\\phi_1\\rangle = T_1(\\hat{H}')|\\psi(0)\\rangle = \\hat{H}'|\\psi(0)\\rangle. \\]</div><div class="eqno">(55)</div></div>
+
+      <h3>6.4 Step 4: Derive the recurrence for \\(|\\phi_n\\rangle\\)</h3>
+      <p>Using the polynomial recurrence (12) with \\(x\\to\\hat{H}'\\):</p>
+      <div class="eqwrap">
+        <div class="eq">\\[ T_{n+1}(\\hat{H}') = 2\\hat{H}'T_n(\\hat{H}') - T_{n-1}(\\hat{H}'). \\]</div>
+        <div class="eqno">(56)</div>
+      </div>
+      <p>Apply both sides to \\(|\\psi(0)\\rangle\\):</p>
+      <div class="eqwrap"><div class="eq">\\[ |\\phi_{n+1}\\rangle = T_{n+1}(\\hat{H}')|\\psi(0)\\rangle. \\]</div><div class="eqno">(57)</div></div>
+      <div class="eqwrap">
+        <div class="eq">\\[
+          |\\phi_{n+1}\\rangle
+          = \\big(2\\hat{H}'T_n(\\hat{H}') - T_{n-1}(\\hat{H}')\\big)|\\psi(0)\\rangle.
+        \\]</div>
+        <div class="eqno">(58)</div>
+      </div>
+      <div class="eqwrap">
+        <div class="eq">\\[
+          |\\phi_{n+1}\\rangle
+          = 2\\hat{H}'\\underbrace{T_n(\\hat{H}')|\\psi(0)\\rangle}_{|\\phi_n\\rangle}
+          - \\underbrace{T_{n-1}(\\hat{H}')|\\psi(0)\\rangle}_{|\\phi_{n-1}\\rangle}.
+        \\]</div>
+        <div class="eqno">(59)</div>
+      </div>
+      <p>Hence</p>
+      <div class="eqwrap"><div class="eq">\\[ |\\phi_{n+1}\\rangle = 2\\hat{H}'|\\phi_n\\rangle - |\\phi_{n-1}\\rangle. \\]</div><div class="eqno">(60)</div></div>
+
+      <h3>6.5 Step 5: Truncation and practical computation</h3>
+      <p>In computation, we truncate the infinite series at some order \\(N\\):</p>
+      <div class="eqwrap">
+        <div class="eq">\\[
+          |\\psi(t)\\rangle \\approx e^{-iat}\\Big[ J_0(\\tau)|\\phi_0\\rangle
+          + 2\\sum_{n=1}^{N} (-i)^n J_n(\\tau)|\\phi_n\\rangle \\Big].
+        \\]</div>
+        <div class="eqno">(61)</div>
+      </div>
+      <p>We generate \\(|\\phi_n\\rangle\\) for \\(n=0,1,\\dots,N\\) using (60). Each iteration needs only one matrix–vector multiplication \\(\\hat{H}'|\\phi_n\\rangle\\) plus vector additions.</p>
+    </section>
+
+    <!-- 7 -->
+    <section class="sec" id="sec7">
+      <h2>7. Truncation Error and Why \\(J_n(\\tau)\\) Gets Small for \\(n\\gtrsim\\tau\\)</h2>
+
+      <h3>7.1 Step 1: Define the remainder operator</h3>
+      <p>Let</p>
+      <div class="eqwrap"><div class="eq">\\[ \\hat{U}'(\\tau)\\equiv e^{-i\\tau\\hat{H}'}. \\]</div><div class="eqno">(62)</div></div>
+      <p>Define the truncated approximation</p>
+      <div class="eqwrap">
+        <div class="eq">\\[ \\hat{U}'_N(\\tau)\\equiv J_0(\\tau)\\hat{I} + 2\\sum_{n=1}^{N}(-i)^n J_n(\\tau)T_n(\\hat{H}'). \\]</div>
+        <div class="eqno">(63)</div>
+      </div>
+      <p>Then the remainder is</p>
+      <div class="eqwrap">
+        <div class="eq">\\[ \\hat{R}_N(\\tau)\\equiv \\hat{U}'(\\tau)-\\hat{U}'_N(\\tau)=2\\sum_{n=N+1}^{\\infty} (-i)^n J_n(\\tau)T_n(\\hat{H}'). \\]</div>
+        <div class="eqno">(64)</div>
+      </div>
+
+      <h3>7.2 Step 2: Prove \\(\\|T_n(\\hat{H}')\\|\\le 1\\)</h3>
+      <p>
+        In the eigenbasis of \\(\\hat{H}'\\), the operator \\(T_n(\\hat{H}')\\) has eigenvalues \\(T_n(E_k')\\). Since \\(E_k'\\in[-1,1]\\),
+        boundedness (10) gives \\(|T_n(E_k')|\\le 1\\). Therefore the operator norm satisfies
+      </p>
+      <div class="eqwrap"><div class="eq">\\[ \\|T_n(\\hat{H}')\\|\\le 1. \\]</div><div class="eqno">(65)</div></div>
+
+      <h3>7.3 Step 3: Derive the error bound</h3>
+      <p>Take norms in (64) and use the triangle inequality:</p>
+      <div class="eqwrap">
+        <div class="eq">\\[ \\|\\hat{R}_N(\\tau)\\| \\le 2\\sum_{n=N+1}^{\\infty} |J_n(\\tau)|\\,\\|T_n(\\hat{H}')\\|. \\]</div>
+        <div class="eqno">(66)</div>
+      </div>
+      <div class="eqwrap"><div class="eq">\\[ \\|\\hat{R}_N(\\tau)\\| \\le 2\\sum_{n=N+1}^{\\infty} |J_n(\\tau)|. \\]</div><div class="eqno">(67)</div></div>
+      <p>Thus</p>
+      <div class="eqwrap"><div class="eq">\\[ \\|\\hat{U}'(\\tau)-\\hat{U}'_N(\\tau)\\| \\le 2\\sum_{n=N+1}^{\\infty} |J_n(\\tau)|. \\]</div><div class="eqno">(68)</div></div>
+      <p>Applying to a normalized state \\(\\||\\psi(0)\\rangle\\|=1\\) gives</p>
+      <div class="eqwrap"><div class="eq">\\[ \\|\\,|\\psi_{\\mathrm{exact}}(t)\\rangle - |\\psi_N(t)\\rangle\\,\\| \\le 2\\sum_{n=N+1}^{\\infty} |J_n(\\tau)|. \\]</div><div class="eqno">(69)</div></div>
+
+      <h3>7.4 Step 4: Why the Bessel tail becomes small (detailed intuition)</h3>
+      <p>Recall that \\(J_n(\\tau)\\) appears as a Fourier coefficient of \\(e^{-i\\tau\\cos\\theta}\\):</p>
+      <div class="eqwrap"><div class="eq">\\[ (-i)^n J_n(\\tau)=\\frac{1}{\\pi}\\int_{0}^{\\pi} e^{-i\\tau\\cos\\theta}\\cos(n\\theta)\\,d\\theta. \\]</div><div class="eqno">(70)</div></div>
+
+      <p>For large \\(n\\), \\(\\cos(n\\theta)\\) oscillates rapidly as a function of \\(\\theta\\), and the integral cancels due to alternating signs. More specifically, consider the oscillatory phase in the integrand:</p>
+      <div class="eqwrap"><div class="eq">\\[ \\Phi(\\theta)=\\tau\\cos\\theta - n\\theta. \\]</div><div class="eqno">(71)</div></div>
+
+      <p>
+        When \\(n\\gg\\tau\\), the term \\(-n\\theta\\) dominates the \\(\\theta\\)-variation, so \\(\\Phi(\\theta)\\) changes rapidly and cancellations are strong.
+        This is the basic reason \\(J_n(\\tau)\\) becomes small for \\(n\\gtrsim\\tau\\).
+      </p>
+
+      <p>Hence a practical rule is:</p>
+      <div class="eqwrap"><div class="eq">\\[ N\\approx \\tau + (\\text{a modest safety margin}),\\qquad \\tau=bt. \\]</div><div class="eqno">(72)</div></div>
+    </section>
+
+    <!-- 8 -->
+    <section class="sec" id="sec8">
+      <h2>8. Example 1: \\(\\hat{H}=\\hat{\\sigma}_x\\) (No Rescaling Needed)</h2>
+
+      <p>Let</p>
+      <div class="eqwrap">
+        <div class="eq">\\[
+          \\hat{H}=
+          \\begin{pmatrix}
+            0 & 1\\\\
+            1 & 0
+          \\end{pmatrix},
+          \\qquad
+          |\\psi(0)\\rangle=
+          \\begin{pmatrix}
+            1\\\\
+            0
+          \\end{pmatrix}.
+        \\]</div>
+        <div class="eqno">(73)</div>
+      </div>
+
+      <p>
+        Eigenvalues are \\(\\pm 1\\), so \\(E_{\\min}=-1\\), \\(E_{\\max}=1\\). Then \\(a=0\\), \\(b=1\\), \\(\\hat{H}'=\\hat{H}\\), and \\(\\tau=t\\).
+      </p>
+
+      <h3>8.1 Compute Chebyshev vectors explicitly</h3>
+      <p>We have</p>
+      <div class="eqwrap">
+        <div class="eq">\\[
+          |\\phi_0\\rangle = |\\psi(0)\\rangle =
+          \\begin{pmatrix}1\\\\0\\end{pmatrix}.
+        \\]</div>
+        <div class="eqno">(74)</div>
+      </div>
+
+      <p>Next,</p>
+      <div class="eqwrap">
+        <div class="eq">\\[
+          |\\phi_1\\rangle = \\hat{H}'|\\psi(0)\\rangle =
+          \\begin{pmatrix}0&1\\\\1&0\\end{pmatrix}
+          \\begin{pmatrix}1\\\\0\\end{pmatrix}
+          =
+          \\begin{pmatrix}0\\\\1\\end{pmatrix}.
+        \\]</div>
+        <div class="eqno">(75)</div>
+      </div>
+
+      <p>Now use the recurrence \\(|\\phi_{n+1}\\rangle = 2\\hat{H}'|\\phi_n\\rangle - |\\phi_{n-1}\\rangle\\). Compute \\(\\hat{H}'|\\phi_1\\rangle\\):</p>
+      <div class="eqwrap">
+        <div class="eq">\\[
+          \\hat{H}'|\\phi_1\\rangle =
+          \\begin{pmatrix}0&1\\\\1&0\\end{pmatrix}
+          \\begin{pmatrix}0\\\\1\\end{pmatrix}
+          =
+          \\begin{pmatrix}1\\\\0\\end{pmatrix}.
+        \\]</div>
+      </div>
+
+      <p>Then</p>
+      <div class="eqwrap">
+        <div class="eq">\\[
+          |\\phi_2\\rangle = 2\\hat{H}'|\\phi_1\\rangle - |\\phi_0\\rangle
+          = 2\\begin{pmatrix}1\\\\0\\end{pmatrix} - \\begin{pmatrix}1\\\\0\\end{pmatrix}
+          = \\begin{pmatrix}1\\\\0\\end{pmatrix} = |\\phi_0\\rangle.
+        \\]</div>
+        <div class="eqno">(76)</div>
+      </div>
+
+      <p>Similarly one finds \\(|\\phi_3\\rangle=|\\phi_1\\rangle\\), etc. Therefore</p>
+      <div class="eqwrap">
+        <div class="eq">\\[
+          |\\phi_{2m}\\rangle=
+          \\begin{pmatrix}1\\\\0\\end{pmatrix},
+          \\qquad
+          |\\phi_{2m+1}\\rangle=
+          \\begin{pmatrix}0\\\\1\\end{pmatrix}.
+        \\]</div>
+        <div class="eqno">(77)</div>
+      </div>
+
+      <h3>8.2 Assemble the series (even/odd separation)</h3>
+      <p>From (61) (with \\(a=0\\), \\(\\tau=t\\)),</p>
+      <div class="eqwrap">
+        <div class="eq">\\[
+          |\\psi(t)\\rangle \\approx
+          J_0(t)|\\phi_0\\rangle + 2\\sum_{n=1}^{N}(-i)^n J_n(t)|\\phi_n\\rangle.
+        \\]</div>
+        <div class="eqno">(78)</div>
+      </div>
+
+      <p>Separate even and odd \\(n\\):</p>
+      <div class="eqwrap">
+        <div class="eq">\\[
+          |\\psi(t)\\rangle \\approx
+          \\Big(J_0(t) + 2\\sum_{m=1}^{\\lfloor N/2\\rfloor} (-i)^{2m}J_{2m}(t)\\Big)|\\phi_0\\rangle
+          + 2\\sum_{m=0}^{\\lfloor (N-1)/2\\rfloor} (-i)^{2m+1}J_{2m+1}(t)|\\phi_1\\rangle.
+        \\]</div>
+        <div class="eqno">(79)</div>
+      </div>
+
+      <p>Using \\((-i)^{2m}=(-1)^m\\) and \\((-i)^{2m+1}=(-i)(-1)^m\\):</p>
+      <div class="eqwrap">
+        <div class="eq">\\[
+          |\\psi(t)\\rangle \\approx
+          \\Big(J_0(t) + 2\\sum_{m\\ge 1} (-1)^m J_{2m}(t)\\Big)|\\phi_0\\rangle
+          - i\\Big(2\\sum_{m\\ge 0} (-1)^m J_{2m+1}(t)\\Big)|\\phi_1\\rangle.
+        \\]</div>
+        <div class="eqno">(80)</div>
+      </div>
+
+      <p>In the infinite limit these sums equal \\(\\cos t\\) and \\(\\sin t\\), giving the exact result</p>
+      <div class="eqwrap">
+        <div class="eq">\\[
+          |\\psi(t)\\rangle =
+          \\begin{pmatrix}
+            \\cos t\\\\
+            -i\\sin t
+          \\end{pmatrix}.
+        \\]</div>
+        <div class="eqno">(81)</div>
+      </div>
+    </section>
+
+    <!-- 9 -->
+    <section class="sec" id="sec9">
+      <h2>9. Example 2: A Nontrivial Rescaling Example</h2>
+
+      <p>Let</p>
+      <div class="eqwrap">
+        <div class="eq">\\[
+          \\hat{H}=
+          \\begin{pmatrix}
+            2 & 1\\\\
+            1 & 4
+          \\end{pmatrix},
+          \\qquad
+          |\\psi(0)\\rangle=
+          \\begin{pmatrix}
+            1\\\\
+            0
+          \\end{pmatrix}.
+        \\]</div>
+        <div class="eqno">(82)</div>
+      </div>
+
+      <h3>9.1 Step 1: Compute eigenvalues exactly</h3>
+      <p>Characteristic polynomial:</p>
+      <div class="eqwrap">
+        <div class="eq">\\[
+          \\det\\big(\\hat{H}-\\lambda\\hat{I}\\big)=
+          \\begin{vmatrix}
+            2-\\lambda & 1\\\\
+            1 & 4-\\lambda
+          \\end{vmatrix}
+          = (2-\\lambda)(4-\\lambda)-1
+        \\]</div>
+        <div class="eqno">(83)</div>
+      </div>
+      <div class="eqwrap"><div class="eq">\\[ = \\lambda^2 - 6\\lambda + 7. \\]</div><div class="eqno">(84)</div></div>
+
+      <p>Solve \\(\\lambda^2-6\\lambda+7=0\\):</p>
+      <div class="eqwrap">
+        <div class="eq">\\[
+          \\lambda_{\\pm}=
+          \\frac{6\\pm\\sqrt{36-28}}{2}
+          =\\frac{6\\pm\\sqrt{8}}{2}
+          = 3\\pm\\sqrt{2}.
+        \\]</div>
+        <div class="eqno">(85)</div>
+      </div>
+      <p>Thus \\(E_{\\max}=3+\\sqrt{2}\\), \\(E_{\\min}=3-\\sqrt{2}\\).</p>
+
+      <h3>9.2 Step 2: Compute \\(a\\), \\(b\\) and \\(\\hat{H}'\\)</h3>
+      <p>Using (16),</p>
+      <div class="eqwrap">
+        <div class="eq">\\[
+          a=\\frac{E_{\\max}+E_{\\min}}{2}=3,
+          \\qquad
+          b=\\frac{E_{\\max}-E_{\\min}}{2}=\\sqrt{2}.
+        \\]</div>
+        <div class="eqno">(86)</div>
+      </div>
+
+      <p>Compute</p>
+      <div class="eqwrap">
+        <div class="eq">\\[
+          \\hat{H}'=\\frac{\\hat{H}-a\\hat{I}}{b}
+          =\\frac{1}{\\sqrt{2}}\\left(
+          \\begin{pmatrix}2&1\\\\1&4\\end{pmatrix}
+          - 3\\begin{pmatrix}1&0\\\\0&1\\end{pmatrix}
+          \\right)
+          =\\frac{1}{\\sqrt{2}}\\begin{pmatrix}-1&1\\\\1&1\\end{pmatrix}.
+        \\]</div>
+        <div class="eqno">(87)</div>
+      </div>
+
+      <p>Scaled time is \\(\\tau=bt=\\sqrt{2}\\,t\\), and</p>
+      <div class="eqwrap"><div class="eq">\\[ e^{-i\\hat{H}t} = e^{-i3t}\\,e^{-i\\tau\\hat{H}'}. \\]</div><div class="eqno">(88)</div></div>
+
+      <h3>9.3 Step 3: Compute Chebyshev vectors explicitly</h3>
+      <p>Initialize:</p>
+      <div class="eqwrap">
+        <div class="eq">\\[
+          |\\phi_0\\rangle = |\\psi(0)\\rangle=
+          \\begin{pmatrix}1\\\\0\\end{pmatrix}.
+        \\]</div>
+        <div class="eqno">(89)</div>
+      </div>
+
+      <p>Compute</p>
+      <div class="eqwrap">
+        <div class="eq">\\[
+          |\\phi_1\\rangle = \\hat{H}'|\\phi_0\\rangle
+          =\\frac{1}{\\sqrt{2}}\\begin{pmatrix}-1&1\\\\1&1\\end{pmatrix}
+          \\begin{pmatrix}1\\\\0\\end{pmatrix}
+          =\\frac{1}{\\sqrt{2}}\\begin{pmatrix}-1\\\\1\\end{pmatrix}.
+        \\]</div>
+        <div class="eqno">(90)</div>
+      </div>
+
+      <p>Now compute \\(\\hat{H}'|\\phi_1\\rangle\\) carefully:</p>
+      <div class="eqwrap">
+        <div class="eq">\\[
+          \\hat{H}'|\\phi_1\\rangle
+          =\\frac{1}{\\sqrt{2}}\\begin{pmatrix}-1&1\\\\1&1\\end{pmatrix}
+          \\cdot \\frac{1}{\\sqrt{2}}\\begin{pmatrix}-1\\\\1\\end{pmatrix}.
+        \\]</div>
+        <div class="eqno">(91)</div>
+      </div>
+
+      <div class="eqwrap">
+        <div class="eq">\\[
+          =\\frac{1}{2}
+          \\begin{pmatrix}
+            (-1)(-1)+1\\cdot 1\\\\
+            1\\cdot(-1)+1\\cdot 1
+          \\end{pmatrix}
+          =
+          \\frac{1}{2}\\begin{pmatrix}2\\\\0\\end{pmatrix}
+          =
+          \\begin{pmatrix}1\\\\0\\end{pmatrix}
+          =|\\phi_0\\rangle.
+        \\]</div>
+        <div class="eqno">(92)</div>
+      </div>
+
+      <p>Then the recurrence gives</p>
+      <div class="eqwrap">
+        <div class="eq">\\[
+          |\\phi_2\\rangle = 2\\hat{H}'|\\phi_1\\rangle - |\\phi_0\\rangle
+          = 2|\\phi_0\\rangle - |\\phi_0\\rangle = |\\phi_0\\rangle.
+        \\]</div>
+        <div class="eqno">(93)</div>
+      </div>
+
+      <p>
+        Similarly, \\(\\hat{H}'|\\phi_2\\rangle=\\hat{H}'|\\phi_0\\rangle=|\\phi_1\\rangle\\Rightarrow
+        |\\phi_3\\rangle=2\\hat{H}'|\\phi_2\\rangle-|\\phi_1\\rangle=2|\\phi_1\\rangle-|\\phi_1\\rangle=|\\phi_1\\rangle\\).
+        So again we obtain the pattern
+      </p>
+      <div class="eqwrap">
+        <div class="eq">\\[
+          |\\phi_{2m}\\rangle = |\\phi_0\\rangle,
+          \\qquad
+          |\\phi_{2m+1}\\rangle = |\\phi_1\\rangle.
+        \\]</div>
+        <div class="eqno">(94)</div>
+      </div>
+
+      <h3>9.4 Step 4: Assemble the propagated state</h3>
+      <p>Using (61),</p>
+      <div class="eqwrap">
+        <div class="eq">\\[
+          |\\psi(t)\\rangle \\approx e^{-i3t}
+          \\Big[ J_0(\\tau)|\\phi_0\\rangle + 2\\sum_{n=1}^{N} (-i)^n J_n(\\tau)|\\phi_n\\rangle \\Big],
+          \\qquad \\tau=\\sqrt{2}\\,t.
+        \\]</div>
+        <div class="eqno">(95)</div>
+      </div>
+
+      <p>Separate even and odd \\(n\\) as before to get the explicit two-vector form:</p>
+      <div class="eqwrap">
+        <div class="eq">\\[
+          |\\psi(t)\\rangle \\approx e^{-i3t}\\big[ A_N(\\tau)|\\phi_0\\rangle + B_N(\\tau)|\\phi_1\\rangle \\big],
+        \\]</div>
+        <div class="eqno">(96)</div>
+      </div>
+
+      <p>where</p>
+      <div class="eqwrap">
+        <div class="eq">\\[
+          A_N(\\tau)\\equiv J_0(\\tau) + 2\\sum_{m=1}^{\\lfloor N/2\\rfloor} (-1)^m J_{2m}(\\tau),
+        \\]</div>
+        <div class="eqno">(97)</div>
+      </div>
+      <div class="eqwrap">
+        <div class="eq">\\[
+          B_N(\\tau)\\equiv -2i\\sum_{m=0}^{\\lfloor (N-1)/2\\rfloor} (-1)^m J_{2m+1}(\\tau).
+        \\]</div>
+        <div class="eqno">(98)</div>
+      </div>
+
+      <p>In the limit \\(N\\to\\infty\\), \\(A_N(\\tau)\\to\\cos\\tau\\) and \\(B_N(\\tau)\\to -i\\sin\\tau\\), yielding</p>
+      <div class="eqwrap">
+        <div class="eq">\\[
+          |\\psi(t)\\rangle = e^{-i3t}\\Big[ \\cos(\\sqrt{2}\\,t)|\\phi_0\\rangle - i\\sin(\\sqrt{2}\\,t)|\\phi_1\\rangle \\Big].
+        \\]</div>
+        <div class="eqno">(99)</div>
+      </div>
+    </section>
+
+    <!-- 10 -->
+    <section class="sec" id="sec10">
+      <h2>10. Summary: The Complete Chebyshev Propagator</h2>
+      <p>Given \\(\\hat{H}\\) and \\(|\\psi(0)\\rangle\\):</p>
+      <ol>
+        <li>
+          Choose bounds \\(E_{\\min},E_{\\max}\\) and compute
+          \\[
+            a=\\frac{E_{\\max}+E_{\\min}}{2},\\quad
+            b=\\frac{E_{\\max}-E_{\\min}}{2},\\quad
+            \\hat{H}'=\\frac{\\hat{H}-a\\hat{I}}{b},\\quad
+            \\tau=bt.
+          \\]
+        </li>
+        <li>
+          Generate Chebyshev vectors:
+          \\[
+            |\\phi_0\\rangle=|\\psi(0)\\rangle,\\quad
+            |\\phi_1\\rangle=\\hat{H}'|\\phi_0\\rangle,\\quad
+            |\\phi_{n+1}\\rangle=2\\hat{H}'|\\phi_n\\rangle-|\\phi_{n-1}\\rangle.
+          \\]
+        </li>
+        <li>
+          Assemble:
+          \\[
+            |\\psi(t)\\rangle \\approx e^{-iat}\\Big[ J_0(\\tau)|\\phi_0\\rangle + 2\\sum_{n=1}^{N}(-i)^n J_n(\\tau)|\\phi_n\\rangle \\Big].
+          \\]
+        </li>
+        <li>Choose \\(N\\) large enough that the tail \\(2\\sum_{n>N}|J_n(\\tau)|\\) is below your tolerance.</li>
+      </ol>
+
+      <div class="note-box">
+        <strong>Linking note:</strong> Save this file as <code class="kbd">notes/chebyshev_propagator.html</code> in your repo, and add a link to it from <code class="kbd">notes.html</code>.
+      </div>
+    </section>
+
+    <div class="hr"></div>
+    <p style="opacity:0.75; font-size: 0.95rem;">
+      Source: “A Fully Detailed, Beginner-Friendly Derivation of the Chebyshev Propagator” (PDF converted to HTML). fileciteturn0file0
+    </p>
+  </main>
+</body>
+</html>
