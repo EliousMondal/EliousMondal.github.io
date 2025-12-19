@@ -2,56 +2,51 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
+  <title>Chebyshev Propagator — Fully Detailed Derivation | Notes | Mohammad Elious Ali Mondal</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Chebyshev Propagator — Fully Detailed Derivation</title>
-
-  <!-- Site-wide CSS/JS (keep paths absolute so they work from /notes/) -->
-  <link rel="stylesheet" href="/style.css" />
-  <script defer src="/main.js"></script>
-
-  <!-- Small page-local styles for equation numbers / readability -->
-  <style>
-    .notes-container { max-width: 980px; margin: 0 auto; padding: 2rem 1.25rem; }
-    .notes-title { margin: 0.25rem 0 1.25rem; }
-    .notes-subtitle { margin: 0 0 2rem; opacity: 0.85; }
-    .sec { margin-top: 2.25rem; }
+  <link rel="stylesheet" href="../style.css?v=1" />
+<style>
     .eqwrap { position: relative; margin: 0.75rem 0 1.0rem; }
     .eqno { position: absolute; right: 0; top: 0; font-size: 0.95em; opacity: 0.8; }
-    .eq { padding-right: 4.5rem; } /* space for eq number */
+    .eq { padding-right: 4.5rem; }
     .note-box { border-left: 4px solid rgba(128,128,128,0.35); padding: 0.75rem 1rem; margin: 1rem 0; }
-    code.kbd { padding: 0.1rem 0.35rem; border-radius: 6px; background: rgba(127,127,127,0.15); }
     .hr { height: 1px; background: rgba(127,127,127,0.25); margin: 2rem 0; }
+    .sec { margin-top: 2rem; }
   </style>
 
-  <!-- MathJax (LaTeX) -->
+  <!-- MathJax config (matches other Notes pages) -->
   <script>
     window.MathJax = {
       tex: {
-        inlineMath: [['\(','\)'], ['$', '$']],
-        displayMath: [['\[','\]']],
-        processEscapes: true
-      },
-      options: { skipHtmlTags: ['script','noscript','style','textarea','pre','code'] }
+        inlineMath: [['$', '$'], ['\\\\(', '\\\\)']],
+        displayMath: [['$$', '$$'], ['\\\\[', '\\\\]']]
+      }
     };
   </script>
-  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+  <script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 </head>
 
 <body>
   <!-- Simple navbar that matches the site structure (your /style.css controls styling) -->
-  <header class="navbar">
-    <nav class="nav-container">
-      <a class="nav-logo" href="/index.html">M. Elious Mondal</a>
-      <ul class="nav-links">
-        <li><a class="nav-link" href="/index.html">Home</a></li>
-        <li><a class="nav-link" href="/research.html">Research</a></li>
-        <li><a class="nav-link" href="/publications.html">Publications</a></li>
-        <li><a class="nav-link active" href="/notes.html">Notes</a></li>
-      </ul>
-    </nav>
+    <header class="site-header">
+    <div class="container header-inner">
+      <div class="logo">
+        <a href="../index.html#hero">Mohammad Elious Ali Mondal</a>
+      </div>
+      <nav class="nav-links">
+        <a href="../index.html#about">About</a>
+        <a href="../research.html">Research</a>
+        <a href="../publications.html">Publications</a>
+        <a href="../notes.html">Notes</a>
+        <a href="../index.html#contact">Contact</a>
+      </nav>
+      <button class="theme-toggle" aria-label="Toggle dark mode">☾</button>
+    </div>
   </header>
 
-  <main class="notes-container">
+  <main>
+    <section class="section">
+      <div class="container">
     <h1 class="notes-title">A Fully Detailed, Beginner-Friendly Derivation of the Chebyshev Propagator</h1>
     <p class="notes-subtitle">
       This page is a faithful HTML + MathJax conversion of the complete PDF notes (all sections, all equations, all steps, and both 2×2 examples).
@@ -895,6 +890,11 @@
     <p style="opacity:0.75; font-size: 0.95rem;">
       Source: “A Fully Detailed, Beginner-Friendly Derivation of the Chebyshev Propagator” (PDF converted to HTML). fileciteturn0file0
     </p>
+                <p style="margin-top:1.5rem;">
+          <a class="pub-title" href="../notes.html">&larr; Back to Notes</a>
+        </p>
+      </div>
+    </section>
   </main>
 </body>
 </html>
