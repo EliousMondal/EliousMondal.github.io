@@ -42,7 +42,7 @@
     <!-- Title + intro -->
     <section class="section">
       <div class="container">
-        <h1>A Fully Detailed, Beginner-Friendly Derivation of the Chebyshev Propagator</h1>
+        <h1>A beginner friendly introduction to Chebyshev Propagator</h1>
         <p>
           These notes give a step-by-step derivation of the Chebyshev (polynomial) propagator for
           computing $|\psi(t)\rangle = e^{-i\hat{H}t}|\psi(0)\rangle$ without diagonalizing $\hat{H}$.
@@ -111,20 +111,20 @@
       <div class="container">
         <h2>2. Chebyshev polynomials: definition, properties, and recurrence</h2>
 
-        <h3>2.1 Step 1: The cosine parametrization of $[-1,1]$</h3>
+        <h3>2.1: The cosine parametrization of $[-1,1]$</h3>
         <p>A key observation is that any $x\in[-1,1]$ can be written as</p>
         \[
           x = \cos\theta,\qquad \theta\in[0,\pi]. \tag{4}
         \]
 
-        <h3>2.2 Step 2: Definition of Chebyshev polynomials</h3>
+        <h3>2.2: Definition of Chebyshev polynomials</h3>
         <p><strong>Definition.</strong> The Chebyshev polynomial of the first kind is defined by</p>
         \[
           T_n(x)\equiv \cos(n\theta)\quad\text{where } x=\cos\theta. \tag{5}
         \]
         <p>This definition implies $T_n(x)$ is a polynomial in $x$ (one can prove this using trig identities).</p>
 
-        <h3>2.3 Step 3: First few polynomials (explicit)</h3>
+        <h3>2.3: First few polynomials (explicit)</h3>
         <p>Using $\cos(2\theta)=2\cos^2\theta-1$ and $\cos(3\theta)=4\cos^3\theta-3\cos\theta$:</p>
         \[
           T_0(x)=1, \tag{6}
@@ -139,14 +139,14 @@
           T_3(x)=4x^3-3x. \tag{9}
         \]
 
-        <h3>2.4 Step 4: Boundedness on $[-1,1]$</h3>
+        <h3>2.4: Boundedness on $[-1,1]$</h3>
         <p>From the definition, for $x=\cos\theta\in[-1,1]$:</p>
         \[
           |T_n(x)| = |\cos(n\theta)| \le 1. \tag{10}
         \]
         <p>This boundedness is crucial for stability: the polynomials do not blow up on $[-1,1]$.</p>
 
-        <h3>2.5 Step 5: The three-term recurrence (derived)</h3>
+        <h3>2.5: The three-term recurrence (derived)</h3>
         <p>Start from the cosine identity</p>
         \[
           \cos\big((n+1)\theta\big)=2\cos\theta\,\cos(n\theta)-\cos\big((n-1)\theta\big). \tag{11}
@@ -163,7 +163,7 @@
       <div class="container">
         <h2>3. Why we rescale the Hamiltonian to $[-1,1]$</h2>
 
-        <h3>3.1 Step 1: Eigenvalues determine operator functions</h3>
+        <h3>3.1: Eigenvalues determine operator functions</h3>
         <p>Let $\hat{H}$ be Hermitian. It has an orthonormal eigenbasis $\{|E_k\rangle\}$ with real eigenvalues $\{E_k\}$:</p>
         \[
           \hat{H}|E_k\rangle = E_k|E_k\rangle,\qquad E_k\in\mathbb{R}. \tag{13}
@@ -174,13 +174,13 @@
         \]
         <p>So approximating $e^{-i\hat{H}t}$ reduces to approximating $e^{-iEt}$ over the spectrum.</p>
 
-        <h3>3.2 Step 2: Why Chebyshev polynomials demand $x\in[-1,1]$</h3>
+        <h3>3.2: Why Chebyshev polynomials demand $x\in[-1,1]$</h3>
         <p>
           Chebyshev polynomials are bounded on $[-1,1]$ by (10). Outside that interval, $T_n(x)$ grows rapidly with $n$
           (in fact exponentially). Thus, for stability of $T_n(\hat{H}')$ at large $n$, we want $\mathrm{spec}(\hat{H}')\subset[-1,1]$.
         </p>
 
-        <h3>3.3 Step 3: Rescaling the spectrum</h3>
+        <h3>3.3: Rescaling the spectrum</h3>
         <p>Assume bounds $E_{\min}\le E_k\le E_{\max}$ for all eigenvalues:</p>
         \[
           E_{\min}\le E_k \le E_{\max}. \tag{15}
@@ -202,7 +202,7 @@
           E_k'\in[-1,1]. \tag{19}
         \]
 
-        <h3>3.4 Step 4: Factorizing the propagator</h3>
+        <h3>3.4: Factorizing the propagator</h3>
         <p>Rewrite $\hat{H}=a\hat{I}+b\hat{H}'$. Then</p>
         \[
           e^{-i\hat{H}t}=e^{-i(a\hat{I}+b\hat{H}')t}. \tag{20}
@@ -228,13 +228,13 @@
           e^{-i\tau x} = J_0(\tau) + 2\sum_{n=1}^{\infty}(-i)^n J_n(\tau)\,T_n(x). \tag{23}
         \]
 
-        <h3>4.1 Step 1: Change variables $x=\cos\theta$</h3>
+        <h3>4.1: Change variables $x=\cos\theta$</h3>
         <p>Write $x=\cos\theta$ with $\theta\in[0,\pi]$. Then</p>
         \[
           e^{-i\tau x}=e^{-i\tau\cos\theta}. \tag{24}
         \]
 
-        <h3>4.2 Step 2: Why the Fourier expansion has only cosines (no sines)</h3>
+        <h3>4.2: Why the Fourier expansion has only cosines (no sines)</h3>
         <p>Extend $g(\theta)=e^{-i\tau\cos\theta}$ to $[-\pi,\pi]$. Since $\cos(-\theta)=\cos\theta$,</p>
         \[
           g(-\theta)=e^{-i\tau\cos(-\theta)}=e^{-i\tau\cos\theta}=g(\theta), \tag{25}
@@ -250,7 +250,7 @@
           e^{-i\tau\cos\theta}=a_0(\tau) + 2\sum_{n=1}^{\infty} a_n(\tau)\cos(n\theta). \tag{27}
         \]
 
-        <h3>4.3 Step 3: Compute the cosine coefficients by orthogonality</h3>
+        <h3>4.3: Compute the cosine coefficients by orthogonality</h3>
         <p>On $[0,\pi]$, cosines satisfy:</p>
         \[
           \int_{0}^{\pi}\cos(n\theta)\cos(m\theta)\,d\theta=
@@ -296,7 +296,7 @@
           a_m(\tau)=\frac{1}{\pi}\int_{0}^{\pi} e^{-i\tau\cos\theta}\cos(m\theta)\,d\theta,\qquad m\ge 1. \tag{33}
         \]
 
-        <h3>4.4 Step 4: Define Bessel functions using these integrals</h3>
+        <h3>4.4: Define Bessel functions using these integrals</h3>
         <p>Define the Bessel function (first kind) using the standard integral representation</p>
         \[
           J_n(\tau)\equiv \frac{1}{\pi}\int_{0}^{\pi}\cos\!\big(n\theta-\tau\sin\theta\big)\,d\theta. \tag{34}
@@ -314,7 +314,7 @@
           e^{-i\tau\cos\theta} = J_0(\tau) + 2\sum_{n=1}^{\infty}(-i)^n J_n(\tau)\cos(n\theta). \tag{37}
         \]
 
-        <h3>4.5 Step 5: Convert cosines to Chebyshev polynomials</h3>
+        <h3>4.5: Convert cosines to Chebyshev polynomials</h3>
         <p>Since $x=\cos\theta$ and by definition $T_n(x)=\cos(n\theta)$:</p>
         \[
           \cos(n\theta)=T_n(\cos\theta)=T_n(x). \tag{38}
@@ -331,7 +331,7 @@
       <div class="container">
         <h2>5. Lifting the scalar identity to an operator identity</h2>
 
-        <h3>5.1 Step 1: Eigen-decomposition of $\hat{H}'$</h3>
+        <h3>5.1: Eigen-decomposition of $\hat{H}'$</h3>
         <p>Since $\hat{H}'$ is Hermitian, it has eigenpairs $\{E_k',|E_k\rangle\}$ with $E_k'\in[-1,1]$:</p>
         \[
           \hat{H}'|E_k\rangle = E_k'|E_k\rangle. \tag{40}
@@ -341,12 +341,12 @@
           \hat{I} = \sum_k |E_k\rangle\langle E_k|. \tag{41}
         \]
 
-        <h3>5.2 Step 2: Action of $e^{-i\tau\hat{H}'}$ on eigenstates</h3>
+        <h3>5.2: Action of $e^{-i\tau\hat{H}'}$ on eigenstates</h3>
         \[
           e^{-i\tau\hat{H}'}|E_k\rangle = e^{-i\tau E_k'}|E_k\rangle. \tag{42}
         \]
 
-        <h3>5.3 Step 3: Apply the scalar identity to each eigenvalue</h3>
+        <h3>5.3: Apply the scalar identity to each eigenvalue</h3>
         <p>Since $E_k'\in[-1,1]$, apply (39) with $x=E_k'$:</p>
         \[
           e^{-i\tau E_k'} = J_0(\tau)+2\sum_{n=1}^{\infty}(-i)^n J_n(\tau) T_n(E_k'). \tag{43}
@@ -359,7 +359,7 @@
           \right]|E_k\rangle. \tag{44}
         \]
 
-        <h3>5.4 Step 4: Define $T_n(\hat{H}')$ via spectral calculus</h3>
+        <h3>5.4: Define $T_n(\hat{H}')$ via spectral calculus</h3>
         <p>Define the operator polynomial</p>
         \[
           T_n(\hat{H}') \equiv \sum_k T_n(E_k')\,|E_k\rangle\langle E_k|. \tag{45}
@@ -395,7 +395,7 @@
       <div class="container">
         <h2>6. Chebyshev propagation algorithm (vector recurrence)</h2>
 
-        <h3>6.1 Step 1: Apply the expansion to $|\psi(0)\rangle$</h3>
+        <h3>6.1: Apply the expansion to $|\psi(0)\rangle$</h3>
         <p>Define</p>
         \[
           |\psi(t)\rangle = e^{-i\hat{H}t}|\psi(0)\rangle. \tag{50}
@@ -411,7 +411,7 @@
           \right],\qquad \tau=bt. \tag{51}
         \]
 
-        <h3>6.2 Step 2: Define Chebyshev vectors</h3>
+        <h3>6.2: Define Chebyshev vectors</h3>
         <p>Define</p>
         \[
           |\phi_n\rangle \equiv T_n(\hat{H}')|\psi(0)\rangle. \tag{52}
@@ -427,7 +427,7 @@
           \right]. \tag{53}
         \]
 
-        <h3>6.3 Step 3: Initialize $|\phi_0\rangle$, $|\phi_1\rangle$</h3>
+        <h3>6.3: Initialize $|\phi_0\rangle$, $|\phi_1\rangle$</h3>
         <p>Since $T_0(x)=1$ and $T_1(x)=x$:</p>
         \[
           |\phi_0\rangle = |\psi(0)\rangle, \tag{54}
@@ -436,7 +436,7 @@
           |\phi_1\rangle = \hat{H}'|\psi(0)\rangle. \tag{55}
         \]
 
-        <h3>6.4 Step 4: Derive the recurrence for $|\phi_n\rangle$</h3>
+        <h3>6.4: Derive the recurrence for $|\phi_n\rangle$</h3>
         <p>Use the polynomial recurrence (12) with $x\mapsto \hat{H}'$:</p>
         \[
           T_{n+1}(\hat{H}') = 2\hat{H}'T_n(\hat{H}') - T_{n-1}(\hat{H}'). \tag{56}
@@ -449,7 +449,7 @@
         \]
         <p>(Equations (57)–(59) in the PDF are the intermediate steps leading to this final recurrence.)</p>
 
-        <h3>6.5 Step 5: Truncation and practical computation</h3>
+        <h3>6.5: Truncation and practical computation</h3>
         <p>Truncate the infinite series at order $N$:</p>
         \[
           |\psi(t)\rangle \approx
@@ -468,7 +468,7 @@
       <div class="container">
         <h2>7. Truncation error and why $J_n(\tau)$ gets small for $n\gtrsim\tau$</h2>
 
-        <h3>7.1 Step 1: Define the remainder operator</h3>
+        <h3>7.1: Define the remainder operator</h3>
         <p>Let</p>
         \[
           \hat{U}'(\tau)\equiv e^{-i\tau\hat{H}'}. \tag{62}
@@ -484,13 +484,13 @@
           2\sum_{n=N+1}^{\infty}(-i)^n J_n(\tau)\,T_n(\hat{H}'). \tag{64}
         \]
 
-        <h3>7.2 Step 2: Prove $\|T_n(\hat{H}')\|\le 1$</h3>
+        <h3>7.2: Prove $\|T_n(\hat{H}')\|\le 1$</h3>
         <p>In the eigenbasis of $\hat{H}'$, the eigenvalues of $T_n(\hat{H}')$ are $T_n(E_k')$. Since $E_k'\in[-1,1]$, boundedness gives $|T_n(E_k')|\le 1$. Therefore</p>
         \[
           \|T_n(\hat{H}')\|\le 1. \tag{65}
         \]
 
-        <h3>7.3 Step 3: Derive the error bound</h3>
+        <h3>7.3: Derive the error bound</h3>
         <p>Take norms in (64) and apply triangle inequality:</p>
         \[
           \|\hat{R}_N(\tau)\|
@@ -514,7 +514,7 @@
           2\sum_{n=N+1}^{\infty}|J_n(\tau)|. \tag{69}
         \]
 
-        <h3>7.4 Step 4: Why the Bessel tail becomes small (intuition)</h3>
+        <h3>7.4: Why the Bessel tail becomes small (intuition)</h3>
         <p>Recall $(-i)^nJ_n(\tau)$ appears as a Fourier coefficient of $e^{-i\tau\cos\theta}$:</p>
         \[
           (-i)^n J_n(\tau) = \frac{1}{\pi}\int_{0}^{\pi} e^{-i\tau\cos\theta}\cos(n\theta)\,d\theta. \tag{70}
@@ -672,7 +672,7 @@
           \end{pmatrix}. \tag{82}
         \]
 
-        <h3>9.1 Step 1: Compute eigenvalues exactly</h3>
+        <h3>9.1: Compute eigenvalues exactly</h3>
         <p>Characteristic polynomial:</p>
         \[
           \det(\hat{H}-\lambda\hat{I})=
@@ -692,7 +692,7 @@
         \]
         <p>Thus $E_{\max}=3+\sqrt{2}$, $E_{\min}=3-\sqrt{2}$.</p>
 
-        <h3>9.2 Step 2: Compute $a$, $b$ and $\hat{H}'$</h3>
+        <h3>9.2: Compute $a$, $b$ and $\hat{H}'$</h3>
         \[
           a=\frac{E_{\max}+E_{\min}}{2}=3,\qquad
           b=\frac{E_{\max}-E_{\min}}{2}=\sqrt{2}. \tag{86}
@@ -724,7 +724,7 @@
           e^{-i\hat{H}t}=e^{-i3t}\,e^{-i\tau\hat{H}'}. \tag{88}
         \]
 
-        <h3>9.3 Step 3: Compute Chebyshev vectors explicitly</h3>
+        <h3>9.3: Compute Chebyshev vectors explicitly</h3>
         \[
           |\phi_0\rangle =
           \begin{pmatrix}
@@ -796,7 +796,7 @@
           |\phi_{2m}\rangle = |\phi_0\rangle,\qquad |\phi_{2m+1}\rangle = |\phi_1\rangle. \tag{94}
         \]
 
-        <h3>9.4 Step 4: Assemble the propagated state</h3>
+        <h3>9.4: Assemble the propagated state</h3>
         \[
           |\psi(t)\rangle \approx e^{-i3t}\left[
             J_0(\tau)|\phi_0\rangle + 2\sum_{n=1}^{N}(-i)^n J_n(\tau)|\phi_n\rangle
