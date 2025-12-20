@@ -49,7 +49,7 @@
           We develop Chebyshev polynomials, explain why one rescales the Hamiltonian spectrum to $[-1,1]$,
           derive the scalar Chebyshev expansion of $e^{-i\tau x}$ using Fourier cosine series and Bessel
           functions, lift it to an operator identity, derive the stable three-term recurrence algorithm,
-          prove a truncation error bound, and work two explicit $2\times 2$ examples (including nontrivial rescaling).
+          prove a truncation error bound, and work two explicit $2\times 2$ examples.
         </p>
       </div>
     </section>
@@ -88,7 +88,7 @@
           requires only repeated matrix–vector multiplications.
         </p>
 
-        <h3>1.3 High-level plan</h3>
+        <h3>1.3 Layout</h3>
         <p>We proceed in the following connected steps:</p>
         <ol>
           <li>Define Chebyshev polynomials $T_n(x)$, prove boundedness on $[-1,1]$, and derive their recurrence.</li>
@@ -101,7 +101,7 @@
           <li>Lift the scalar identity to an operator identity $x\mapsto \hat{H}'$.</li>
           <li>Derive the Chebyshev propagation algorithm (vector recurrence).</li>
           <li>Derive a truncation error bound and explain why $J_n(\tau)$ becomes small for $n\gtrsim \tau$.</li>
-          <li>Work through explicit $2\times 2$ examples, including nontrivial rescaling.</li>
+          <li>Work through explicit $2\times 2$ examples to demonstrate how the propagator is used.</li>
         </ol>
       </div>
     </section>
@@ -124,7 +124,7 @@
         \]
         <p>This definition implies $T_n(x)$ is a polynomial in $x$ (one can prove this using trig identities).</p>
 
-        <h3>2.3: First few polynomials (explicit)</h3>
+        <h3>2.3: First few polynomials</h3>
         <p>Using $\cos(2\theta)=2\cos^2\theta-1$ and $\cos(3\theta)=4\cos^3\theta-3\cos\theta$:</p>
         \[
           T_0(x)=1, \tag{6}
@@ -146,7 +146,7 @@
         \]
         <p>This boundedness is crucial for stability: the polynomials do not blow up on $[-1,1]$.</p>
 
-        <h3>2.5: The three-term recurrence (derived)</h3>
+        <h3>2.5: The three-term recursion</h3>
         <p>Start from the cosine identity</p>
         \[
           \cos\big((n+1)\theta\big)=2\cos\theta\,\cos(n\theta)-\cos\big((n-1)\theta\big). \tag{11}
