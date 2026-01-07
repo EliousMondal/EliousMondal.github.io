@@ -157,12 +157,12 @@
   <main>
     <h1>Basics of Electronic Structure</h1>
     <p class="lead">
-      These notes go through the “birth of electronic structure”: we start from the full molecular Hamiltonian,
+      We start from the full molecular Hamiltonian,
       apply the Born–Oppenheimer approximation, discuss antisymmetry and spin, build Hartree products and Slater determinants,
       and then derive the ideas behind Hartree–Fock and Configuration Interaction (CI).
     </p>
 
-    <h2>1. The Birth of Electronic Structure</h2>
+    <h2>1. Introduction</h2>
 
     <p>We need to solve the time–independent Schrödinger equation</p>
     \[
@@ -171,13 +171,12 @@
 
     <p>with the full molecular Hamiltonian</p>
     \[
-      \hat{H}
-      =
+      \hat{H} =
       -\sum_{i}^{N}\frac{1}{2}\nabla_i^2
       -\sum_{A}^{M}\frac{1}{2M_A}\nabla_A^2
       -\sum_{i,A}\frac{Z_A}{|\mathbf{r}_i-\mathbf{R}_A|}
-      +\sum_{i<j}\frac{1}{|\mathbf{r}_i-\mathbf{r}_j|}
-      +\sum_{A<B}\frac{Z_A Z_B}{|\mathbf{R}_A-\mathbf{R}_B|}. \tag{2}
+      +\sum_{i &lt j} \frac{1}{|\mathbf{r}_i-\mathbf{r}_j|}
+      +\sum_{A &lt B} \frac{Z_A Z_B}{|\mathbf{R}_A-\mathbf{R}_B|}. \tag{2}
     \]
 
     <p>
@@ -388,7 +387,7 @@
       =
       \sum_{i=1}^{N} \hat{h}(i)
       +
-      \sum_{i<j}^{N} \hat{g}(i,j), \tag{20}
+      \sum_{i &lt j}^{N} \hat{g}(i,j), \tag{20}
     \]
     <p>where</p>
     \[
