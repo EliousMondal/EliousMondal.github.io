@@ -3,129 +3,13 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Basics of Electronic Structure | Notes | Mohammad Elious Ali Mondal</title>
-  <meta name="description" content="Notes on the birth of electronic structure: Born–Oppenheimer, antisymmetry, Slater determinants, Hartree–Fock, and configuration interaction." />
+  <title>Basics of Electronic Structure | Notes</title>
+  <meta name="description" content="Notes on Born–Oppenheimer approximation, antisymmetry, Slater determinants, Hartree–Fock (SCF), configuration interaction, and Coulomb/exchange integrals." />
 
-  <!-- Minimal styling to match the clean look of your existing notes pages -->
-  <style>
-    :root{
-      --bg: #ffffff;
-      --fg: #111827;
-      --muted: #4b5563;
-      --link: #2563eb;
-      --border: #e5e7eb;
-      --codebg: #f3f4f6;
-    }
-    body{
-      margin:0;
-      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
-      background: var(--bg);
-      color: var(--fg);
-      line-height: 1.65;
-    }
-    header{
-      border-bottom: 1px solid var(--border);
-      background: var(--bg);
-      position: sticky;
-      top: 0;
-      z-index: 10;
-    }
-    .nav{
-      max-width: 980px;
-      margin: 0 auto;
-      padding: 14px 18px;
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap: 18px;
-    }
-    .brand{
-      font-weight: 650;
-      text-decoration:none;
-      color: var(--fg);
-      white-space: nowrap;
-    }
-    .navlinks{
-      display:flex;
-      gap: 14px;
-      flex-wrap: wrap;
-      align-items:center;
-      justify-content:flex-end;
-    }
-    .navlinks a{
-      text-decoration:none;
-      color: var(--muted);
-      font-weight: 550;
-    }
-    .navlinks a:hover{ color: var(--fg); }
-    .modebtn{
-      border: 1px solid var(--border);
-      background: transparent;
-      color: var(--muted);
-      padding: 4px 10px;
-      border-radius: 999px;
-      cursor: pointer;
-      font-size: 14px;
-      line-height: 1;
-    }
-    main{
-      max-width: 980px;
-      margin: 0 auto;
-      padding: 26px 18px 60px;
-    }
-    h1{
-      margin: 10px 0 10px;
-      font-size: 2.0rem;
-      line-height: 1.2;
-      letter-spacing: -0.02em;
-    }
-    h2{
-      margin-top: 28px;
-      font-size: 1.35rem;
-      letter-spacing: -0.01em;
-    }
-    h3{
-      margin-top: 20px;
-      font-size: 1.1rem;
-    }
-    p{ margin: 10px 0; }
-    .lead{
-      color: var(--muted);
-      margin-top: 6px;
-      margin-bottom: 18px;
-    }
-    hr{
-      border: none;
-      border-top: 1px solid var(--border);
-      margin: 26px 0;
-    }
-    .back{
-      margin-top: 26px;
-    }
-    .back a{
-      color: var(--link);
-      text-decoration:none;
-      font-weight: 600;
-    }
-    .back a:hover{ text-decoration: underline; }
-    code{
-      background: var(--codebg);
-      padding: 2px 6px;
-      border-radius: 6px;
-      font-size: 0.95em;
-    }
-    /* Dark mode (simple, local) */
-    body.dark{
-      --bg:#0b1220;
-      --fg:#e5e7eb;
-      --muted:#b7c0cc;
-      --link:#93c5fd;
-      --border:#243041;
-      --codebg:#111827;
-    }
-  </style>
+  <!-- Use your site stylesheet so it matches your other notes pages -->
+  <link rel="stylesheet" href="../style.css?v=1" />
 
-  <!-- MathJax -->
+  <!-- MathJax (with equation numbering) -->
   <script>
     window.MathJax = {
       tex: {
@@ -137,311 +21,478 @@
     };
   </script>
   <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+
+  <style>
+    /* Small local tweaks (keeps your main theme) */
+    .note-wrap { max-width: 980px; margin: 0 auto; padding: 0 18px 60px; }
+    .note-wrap h1 { margin-top: 0; }
+    .note-lead { opacity: 0.85; }
+    .eqblock { margin: 10px 0 18px; }
+    .backlink { margin-top: 28px; }
+    .backlink a { text-decoration: none; }
+    .backlink a:hover { text-decoration: underline; }
+  </style>
 </head>
 
 <body>
-  <header>
-    <div class="nav">
-      <a class="brand" href="/">Mohammad Elious Ali Mondal</a>
-      <nav class="navlinks" aria-label="Primary">
-        <a href="/about.html">About</a>
-        <a href="/research.html">Research</a>
-        <a href="/publications.html">Publications</a>
-        <a href="/notes.html">Notes</a>
-        <a href="/contact.html">Contact</a>
-        <button class="modebtn" id="modeBtn" title="Toggle dark mode" aria-label="Toggle dark mode">☾</button>
+  <!-- Match notes.html header structure -->
+  <header class="site-header">
+    <div class="container header-inner">
+      <div class="logo">
+        <a href="../index.html#hero">Mohammad Elious Ali Mondal</a>
+      </div>
+      <nav class="nav-links">
+        <a href="../index.html#about">About</a>
+        <a href="../research.html">Research</a>
+        <a href="../publications.html">Publications</a>
+        <a href="../notes.html">Notes</a>
+        <a href="../index.html#contact">Contact</a>
       </nav>
+      <button class="theme-toggle" aria-label="Toggle dark mode">☾</button>
     </div>
   </header>
 
   <main>
-    <h1>Basics of Electronic Structure</h1>
-    <p class="lead">
-      We start from the full molecular Hamiltonian,
-      apply the Born–Oppenheimer approximation, discuss antisymmetry and spin, build Hartree products and Slater determinants,
-      and then derive the ideas behind Hartree–Fock and Configuration Interaction (CI).
-    </p>
+    <section class="section">
+      <div class="note-wrap">
+        <h1>Basics of Electronic Structure</h1>
+        <p class="note-lead">
+          We start from the full molecular Hamiltonian,
+          apply the Born–Oppenheimer approximation, discuss antisymmetry and spin, build Hartree products and Slater
+          determinants, and then derive the ideas behind Hartree–Fock and Configuration Interaction (CI).
+          Finally we write the operator algebra and Coulomb/exchange integrals which show how HF works internally.
+        </p>
 
-    <h2>1. Introduction</h2>
+        <hr />
 
-    <p>We need to solve the time–independent Schrödinger equation</p>
-    \[
-      \hat{H}\Psi = E \Psi. \tag{1}
-    \]
+        <h2>1. Introduction</h2>
 
-    <p>with the full molecular Hamiltonian</p>
-    \[
-      \hat{H} =
-      -\sum_{i}^{N}\frac{1}{2}\nabla_i^2
-      -\sum_{A}^{M}\frac{1}{2M_A}\nabla_A^2
-      -\sum_{i,A}\frac{Z_A}{|\mathbf{r}_i-\mathbf{R}_A|}
-      +\sum_{i &lt j} \frac{1}{|\mathbf{r}_i-\mathbf{r}_j|}
-      +\sum_{A &lt B} \frac{Z_A Z_B}{|\mathbf{R}_A-\mathbf{R}_B|}. \tag{2}
-    \]
+        <p>We need to solve the time–independent Schrödinger equation</p>
+        <div class="eqblock">
+          \[
+            \hat{H}\Psi = E\Psi .
+          \]
+        </div>
 
-    <p>
-      Here, \(i,j\) label electrons and \(A,B\) label nuclei.
-      The terms represent electronic kinetic energy, nuclear kinetic energy,
-      electron–nuclear attraction, electron–electron repulsion, and
-      nuclear–nuclear repulsion respectively.
-    </p>
+        <p>with the full molecular Hamiltonian</p>
+        <div class="eqblock">
+          \[
+            \hat{H}
+            =
+            -\sum_{i}^{N}\frac{1}{2}\nabla_i^2
+            -\sum_{A}^{M}\frac{1}{2M_A}\nabla_A^2
+            -\sum_{i,A}\frac{Z_A}{|\mathbf{r}_i-\mathbf{R}_A|}
+            +\sum_{i&lt;j}\frac{1}{|\mathbf{r}_i-\mathbf{r}_j|}
+            +\sum_{A&lt;B}\frac{Z_A Z_B}{|\mathbf{R}_A-\mathbf{R}_B|}.
+          \]
+        </div>
 
-    <h3>1.1 Born–Oppenheimer approximation</h3>
-    <p>
-      We reduce the complexity of Eq. (2) using the Born–Oppenheimer (BO) approximation, which is basically ignoring the
-      nuclear kinetic energy due to the very high \(M_A/m_e\) ratio.
-    </p>
-    <p>
-      So the electrons are now moving under a fixed nuclear geometry, and because of this the nuclear repulsion becomes just a constant
-      with parametric dependence on the nuclear coordinates \(\{\mathbf{R}_A\}\).
-    </p>
+        <p>
+          Here, \(i,j\) label electrons and \(A,B\) label nuclei. The terms represent electronic kinetic energy,
+          nuclear kinetic energy, electron–nuclear attraction, electron–electron repulsion, and nuclear–nuclear repulsion
+          respectively.
+        </p>
 
-    <p>Thus our reduced electronic Hamiltonian looks like</p>
-    \[
-      \hat{H}_e
-      =
-      -\sum_{i}^{N}\frac{1}{2}\nabla_i^2
-      -\sum_{i,A}\frac{Z_A}{|\mathbf{r}_i-\mathbf{R}_A|}
-      +\sum_{i &lt j}\frac{1}{|\mathbf{r}_i-\mathbf{r}_j|}, \tag{3}
-    \]
-    <p>and the nuclear repulsion energy</p>
-    \[
-      E_{nn} = \sum_{A &lt B}\frac{Z_A Z_B}{|\mathbf{R}_A-\mathbf{R}_B|} \tag{4}
-    \]
-    <p>is added at the end.</p>
+        <h3>1.1 Born–Oppenheimer approximation</h3>
+        <p>
+          We reduce the complexity of the full Hamiltonian with BO approximation, which is basically ignoring the nuclear kinetic
+          energy due to very high \(M_A/m_e\) ratio. So the electrons are now moving under a fixed nuclear geometry and because of this
+          the nuclear repulsion is just a constant with parametric dependence on \(\{\mathbf{R}_A\}\).
+        </p>
 
-    <h3>1.2 Electronic Schrödinger equation</h3>
-    <p>Thus the entity we now need to find is</p>
-    \[
-      \hat{H}_e \Phi_e = E_e \Phi_e, \tag{5}
-    \]
-    <p>
-      where \(E_e = E_e(\{\mathbf{R}_A\})\) and
-      \(\Phi_e = \Phi_e(\{\mathbf{r}_i\};\{\mathbf{R}_A\})\)
-      now have parametric dependence on the nuclear coordinates.
-    </p>
-    <p>The total energy for fixed nuclei is</p>
-    \[
-      E_{\text{tot}} = E_e + E_{nn}. \tag{6}
-    \]
+        <p>Thus our reduced electronic Hamiltonian looks like</p>
+        <div class="eqblock">
+          \[
+            \hat{H}_e
+            =
+            -\sum_{i}^{N}\frac{1}{2}\nabla_i^2
+            -\sum_{i,A}\frac{Z_A}{|\mathbf{r}_i-\mathbf{R}_A|}
+            +\sum_{i&lt;j}\frac{1}{|\mathbf{r}_i-\mathbf{r}_j|}.
+          \]
+        </div>
 
-    <h2>2. Antisymmetry Principle</h2>
+        <p>Thus the entity we now need to find is</p>
+        <div class="eqblock">
+          \[
+            \hat{H}_e \Phi_e = E_e \Phi_e ,
+          \]
+        </div>
 
-    <p>
-      Electrons need both spatial and spin description. So we introduce two spin functions
-      \(\alpha(\omega)\) and \(\beta(\omega)\) such that
-    </p>
-    \[
-      \langle \alpha | \beta \rangle = 0. \tag{7}
-    \]
+        <p>
+          where \(E_e = E_e(\{\mathbf{R}_A\})\) and \(\Phi_e = \Phi_e(\{\mathbf{r}_i\};\{\mathbf{R}_A\})\) now have parametric dependence on
+          \(\{\mathbf{R}_A\}\).
+        </p>
 
-    <p>The electron is thus described by two types of coordinates, collectively,</p>
-    \[
-      \mathbf{x} = (\mathbf{r},\omega). \tag{8}
-    \]
+        <p>The total energy for fixed nuclei is</p>
+        <div class="eqblock">
+          \[
+            E_{\text{tot}} = E_e + E_{nn},
+            \qquad
+            E_{nn} = \sum_{A&lt;B}\frac{Z_A Z_B}{|\mathbf{R}_A-\mathbf{R}_B|}.
+          \]
+        </div>
 
-    <p>
-      Since spin is a fundamental property determining electron statistics, we must incorporate the spin–statistics of electrons
-      in the electronic wavefunction through the antisymmetry principle,
-    </p>
-    \[
-      \Psi(\mathbf{x}_1,\ldots,\mathbf{x}_i,\ldots,\mathbf{x}_j,\ldots,\mathbf{x}_N)
-      =
-      -
-      \Psi(\mathbf{x}_1,\ldots,\mathbf{x}_j,\ldots,\mathbf{x}_i,\ldots,\mathbf{x}_N). \tag{9}
-    \]
+        <hr />
 
-    <h2>3. Orbitals, Hartree Products, and Slater Determinants</h2>
+        <h2>2. Antisymmetry principle</h2>
 
-    <h3>3.1 Orbitals and spin orbitals</h3>
-    <p>
-      An orbital is a wavefunction for a single particle. A spatial orbital is a function of the position vector of a particle,
-      but an electron also needs a spin description. Hence an orbital wavefunction of a single electron must contain spin as well.
-    </p>
-    <p>We refer to such an orbital as a <em>spin orbital</em>. From each spatial orbital \(\phi_i(\mathbf{r})\) we can form two spin orbitals as</p>
-    \[
-      \chi_{i\alpha}(\mathbf{x}) = \phi_i(\mathbf{r})\alpha(\omega),\qquad
-      \chi_{i\beta}(\mathbf{x}) = \phi_i(\mathbf{r})\beta(\omega). \tag{10}
-    \]
+        <p>
+          The electron needs both spatial and spin description. So we can introduce two spin functions \(\alpha(\omega)\) and
+          \(\beta(\omega)\) such that
+        </p>
+        <div class="eqblock">
+          \[
+            \langle \alpha | \beta \rangle = 0.
+          \]
+        </div>
 
-    <h3>3.2 Hartree products</h3>
-    <p>Let us consider a simple system of non–interacting electrons. The Hamiltonian can be written as</p>
-    \[
-      \hat{H} = \sum_{i=1}^{N} \hat{h}(i). \tag{11}
-    \]
-    <p>Since \(\hat{H}\) is just a sum of independent one–electron Hamiltonians, we can use separation of variables to suggest the eigenfunctions as</p>
-    \[
-      \Psi_H(\mathbf{x}_1,\ldots,\mathbf{x}_N)
-      =
-      \chi_{i}(\mathbf{x}_1)\chi_{j}(\mathbf{x}_2)\cdots\chi_{n}(\mathbf{x}_N). \tag{12}
-    \]
-    <p>
-      Equation (12) is known as a <em>Hartree product</em>. This is an uncorrelated (independent electron) wavefunction since
-      the probability density factorizes.
-    </p>
+        <p>The electron is thus described by two types of coordinates collectively,</p>
+        <div class="eqblock">
+          \[
+            \mathbf{x} = (\mathbf{r},\omega).
+          \]
+        </div>
 
-    <h3>3.3 Slater determinants</h3>
-    <p>
-      The simple Hartree product will not qualify for a multi–electronic system, even if we ignore all electron–electron repulsions.
-      To apply antisymmetry, let us first look at a two–electron system.
-    </p>
+        <p>
+          With spin as a fundamental property determining electron statistics, we must incorporate the spin-statistics of electrons
+          in the electronic wavefunction through the antisymmetry principle,
+        </p>
+        <div class="eqblock">
+          \[
+            \Psi(\mathbf{x}_1,\ldots,\mathbf{x}_i,\ldots,\mathbf{x}_j,\ldots,\mathbf{x}_N)
+            =
+            -
+            \Psi(\mathbf{x}_1,\ldots,\mathbf{x}_j,\ldots,\mathbf{x}_i,\ldots,\mathbf{x}_N).
+          \]
+        </div>
 
-    \[
-      \Psi(\mathbf{x}_1,\mathbf{x}_2)
-      =
-      \frac{1}{\sqrt{2}}
-      \left[
-        \chi_i(\mathbf{x}_1)\chi_j(\mathbf{x}_2)
-        -
-        \chi_i(\mathbf{x}_2)\chi_j(\mathbf{x}_1)
-      \right]. \tag{13}
-    \]
+        <hr />
 
-    <p>The generalization to \(N\) electrons is</p>
-    \[
-      \Psi(\mathbf{x}_1,\ldots,\mathbf{x}_N)
-      =
-      \frac{1}{\sqrt{N!}}
-      \begin{vmatrix}
-      \chi_1(\mathbf{x}_1) & \chi_2(\mathbf{x}_1) & \cdots & \chi_N(\mathbf{x}_1) \\
-      \chi_1(\mathbf{x}_2) & \chi_2(\mathbf{x}_2) & \cdots & \chi_N(\mathbf{x}_2) \\
-      \vdots & \vdots & \ddots & \vdots \\
-      \chi_1(\mathbf{x}_N) & \chi_2(\mathbf{x}_N) & \cdots & \chi_N(\mathbf{x}_N)
-      \end{vmatrix}. \tag{14}
-    \]
+        <h2>3. Orbitals, Hartree products, and Slater determinants</h2>
 
-    <hr />
+        <h3>3.1 Orbitals and spin orbitals</h3>
+        <p>
+          Orbital → wavefunction for a single particle. A spatial orbital is a function of position vector of a particle,
+          but an electron also needs a spin description and so an orbital wavefunction of a single electron must contain this.
+          We refer to such an orbital as spin orbital. From each spatial orbital \(\phi_i(\mathbf{r})\) we can form two spin orbitals
+        </p>
 
-    <h2>4. Exchange Effect and Hartree–Fock Approximation</h2>
+        <div class="eqblock">
+          \[
+            \chi_{i\alpha}(\mathbf{x}) = \phi_i(\mathbf{r})\alpha(\omega),
+            \qquad
+            \chi_{i\beta}(\mathbf{x}) = \phi_i(\mathbf{r})\beta(\omega).
+          \]
+        </div>
 
-    <p>
-      Within a single Slater determinant, the motion of electrons with parallel spins is correlated (purely due to antisymmetry).
-      This is the so–called exchange correlation, and the “Fermi hole” picture can be understood from the fact that for two
-      same–spin electrons, the joint probability vanishes at coincident points.
-    </p>
+        <h3>3.2 Hartree products</h3>
+        <p>
+          Let us consider a simple system of non-interacting electrons.
+        </p>
 
-    <p>
-      Our simplest guess for the many–electron wavefunction is to use a single Slater determinant
-      of \(N\) non–interacting electrons,
-    </p>
-    \[
-      \Phi_{\mathrm{HF}} = |\chi_1 \chi_2 \cdots \chi_N|. \tag{15}
-    \]
+        <div class="eqblock">
+          \[
+            \hat{H} = \sum_{i=1}^{N}\hat{h}(i),
+            \qquad
+            \hat{h}(i)\chi_j(\mathbf{x}_i) = \varepsilon_j \chi_j(\mathbf{x}_i).
+          \]
+        </div>
 
-    <p>Using the variational principle,</p>
-    \[
-      E_{\mathrm{HF}}
-      =
-      \frac{\langle \Phi_{\mathrm{HF}} | \hat{H}_e | \Phi_{\mathrm{HF}} \rangle}
-           {\langle \Phi_{\mathrm{HF}} | \Phi_{\mathrm{HF}} \rangle}
-      \ge E_{\mathrm{ground}}. \tag{16}
-    \]
+        <p>
+          Now since \(\hat{H}\) is independent one-electron Hamiltonians, we can use separation of variables to suggest the eigenfunctions of
+          \(\hat{H}\) as
+        </p>
 
-    <p>The Hartree–Fock equation is an eigenvalue equation for spin orbitals,</p>
-    \[
-      \hat{f}(i)\chi_i(\mathbf{x}) = \varepsilon_i \chi_i(\mathbf{x}), \tag{17}
-    \]
-    <p>where \(\hat{f}\) is the Fock operator.</p>
+        <div class="eqblock">
+          \[
+            \Psi_H(\mathbf{x}_1,\ldots,\mathbf{x}_N)
+            =
+            \chi_i(\mathbf{x}_1)\chi_j(\mathbf{x}_2)\cdots\chi_n(\mathbf{x}_N).
+          \]
+        </div>
 
-    <h3>4.1 Self–Consistent Field (SCF) procedure</h3>
-    <ol>
-      <li>Choose a nuclear geometry \(\{\mathbf{R}_A\}\).</li>
-      <li>Guess an initial set of \(N\) spin orbitals \(\{\chi_i\}\).</li>
-      <li>Construct the Fock operator using the current orbitals.</li>
-      <li>Solve the Hartree–Fock equations to obtain new orbitals.</li>
-      <li>Compare the new orbitals with the previous ones.</li>
-      <li>Repeat until self–consistency is achieved.</li>
-    </ol>
+        <p>
+          This is known as a Hartree product and is an uncorrelated (independent electron) wavefunction since
+          \(|\Psi_H|^2\) factorizes.
+        </p>
 
-    <h2>5. Configuration Interaction (CI)</h2>
+        <p>
+          In reality, even if we ignore any Coulomb repulsion between electrons, there is an inherent effective repulsion
+          between electrons due to their spins which gives rise to antisymmetry in their wavefunction. This is applied through the
+          constraint of antisymmetry and is the so-called Pauli repulsion / Pauli exclusion principle.
+        </p>
 
-    <p>
-      Once we obtain the virtual orbitals from the Hartree–Fock procedure,
-      we can use them to construct excited Slater determinants and then build a CI expansion.
-    </p>
+        <h3>3.3 Slater determinants</h3>
+        <p>
+          To apply antisymmetry, let us look at two 2-electron Hartree products and take their antisymmetric combination:
+        </p>
 
-    \[
-      |\Psi\rangle
-      =
-      c_0 |\Phi_0\rangle
-      +
-      \sum_{ai} c_i^a |\Phi_i^a\rangle
-      +
-      \sum_{abij} c_{ij}^{ab} |\Phi_{ij}^{ab}\rangle
-      + \cdots. \tag{18}
-    \]
+        <div class="eqblock">
+          \[
+            \Psi(\mathbf{x}_1,\mathbf{x}_2)
+            =
+            \frac{1}{\sqrt{2}}
+            \left[
+              \chi_i(\mathbf{x}_1)\chi_j(\mathbf{x}_2)
+              -
+              \chi_i(\mathbf{x}_2)\chi_j(\mathbf{x}_1)
+            \right].
+          \]
+        </div>
 
-    <p>The energy difference between the exact CI solution and the Hartree–Fock energy is called the correlation energy,</p>
-    \[
-      E_{\mathrm{corr}} = E_{\mathrm{exact}} - E_{\mathrm{HF}}. \tag{19}
-    \]
+        <p>
+          This has the form of a determinant. The generalization to \(N\) electrons is the Slater determinant:
+        </p>
 
-    <h2>6. Operator Matrix Elements Between Slater Determinants</h2>
+        <div class="eqblock">
+          \[
+            \Psi(\mathbf{x}_1,\ldots,\mathbf{x}_N)
+            =
+            \frac{1}{\sqrt{N!}}
+            \begin{vmatrix}
+              \chi_1(\mathbf{x}_1) & \chi_2(\mathbf{x}_1) & \cdots & \chi_N(\mathbf{x}_1) \\
+              \chi_1(\mathbf{x}_2) & \chi_2(\mathbf{x}_2) & \cdots & \chi_N(\mathbf{x}_2) \\
+              \vdots & \vdots & \ddots & \vdots \\
+              \chi_1(\mathbf{x}_N) & \chi_2(\mathbf{x}_N) & \cdots & \chi_N(\mathbf{x}_N)
+            \end{vmatrix}.
+          \]
+        </div>
 
-    <p>
-      To understand Hartree–Fock internally, we need the operator algebra between Slater determinants.
-      The electronic Hamiltonian can be written as
-    </p>
-    \[
-      \hat{H}_e
-      =
-      \sum_{i=1}^{N} \hat{h}(i)
-      +
-      \sum_{i &lt j}^{N} \hat{g}(i,j), \tag{20}
-    \]
-    <p>where</p>
-    \[
-      \hat{h}(i) = -\frac{1}{2}\nabla_i^2 -\sum_A \frac{Z_A}{|\mathbf{r}_i-\mathbf{R}_A|}, \qquad
-      \hat{g}(i,j) = \frac{1}{|\mathbf{r}_i-\mathbf{r}_j|}. \tag{21}
-    \]
+        <p>
+          Slater determinants automatically follow the antisymmetry requirement by construction. In shorthand notation,
+          \(\Psi = |\chi_1\chi_2\cdots\chi_N|\), and antisymmetry looks like
+        </p>
 
-    <p>We define the one–electron integral</p>
-    \[
-      h_{ij}
-      =
-      \langle \chi_i | \hat{h} | \chi_j \rangle
-      =
-      \int d\mathbf{x}\,
-      \chi_i^*(\mathbf{x}) \hat{h} \chi_j(\mathbf{x}). \tag{22}
-    \]
+        <div class="eqblock">
+          \[
+            |\cdots \chi_m \cdots \chi_n \cdots|
+            =
+            -
+            |\cdots \chi_n \cdots \chi_m \cdots|.
+          \]
+        </div>
 
-    <p>and the two–electron integral</p>
-    \[
-      (ij|kl)
-      =
-      \iint d\mathbf{x}_1 d\mathbf{x}_2\,
-      \chi_i^*(1)\chi_j^*(2)
-      \frac{1}{r_{12}}
-      \chi_k(1)\chi_l(2). \tag{23}
-    \]
+        <p>
+          This antisymmetry due to exchange between electron coordinates is called exchange-correlation and arises due to Pauli repulsion
+          between two electrons with same spin. Thus correlation between opposite spins is still uncorrelated at this level.
+        </p>
 
-    <p>
-      The Coulomb integral \((ij|ij)\) has a classical meaning; the exchange integral \((ij|ji)\) arises purely from quantum exchange.
-      Using these, the Hartree–Fock energy for a single Slater determinant becomes
-    </p>
-    \[
-      E_{\mathrm{HF}}
-      =
-      \sum_m h_{mm}
-      +
-      \frac{1}{2}\sum_{m,n}\left[(mn|mn) - (mn|nm)\right]. \tag{24}
-    \]
+        <hr />
 
-    <div class="back">
-      <a href="/notes.html">← Back to Notes</a>
-    </div>
+        <h2>4. Exchange effect and Hartree–Fock approximation</h2>
+
+        <h3>4.1 Exchange effect due to Slater determinants</h3>
+        <p>
+          Consider a 2-electron Slater determinant in which \(\chi_1\) and \(\chi_2\) are occupied.
+          If the two electrons have opposite spin, e.g.
+        </p>
+
+        <div class="eqblock">
+          \[
+            \chi_1(\mathbf{x})=\phi_1(\mathbf{r})\alpha(\omega),
+            \qquad
+            \chi_2(\mathbf{x})=\phi_2(\mathbf{r})\beta(\omega).
+          \]
+        </div>
+
+        <p>
+          Then after integrating out spin degrees of freedom, the spatial simultaneous probability becomes just a product of independent probabilities.
+          For same spin, e.g.
+        </p>
+
+        <div class="eqblock">
+          \[
+            \chi_1(\mathbf{x})=\phi_1(\mathbf{r})\alpha(\omega),
+            \qquad
+            \chi_2(\mathbf{x})=\phi_2(\mathbf{r})\alpha(\omega),
+          \]
+        </div>
+
+        <p>
+          the probability has the exchange term and if we set \(\mathbf{r}_1=\mathbf{r}_2\), then \(P(\mathbf{r},\mathbf{r})=0\).
+          So two non-interacting electrons with same spin can never be found at the same position. A Fermi hole exists around an electron.
+        </p>
+
+        <h3>4.2 Hartree–Fock approximation</h3>
+        <p>
+          Our goal is to solve \(\hat{H}_e\Phi_e=E_e\Phi_e\). The simplest guess is to use a single Slater determinant of \(N\) noninteracting electrons:
+        </p>
+
+        <div class="eqblock">
+          \[
+            \Phi_{\mathrm{HF}} = |\chi_1\chi_2\cdots\chi_N|.
+          \]
+        </div>
+
+        <p>
+          With variational principle,
+        </p>
+
+        <div class="eqblock">
+          \[
+            E_{\mathrm{HF}}
+            =
+            \frac{\langle \Phi_{\mathrm{HF}}|\hat{H}_e|\Phi_{\mathrm{HF}}\rangle}
+                 {\langle \Phi_{\mathrm{HF}}|\Phi_{\mathrm{HF}}\rangle}
+            \ge E_{\mathrm{ground}}.
+          \]
+        </div>
+
+        <p>
+          By minimizing \(E_{\mathrm{HF}}\) with respect to the choice of spin orbitals, we obtain the Hartree–Fock equation,
+        </p>
+
+        <div class="eqblock">
+          \[
+            \hat{f}(i)\chi_i(\mathbf{x})=\varepsilon_i\chi_i(\mathbf{x}).
+          \]
+        </div>
+
+        <p>
+          The Fock operator is like an effective one-electron operator:
+        </p>
+
+        <div class="eqblock">
+          \[
+            \hat{f}(i)=
+            -\frac{1}{2}\nabla_i^2
+            -\sum_A \frac{Z_A}{|\mathbf{r}_i-\mathbf{R}_A|}
+            +\hat{V}_{\mathrm{HF}}(i).
+          \]
+        </div>
+
+        <h3>4.3 SCF procedure</h3>
+        <ol>
+          <li>Choose a nuclear geometry \(\{\mathbf{R}_A\}\).</li>
+          <li>Guess an initial set of \(N\) spin orbitals \(\{\chi_i\}\).</li>
+          <li>Construct the Fock operator using the current orbitals.</li>
+          <li>Solve the HF equations to get new orbitals.</li>
+          <li>Repeat until self-consistency is achieved.</li>
+        </ol>
+
+        <hr />
+
+        <h2>5. Excitations and exact theory (CI)</h2>
+
+        <p>
+          With the virtual orbitals we can form combinations of singly, doubly, ... excited determinants.
+          This way we can construct all possible determinants which in principle can be used to get the exact ground-state wavefunction
+          to arbitrary accuracy (complete basis of determinants).
+        </p>
+
+        <div class="eqblock">
+          \[
+            |\Psi\rangle
+            =
+            c_0|\Phi_0\rangle
+            +
+            \sum_{ai}c_i^a|\Phi_i^a\rangle
+            +
+            \sum_{abij}c_{ij}^{ab}|\Phi_{ij}^{ab}\rangle
+            +\cdots .
+          \]
+        </div>
+
+        <p>
+          This is configuration interaction (CI). The only problem is that it is extremely expensive computationally.
+          The energy difference between exact and Hartree–Fock is known as correlation energy:
+        </p>
+
+        <div class="eqblock">
+          \[
+            E_{\mathrm{corr}} = E_{\mathrm{exact}} - E_{\mathrm{HF}}.
+          \]
+        </div>
+
+        <hr />
+
+        <h2>6. Operator matrix elements between Slater determinants</h2>
+
+        <p>
+          The electronic Hamiltonian looks like
+        </p>
+
+        <div class="eqblock">
+          \[
+            \hat{H}_e
+            =
+            \sum_{i=1}^{N}\hat{h}(i) + \sum_{i&lt;j}^{N}\hat{g}(i,j),
+            \qquad
+            \hat{h}(i)= -\frac{1}{2}\nabla_i^2-\sum_A\frac{Z_A}{|\mathbf{r}_i-\mathbf{R}_A|},
+            \qquad
+            \hat{g}(i,j)=\frac{1}{r_{ij}}.
+          \]
+        </div>
+
+        <p>Define one-electron integrals</p>
+        <div class="eqblock">
+          \[
+            h_{ij}=\langle \chi_i|\hat{h}|\chi_j\rangle
+            =
+            \int d\mathbf{x}\,\chi_i^*(\mathbf{x})\hat{h}\chi_j(\mathbf{x}),
+          \]
+        </div>
+
+        <p>and two-electron integrals</p>
+        <div class="eqblock">
+          \[
+            (ij|kl)=
+            \iint d\mathbf{x}_1 d\mathbf{x}_2\,
+            \chi_i^*(1)\chi_j^*(2)\frac{1}{r_{12}}\chi_k(1)\chi_l(2).
+          \]
+        </div>
+
+        <p>
+          Coulomb integral comes from \((ij|ij)\) and exchange integral comes from \((ij|ji)\).
+          Using this, for a single determinant the Hartree–Fock energy becomes
+        </p>
+
+        <div class="eqblock">
+          \[
+            E_{\mathrm{HF}}
+            =
+            \sum_m h_{mm}
+            +\frac{1}{2}\sum_{m,n}\left[(mn|mn)-(mn|nm)\right].
+          \]
+        </div>
+
+        <p>
+          We can define Coulomb and exchange operators as
+        </p>
+
+        <div class="eqblock">
+          \[
+            \hat{J}_n \chi_m(\mathbf{x})
+            =
+            \left(\int d\mathbf{x}'\frac{|\chi_n(\mathbf{x}')|^2}{r_{12}}\right)\chi_m(\mathbf{x}),
+            \qquad
+            \hat{K}_n \chi_m(\mathbf{x})
+            =
+            \int d\mathbf{x}'\frac{\chi_n^*(\mathbf{x}')\chi_m(\mathbf{x}')}{r_{12}}\chi_n(\mathbf{x}).
+          \]
+        </div>
+
+        <p>
+          Then the Fock operator is
+        </p>
+
+        <div class="eqblock">
+          \[
+            \hat{f}=\hat{h}+\sum_n(\hat{J}_n-\hat{K}_n),
+            \qquad
+            \hat{f}\chi_m=\varepsilon_m\chi_m.
+          \]
+        </div>
+
+        <div class="backlink">
+          <a href="../notes.html">← Back to Notes</a>
+        </div>
+
+      </div>
+    </section>
   </main>
 
-  <script>
-    // Simple page-local dark mode toggle
-    const btn = document.getElementById('modeBtn');
-    const key = 'prefers-dark';
-    const saved = localStorage.getItem(key);
-    if (saved === '1') document.body.classList.add('dark');
-    btn.addEventListener('click', () => {
-      document.body.classList.toggle('dark');
-      localStorage.setItem(key, document.body.classList.contains('dark') ? '1' : '0');
-    });
-  </script>
+  <script src="../main.js?v=2"></script>
 </body>
 </html>
+
