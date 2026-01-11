@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Interactive notebook: Chapter 2 — A Neuron Layer | Notes | Mohammad Elious Ali Mondal</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="../style.css?v=1" />
+
+  <script>
+    window.MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        displayMath: [['$$', '$$'], ['\\[', '\\]']]
+      }
+    };
+  </script>
+  <script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+  <script src="https://cdn.jsdelivr.net/pyodide/v0.26.1/full/pyodide.js"></script>
+
+  <style>
+    .nb-markdown h1, .nb-markdown h2, .nb-markdown h3, .nb-markdown h4 {
+      margin-top: 1.3rem;
+    }
+    .nb-markdown code {
+      background: color-mix(in srgb, var(--bg) 70%, var(--bg-alt));
+      border: 1px solid var(--border);
+      padding: 0.1rem 0.35rem;
+      border-radius: 6px;
+      font-size: 0.95em;
+    }
+    .pycell {
+      margin: 1.25rem 0;
+      padding: 0.9rem;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      background: var(--card);
+      box-shadow: 0 10px 22px rgba(15, 23, 42, 0.06);
+    }
+    .pycell-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      margin-bottom: 0.6rem;
+    }
+    .pycell-label {
+      font-size: 0.9rem;
+      color: var(--muted);
+      letter-spacing: 0.02em;
+    }
+    .pycell-run {
+      padding: 0.35rem 0.9rem;
+      border-radius: 999px;
+    }
+    .pycell-code {
+      width: 100%;
+      min-height: 160px;
+      resize: vertical;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 0.75rem;
+      background: color-mix(in srgb, var(--bg) 80%, var(--bg-alt));
+      color: var(--text);
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+      font-size: 0.92rem;
+      line-height: 1.45;
+      outline: none;
+    }
+    .pycell-out {
+      margin-top: 0.75rem;
+      padding: 0.75rem;
+      border-radius: 12px;
+      border: 1px dashed var(--border);
+      background: color-mix(in srgb, var(--bg) 75%, var(--bg-alt));
+      overflow-x: auto;
+    }
+    .pycell-out pre {
+      margin: 0;
+      white-space: pre-wrap;
+      word-break: break-word;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+      font-size: 0.9rem;
+      color: var(--text);
+    }
+    .pycell-out .err {
+      color: #b91c1c;
+    }
+    :root[data-theme="dark"] .pycell-out .err {
+      color: #fca5a5;
+    }
+    .pycell-out img {
+      max-width: 100%;
+      height: auto;
+      display: block;
+      margin-top: 0.75rem;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+    }
+    .py-status {
+      font-size: 0.95rem;
+      color: var(--muted);
+      margin-top: 0.5rem;
+    }
+  </style>
+</head>
+
+<body>
+  <header class="site-header">
+  <div class="container header-inner">
+    <div class="logo">
+      <a href="../index.html#hero">Mohammad Elious Ali Mondal</a>
+    </div>
+    <nav class="nav-links">
+      <a href="../index.html#about">About</a>
+      <a href="../research.html">Research</a>
+      <a href="../publications.html">Publications</a>
+      <a href="../notes.html">Notes</a>
+      <a href="../index.html#contact">Contact</a>
+    </nav>
+    <button class="theme-toggle" aria-label="Toggle dark mode">☾</button>
+  </div>
+</header>
+
+  <main>
+    <section class="section">
+      <div class="container">
+        <h1>Interactive notebook: Chapter 2 — A Neuron Layer</h1>
+        <p class="py-status" id="py-status">Loading Python runtime (Pyodide)… first load may take a bit.</p>
+      </div>
+    </section>
+
+    <section class="section section-alt">
+      <div class="container">
+        <div class="nb-markdown">
+<h3>A single Neuron</h3>
+<p>Lets take a single neuron which have three inputs (<strong>Inputs</strong> <em>are the data that we pass into the model to get a desired output</em>) to itself. Each input also has a weight (<strong>Weights</strong> <em>are types of values that change in the model during the training phase</em>) associated to it. Each neuron also has a bias (<strong>Bias</strong> <em>is an additional tunable value not associated with any individual input</em>)</p>
+</div>
+
+<div class="pycell" data-cell="1">
+  <div class="pycell-top">
+    <div class="pycell-label">Python</div>
+    <button class="pycell-run btn secondary" type="button">Run</button>
+  </div>
+  <textarea class="pycell-code" spellcheck="false">import numpy as np
+import matplotlib.pyplot as plt
+
+inputs  = np.array([1., 2., 3.])
+weights = np.array([0.2, 0.8, -0.5])
+bias    = 2</textarea>
+  <div class="pycell-out"></div>
+</div>
+
+<div class="nb-markdown">
+<p>The output vector, ($\vec{o}$), from the neuron is calculated using the weights ($\vec{w}$), inputs ($\vec{i}$) and the bias ($b$) as,</p>
+<p>\begin{equation}</p>
+<p>\vec{o} = \vec{w}~\cdot~\vec{i} + b </p>
+<p>= \begin{pmatrix} w_1 &amp; w_2 &amp; \dots &amp; w_n \end{pmatrix} \cdot </p>
+<p>\begin{pmatrix}</p>
+<p>i_1 \\ </p>
+<p>i_2 \\ </p>
+<p>\vdots \\ </p>
+<p>i_n</p>
+<p>\end{pmatrix} + b</p>
+<p>\end{equation}</p>
+</div>
+
+<div class="pycell" data-cell="2">
+  <div class="pycell-top">
+    <div class="pycell-label">Python</div>
+    <button class="pycell-run btn secondary" type="button">Run</button>
+  </div>
+  <textarea class="pycell-code" spellcheck="false">output  = np.dot(weights, inputs) + bias
+output</textarea>
+  <div class="pycell-out"></div>
+</div>
+
+<div class="nb-markdown">
+<h3>A Layer of Neurons</h3>
+<p>For a layer of neurons, each neuron has its own weights. The weights can thus be combined into a matrix and the ouput becomes</p>
+<p>\begin{equation}</p>
+<p>\vec{o} = \hat{w}~\cdot~\vec{i} + b </p>
+<p>\end{equation}</p>
+<p>For an example, a 3 neuron layers output for $n$ inputs can be computed as,</p>
+<p>\begin{equation}</p>
+<p>\vec{o} =</p>
+<p>\begin{pmatrix}  </p>
+<p>w_1^1 &amp; w_2^1 &amp; \dots &amp; w_n^1 </p>
+<p>\\ </p>
+<p>w_1^2 &amp; w_2^2 &amp; \dots &amp; w_n^2 </p>
+<p>\\ </p>
+<p>w_1^3 &amp; w_2^3 &amp; \dots &amp; w_n^3 </p>
+<p>\end{pmatrix}</p>
+<p>\begin{pmatrix}</p>
+<p>i_1 \\ </p>
+<p>i_2 \\ </p>
+<p>\vdots \\ </p>
+<p>i_n</p>
+<p>\end{pmatrix}</p>
+<p>+</p>
+<p>\begin{pmatrix}</p>
+<p>b_1 \\ </p>
+<p>b_2 \\ </p>
+<p>b_3</p>
+<p>\end{pmatrix}</p>
+<p>\end{equation}</p>
+<p>Let us look at the numerical example below with 3 neurons and 4 inputs</p>
+</div>
+
+<div class="pycell" data-cell="3">
+  <div class="pycell-top">
+    <div class="pycell-label">Python</div>
+    <button class="pycell-run btn secondary" type="button">Run</button>
+  </div>
+  <textarea class="pycell-code" spellcheck="false">inputs   = np.array([1., 2., 3., 2.5])
+
+weights1 = np.array([0.2, 0.8, -0.5, 1])
+weights2 = np.array([0.5, -0.91, 0.26, -0.5])
+weights3 = np.array([-0.26, 0.27, 0.17, 0.87])
+weights  = np.array([weights1, weights2, weights3])
+
+bias1    = 2
+bias2    = 3
+bias3    = 0.5
+bias     = np.array([bias1, bias2, bias3])
+
+outputs  = weights @ inputs + bias
+outputs</textarea>
+  <div class="pycell-out"></div>
+</div>
+
+<div class="nb-markdown">
+<h3>A batch of data</h3>
+<p>Neural networks tend to get inputs as <strong>batch</strong>es of data, which is basically a collective ensemble of lot of samples of the feature set instances. Often, neural networks expect to take in many samples at a time for two reasons. One reason is that it’s faster to train in batches in parallel processing, and the other reason is that batches help with generalization during training. If you fit (perform a step of a training process) on one sample at a time, you’re highly likely to keep fitting to that individual sample, rather than slowly producing general tweaks to weights and biases that fit the entire dataset. Fitting or training in batches gives you a higher chance of making more meaningful changes to weights and biases.</p>
+</div>
+
+<div class="pycell" data-cell="4">
+  <div class="pycell-top">
+    <div class="pycell-label">Python</div>
+    <button class="pycell-run btn secondary" type="button">Run</button>
+  </div>
+  <textarea class="pycell-code" spellcheck="false">inputs  = np.array([[ 1.0, 2.0, 3.0, 2.5], [ 2.0, 5.0, -1.0, 2.0], [ -1.5, 2.7, 3.3, -0.8]])
+weights = np.array([[ 0.2, 0.8, -0.5, 1.0], [ 0.5, -0.91, 0.26, -0.5], [ -0.26, -0.27, 0.17, 0.87]])
+biases  = np.array([ 2.0, 3.0, 0.5 ])
+
+print(f&quot;shape of inputs  -&gt; {np.shape(inputs)}&quot;)
+print(f&quot;shape of weights -&gt; {np.shape(weights)}&quot;)
+print(f&quot;shape of biases  -&gt; {np.shape(biases)}&quot;)</textarea>
+  <div class="pycell-out"></div>
+</div>
+
+<div class="pycell" data-cell="5">
+  <div class="pycell-top">
+    <div class="pycell-label">Python</div>
+    <button class="pycell-run btn secondary" type="button">Run</button>
+  </div>
+  <textarea class="pycell-code" spellcheck="false">layer_outputs = inputs @ (weights.T) + biases
+layer_outputs</textarea>
+  <div class="pycell-out"></div>
+</div>
+
+<div class="pycell" data-cell="6">
+  <div class="pycell-top">
+    <div class="pycell-label">Python</div>
+    <button class="pycell-run btn secondary" type="button">Run</button>
+  </div>
+  <textarea class="pycell-code" spellcheck="false">layer_outputsT = weights @ (inputs.T) + biases
+layer_outputsT</textarea>
+  <div class="pycell-out"></div>
+</div>
+
+<div class="pycell" data-cell="7">
+  <div class="pycell-top">
+    <div class="pycell-label">Python</div>
+    <button class="pycell-run btn secondary" type="button">Run</button>
+  </div>
+  <textarea class="pycell-code" spellcheck="false"></textarea>
+  <div class="pycell-out"></div>
+</div>
+
+<div class="pycell" data-cell="8">
+  <div class="pycell-top">
+    <div class="pycell-label">Python</div>
+    <button class="pycell-run btn secondary" type="button">Run</button>
+  </div>
+  <textarea class="pycell-code" spellcheck="false"></textarea>
+  <div class="pycell-out"></div>
+</div>
+
+<div class="pycell" data-cell="9">
+  <div class="pycell-top">
+    <div class="pycell-label">Python</div>
+    <button class="pycell-run btn secondary" type="button">Run</button>
+  </div>
+  <textarea class="pycell-code" spellcheck="false"></textarea>
+  <div class="pycell-out"></div>
+</div>
+        <p style="margin-top:1.5rem;">
+          <a class="pub-title" href="../notes.html">&larr; Back to Notes</a>
+        </p>
+      </div>
+    </section>
+  </main>
+
+  <script src="../main.js?v=2"></script>
+
+  <script>
+    let pyodide = null;
+    let pyReady = false;
+
+    async function initPyodideOnce() {
+      if (pyReady) return;
+      const statusEl = document.getElementById("py-status");
+      try {
+        pyodide = await loadPyodide({
+          stdout: (s) => console.log(s),
+          stderr: (s) => console.error(s),
+        });
+
+        statusEl.textContent = "Loading NumPy + Matplotlib…";
+        await pyodide.loadPackage(["numpy", "matplotlib"]);
+
+        const bootstrap = `
+import sys, io, base64
+import numpy as np
+import matplotlib
+matplotlib.use("AGG")
+import matplotlib.pyplot as plt
+
+def _run_cell(code: str):
+    _stdout = io.StringIO()
+    _stderr = io.StringIO()
+    old_out, old_err = sys.stdout, sys.stderr
+    sys.stdout, sys.stderr = _stdout, _stderr
+
+    figs = []
+    try:
+        g = globals()
+        exec(code, g, g)
+
+        for num in plt.get_fignums():
+            fig = plt.figure(num)
+            buf = io.BytesIO()
+            fig.savefig(buf, format="png", dpi=140, bbox_inches="tight")
+            buf.seek(0)
+            figs.append(base64.b64encode(buf.read()).decode("ascii"))
+        plt.close("all")
+    except Exception:
+        import traceback
+        traceback.print_exc()
+    finally:
+        sys.stdout, sys.stderr = old_out, old_err
+
+    return {
+        "stdout": _stdout.getvalue(),
+        "stderr": _stderr.getvalue(),
+        "figs": figs
+    }
+`;
+        await pyodide.runPythonAsync(bootstrap);
+
+        statusEl.textContent = "Python ready. Edit any cell and click Run.";
+        pyReady = true;
+      } catch (err) {
+        statusEl.textContent = "Failed to load Python runtime. See console for details.";
+        console.error(err);
+        throw err;
+      }
+    }
+
+    function renderOutput(outEl, payload) {
+      outEl.innerHTML = "";
+      const stdout = payload.stdout || "";
+      const stderr = payload.stderr || "";
+
+      if (stdout.trim().length > 0) {
+        const pre = document.createElement("pre");
+        pre.textContent = stdout;
+        outEl.appendChild(pre);
+      }
+
+      if (stderr.trim().length > 0) {
+        const errPre = document.createElement("pre");
+        errPre.className = "err";
+        errPre.textContent = stderr;
+        outEl.appendChild(errPre);
+      }
+
+      const figs = payload.figs || [];
+      for (const b64 of figs) {
+        const img = document.createElement("img");
+        img.src = "data:image/png;base64," + b64;
+        outEl.appendChild(img);
+      }
+
+      if (stdout.trim().length === 0 && stderr.trim().length === 0 && figs.length === 0) {
+        const empty = document.createElement("pre");
+        empty.textContent = "(no output)";
+        outEl.appendChild(empty);
+      }
+    }
+
+    async function runCell(cellEl) {
+      await initPyodideOnce();
+      const code = cellEl.querySelector(".pycell-code").value;
+      const outEl = cellEl.querySelector(".pycell-out");
+      outEl.innerHTML = "<pre>Running…</pre>";
+      try {
+        const payload = pyodide.globals.get("_run_cell")(code).toJs({ dict_converter: Object });
+        renderOutput(outEl, payload);
+        if (window.MathJax && window.MathJax.typesetPromise) {
+          window.MathJax.typesetPromise();
+        }
+      } catch (err) {
+        outEl.innerHTML = "";
+        const pre = document.createElement("pre");
+        pre.className = "err";
+        pre.textContent = String(err);
+        outEl.appendChild(pre);
+        console.error(err);
+      }
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      document.querySelectorAll(".pycell").forEach((cellEl) => {
+        cellEl.querySelector(".pycell-run").addEventListener("click", () => runCell(cellEl));
+      });
+    });
+  </script>
+</body>
+</html>
