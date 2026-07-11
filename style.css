@@ -194,8 +194,15 @@ html:not(.js) .theme-toggle { display: none; }
 .btn.secondary { color: var(--ink); border-color: var(--line-strong); background: var(--teal-soft); }
 .btn.secondary:hover { color: #fff; border-color: var(--teal-deep); background: var(--teal-deep); }
 .btn.text-btn { min-height: auto; padding: 0.75rem 0; border-radius: 0; border-bottom-color: var(--line-strong); color: var(--ink); }
-.btn.light { color: var(--ink); background: #f6f1e6; }
-.btn.light:hover { color: #fff; background: var(--copper); }
+.contact-panel .btn.light {
+  color: #122d32;
+  background: #f6f1e6;
+}
+
+.contact-panel .btn.light:hover {
+  color: #fff;
+  background: var(--copper);
+}
 
 /* Reveal motion ----------------------------------------------------------- */
 .reveal { opacity: 1; transform: none; }
