@@ -189,8 +189,15 @@ html:not(.js) .theme-toggle { display: none; }
   transition: transform 0.2s ease, background 0.2s ease, border-color 0.2s ease;
 }
 .btn:hover { transform: translateY(-2px); }
-.btn.primary { color: #f9f7ef; background: var(--ink); }
-.btn.primary:hover { color: #fff; background: var(--teal-deep); }
+.btn.primary {
+  color: #f9f7ef;
+  background: #122d32;
+}
+
+.btn.primary:hover {
+  color: #ffffff;
+  background: #1f5f61;
+}
 .btn.secondary { color: var(--ink); border-color: var(--line-strong); background: var(--teal-soft); }
 .btn.secondary:hover { color: #fff; border-color: var(--teal-deep); background: var(--teal-deep); }
 .btn.text-btn { min-height: auto; padding: 0.75rem 0; border-radius: 0; border-bottom-color: var(--line-strong); color: var(--ink); }
