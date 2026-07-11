@@ -4,7 +4,13 @@
   <meta charset="UTF-8" />
   <title>Discrete Variable Representation (Fourier DVR) | Notes | Mohammad Elious Ali Mondal</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <link rel="stylesheet" href="../style.css?v=1" />
+  <meta name="theme-color" content="#f4efe5" />
+  <meta name="color-scheme" content="light dark" />
+  <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,500;8..60,600;8..60,700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../style.css?v=3" />
 
   <!-- MathJax config -->
   <script>
@@ -18,27 +24,30 @@
   </script>
   <script
     async
-    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"
   ></script>
 </head>
 <body>
+  <a class="skip-link" href="#main-content">Skip to content</a>
   <header class="site-header">
     <div class="container header-inner">
       <div class="logo">
-        <a href="../index.html#hero">Mohammad Elious Ali Mondal</a>
+        <a href="../index.html" aria-label="Elious Mondal, home"><span class="logo-mark" aria-hidden="true">E</span><span>Elious Mondal</span></a>
       </div>
-      <nav class="nav-links">
-        <a href="../index.html#about">About</a>
+      <button class="nav-burger" type="button" aria-label="Open navigation" aria-expanded="false" aria-controls="primary-navigation"><span></span><span></span><span></span></button>
+      <nav class="nav-links" id="primary-navigation" aria-label="Primary navigation">
+        <a href="../index.html">Home</a>
         <a href="../research.html">Research</a>
         <a href="../publications.html">Publications</a>
-        <a href="../notes.html">Notes</a>
+        <a href="../blog.html">Notes</a>
+        <a href="../codes.html">Software</a>
         <a href="../index.html#contact">Contact</a>
       </nav>
-      <button class="theme-toggle" aria-label="Toggle dark mode">☾</button>
+      <button class="theme-toggle" type="button" aria-label="Switch to dark theme" title="Change color theme"><span class="theme-icon" aria-hidden="true">◐</span></button>
     </div>
   </header>
 
-  <main>
+  <main id="main-content" tabindex="-1">
     <!-- Intro -->
     <section class="section">
       <div class="container">
@@ -606,8 +615,57 @@
           one-dimensional quantum Hamiltonians with arbitrary potentials using a Fourier-based DVR.
         </p>
 
+        <section class="interactive-lab" id="dvr-lab" aria-labelledby="dvr-lab-title">
+          <div class="lab-heading">
+            <p class="eyebrow"><span></span>Interactive example</p>
+            <h2 id="dvr-lab-title">Build and diagonalize a one-dimensional DVR Hamiltonian</h2>
+            <p>This bounded example uses the sinc/Fourier-grid DVR kinetic-energy matrix with \(\hbar=m=1\). Choose a potential and inspect how the grid changes the lowest eigenstates.</p>
+          </div>
+          <div class="lab-controls" aria-label="DVR model controls">
+            <label class="lab-control">Potential<select id="dvr-potential"><option value="harmonic">Harmonic well</option><option value="double">Symmetric double well</option><option value="morse">Morse potential</option><option value="quartic">Custom quartic polynomial</option></select></label>
+            <label class="lab-control">Grid points<input id="dvr-grid" type="number" min="24" max="72" step="8" value="40" /></label>
+            <label class="lab-control">Left boundary<input id="dvr-xmin" type="number" min="-12" max="-1" step="0.5" value="-6" /></label>
+            <label class="lab-control">Right boundary<input id="dvr-xmax" type="number" min="1" max="12" step="0.5" value="6" /></label>
+            <label class="lab-control">Eigenstates<input id="dvr-states" type="number" min="1" max="6" step="1" value="4" /></label>
+          </div>
+          <div class="lab-controls compact" id="dvr-custom-controls" hidden aria-label="Custom quartic potential coefficients">
+            <label class="lab-control">Coefficient \(a_4\)<input id="dvr-a4" type="number" min="-1" max="1" step="0.01" value="0.04" /></label>
+            <label class="lab-control">Coefficient \(a_2\)<input id="dvr-a2" type="number" min="-4" max="4" step="0.1" value="-0.8" /></label>
+            <label class="lab-control">Coefficient \(a_1\)<input id="dvr-a1" type="number" min="-4" max="4" step="0.1" value="0" /></label>
+          </div>
+          <figure class="lab-figure">
+            <canvas id="dvr-canvas" role="img" aria-label="Selected potential and lowest DVR eigenfunctions shifted by their eigenenergies"></canvas>
+            <figcaption>Simplified educational calculation. Each wavefunction is scaled and vertically shifted to its eigenenergy; the values below are dimensionless.</figcaption>
+          </figure>
+          <div class="lab-output eigenvalue-strip" id="dvr-eigenvalues" role="status" aria-live="polite"></div>
+          <details class="code-example"><summary>Python version of the calculation</summary><pre><code>import numpy as np
+from scipy.linalg import eigh
+
+# Units: hbar = mass = 1
+N, xmin, xmax = 40, -6.0, 6.0
+x = np.linspace(xmin, xmax, N)
+dx = x[1] - x[0]
+
+# Sinc-DVR kinetic-energy matrix
+i, j = np.indices((N, N))
+T = np.empty((N, N), dtype=float)
+T[i == j] = np.pi**2 / (6.0 * dx**2)
+mask = i != j
+T[mask] = (-1.0)**(i[mask] - j[mask]) / (
+    dx**2 * (i[mask] - j[mask])**2
+)
+
+V = 0.5 * x**2
+energy, psi = eigh(T + np.diag(V))
+print(energy[:4])
+
+# Numerical check: enlarge the box and grid separately.
+# Converged low energies should remain unchanged.</code></pre></details>
+          <aside class="lab-callout"><strong>What to check.</strong> Increase the number of grid points at fixed boundaries, then enlarge the box at fixed spacing. A reliable low-energy result should be insensitive to both changes.</aside>
+        </section>
+
         <p style="margin-top:1.5rem;">
-          <a class="pub-title" href="../notes.html">&larr; Back to Notes</a>
+          <a class="pub-title" href="../blog.html">&larr; Back to Notes</a>
         </p>
       </div>
     </section>
@@ -615,5 +673,6 @@
 
   <!-- Dark mode + utilities -->
   <script src="../main.js?v=2"></script>
+  <script src="../interactive-notes.js?v=1"></script>
 </body>
 </html>

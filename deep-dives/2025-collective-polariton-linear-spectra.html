@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Deep Dive: Efficient Collective Polariton Linear Spectra | Elious Mondal</title>
+  <meta name="description" content="Tutorial on sparse arrowhead Hamiltonian actions, shifted Chebyshev propagation, and efficient linear spectra under collective light-matter coupling." />
+  <meta name="theme-color" content="#f4efe5" />
+  <meta name="color-scheme" content="light dark" />
+  <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,500;8..60,600;8..60,700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../style.css" />
+  <script>window.MathJax={tex:{inlineMath:[["\\(","\\)"],["$","$"]],displayMath:[["\\[","\\]"]]},options:{skipHtmlTags:["script","noscript","style","textarea","pre","code"]}};</script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+</head>
+<body class="deep-dive-page">
+  <a class="skip-link" href="#main-content">Skip to content</a>
+  <header class="site-header">
+    <div class="container header-inner">
+      <div class="logo"><a href="../index.html" aria-label="Elious Mondal, home"><span class="logo-mark" aria-hidden="true">E</span><span>Elious Mondal</span></a></div>
+      <button class="nav-burger" type="button" aria-label="Open navigation" aria-expanded="false" aria-controls="primary-navigation"><span></span><span></span><span></span></button>
+      <nav class="nav-links" id="primary-navigation" aria-label="Primary navigation"><a href="../index.html">Home</a><a href="../research.html">Research</a><a href="../publications.html" class="active">Publications</a><a href="../blog.html">Notes</a><a href="../codes.html">Software</a><a class="nav-contact" href="../index.html#contact">Contact</a></nav>
+      <button class="theme-toggle" type="button" aria-label="Switch to dark theme"><span class="theme-icon" aria-hidden="true">◐</span></button>
+    </div>
+  </header>
+
+  <main id="main-content">
+    <section class="deep-dive-hero">
+      <div class="container deep-dive-hero-grid">
+        <div>
+          <p class="eyebrow"><span></span>Publication Deep Dive · 2025</p>
+          <h1>Polariton Spectra under the Collective Coupling Regime. I. Efficient Simulation of Linear Spectra and Quantum Dynamics</h1>
+          <p class="deep-dive-meta">M. Elious Mondal, A. Nickolas Vamivakas, Steven T. Cundiff, Todd D. Krauss, and Pengfei Huo · Journal of Chemical Physics 162, 014114</p>
+          <div class="deep-dive-actions"><a href="https://doi.org/10.1063/5.0243535" target="_blank" rel="noopener">Paper ↗</a><a href="https://chemrxiv.org/doi/pdf/10.26434/chemrxiv-2024-8kfcb" target="_blank" rel="noopener">PDF ↗</a><a href="https://github.com/EliousMondal" target="_blank" rel="noopener">Code ↗</a><a href="../publications.html">All publications</a></div>
+        </div>
+        <figure class="deep-dive-art"><img src="../assets/publication_figures/2025_mondal_linear.webp" width="1448" height="1086" alt="Many molecular excitons connected sparsely to one cavity mode, followed by a Chebyshev recurrence and two polariton peaks" /></figure>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container deep-dive-layout">
+        <aside class="deep-dive-toc" aria-label="On this page">
+          <p>On this page</p>
+          <ol>
+            <li><a href="#problem">Computational question</a></li>
+            <li><a href="#model">Physical model</a></li>
+            <li><a href="#sparsity">Sparse action</a></li>
+            <li><a href="#propagation">Chebyshev propagation</a></li>
+            <li><a href="#spectrum">Linear spectrum</a></li>
+            <li><a href="#example">Worked example</a></li>
+            <li><a href="#results">Reported results</a></li>
+            <li><a href="#limits">Limitations</a></li>
+          </ol>
+        </aside>
+
+        <article class="deep-dive-content">
+          <section id="problem">
+            <p class="source-badge">From the paper</p>
+            <h2>How can molecule-resolved polariton dynamics reach collective experimental sizes?</h2>
+            <p>Collective strong-coupling experiments may involve thousands to millions of emitters. Static energy disorder, dipole-orientation disorder, and independent phonon fluctuations make those emitters inequivalent, so one cannot rely only on a perfectly symmetric bright-state reduction. The paper instead asks which matrix elements are physically connected and evaluates only those connections. This preserves molecule-resolved disorder while making the cost proportional to the state-vector size rather than the square of that size.</p>
+          </section>
+
+          <section id="model">
+            <p class="source-badge">From the paper</p>
+            <h2>Holstein-Tavis-Cummings model with local environments</h2>
+            <div class="equation-card">
+              \[
+              \hat H_{\mathrm{HTC}}=\hat H_s+\hat H_b+\hat H_{sb},
+              \qquad
+              \hat H_{\mathrm{ex-ph}}=\sum_{n=1}^{N}\hbar g_{cn}
+              \left(\hat\sigma_n^\dagger\hat a+\hat\sigma_n\hat a^\dagger\right).
+              \]
+            </div>
+            <p>The system contains $N$ uncoupled two-level molecular excitons and one cavity mode under the rotating-wave approximation. Every molecule has an independent harmonic bath with a Debye spectral density. Site energies may carry Gaussian static disorder, while in-plane angular disorder changes both the cavity coupling and laser coupling through the projected transition dipole. The collective Rabi splitting is held fixed as $N$ changes, so an identical single-molecule coupling would scale as $g_c\propto N^{-1/2}$.</p>
+            <div class="equation-card">
+              \[
+              J_n(\omega)=\frac{2\lambda_b\omega_b\omega}{\omega_b^2+\omega^2},
+              \qquad
+              \hbar\Omega_R=2\sqrt N\,\hbar g_c.
+              \]
+            </div>
+          </section>
+
+          <section id="sparsity">
+            <p class="source-badge">From the paper</p>
+            <h2>The single-excitation Hamiltonian is an arrowhead, not a dense network</h2>
+            <p>In the ordered basis $\{|e_1,0\rangle,\ldots,|e_N,0\rangle,|G,1\rangle\}$, molecules do not couple directly to one another. Each exciton connects only to itself and to the common photon:</p>
+            <div class="equation-card">
+              \[
+              \hat H_Q^{(1)}=
+              \begin{pmatrix}
+              \epsilon_1&0&\cdots&0&\hbar g_1\\
+              0&\epsilon_2&\cdots&0&\hbar g_2\\
+              \vdots&\vdots&\ddots&\vdots&\vdots\\
+              0&0&\cdots&\epsilon_N&\hbar g_N\\
+              \hbar g_1&\hbar g_2&\cdots&\hbar g_N&\hbar\omega_c
+              \end{pmatrix}.
+              \]
+            </div>
+            <p>For $|\psi\rangle=(c_1,\ldots,c_N,c_c)^T$, one can apply this matrix without constructing it:</p>
+            <div class="equation-card">
+              \[
+              (H_Q\psi)_n=\epsilon_n c_n+\hbar g_n c_c,
+              \qquad
+              (H_Q\psi)_c=\hbar\omega_c c_c+\sum_{n=1}^{N}\hbar g_n c_n.
+              \]
+            </div>
+            <p>The dense array has $(N+1)^2$ slots, but the arrowhead has only $3N+1$ nonzero entries. The paper generalizes the same idea through the double-excitation sector: the number of basis states then grows as $O(N^2)$, yet the Hamiltonian action remains linear in that basis size rather than quadratic.</p>
+            <figure class="deep-dive-figure"><canvas data-deep-plot="linear-cost" role="img" aria-label="Normalized quadratic dense Hamiltonian work compared with linear sparse arrowhead work as ensemble size increases"></canvas><figcaption>Schematic operation-count comparison for dense pairwise work and a sparse $O(N)$ action. The curves explain scaling and are not wall-clock timings from the paper.</figcaption></figure>
+          </section>
+
+          <section id="propagation">
+            <p class="source-badge">From the paper</p>
+            <h2>Shift first, then propagate with a Chebyshev recurrence</h2>
+            <p>A Chebyshev expansion is stable only after the Hamiltonian spectrum is mapped to $[-1,1]$. With estimated bounds $\epsilon_{\min}$ and $\epsilon_{\max}$, define $\Delta E=\epsilon_{\max}-\epsilon_{\min}$ and</p>
+            <div class="equation-card">
+              \[
+              \hat O=2\frac{\hat H_Q-\epsilon_{\min}\hat I}{\Delta E}-\hat I,
+              \qquad
+              |\psi^{(m)}\rangle=2\hat O|\psi^{(m-1)}\rangle-|\psi^{(m-2)}\rangle.
+              \]
+            </div>
+            <p>The propagated state is a Bessel-weighted sum of these recurrence vectors. A second improvement removes the large common optical energy from each excitation manifold. The known phase associated with $\nu\bar\epsilon$ is restored analytically, while Chebyshev propagation acts only on the much narrower fluctuation Hamiltonian $\Delta\hat H^{(\nu)}$. This substantially lowers the required expansion order.</p>
+            <ol class="concept-flow">
+              <li><strong>Shift</strong><span>Remove the common eV-scale optical phase from each excitation manifold.</span></li>
+              <li><strong>Rescale</strong><span>Map the remaining fluctuation spectrum into the Chebyshev interval.</span></li>
+              <li><strong>Recur</strong><span>Apply only sparse Hamiltonian-vector operations until the Bessel terms converge.</span></li>
+            </ol>
+          </section>
+
+          <section id="spectrum">
+            <p class="source-badge">From the paper</p>
+            <h2>From sparse propagation to a linear absorption spectrum</h2>
+            <p>The shifted Chebyshev step is embedded in Lindblad-partially linearized density matrix dynamics. Forward and backward quantum amplitudes evolve alongside classical bath coordinates; stochastic Lindblad steps represent cavity leakage. The dipole operator is also applied as a sparse vector action, and focused sampling avoids explicitly launching every equivalent initial molecular coherence.</p>
+            <div class="equation-card">
+              \[
+              R^{(1)}(t)=i\,\mathrm{Tr}\!\left[\hat\mu(t)
+              [\hat\mu(0),\hat\rho_0]\right],
+              \qquad
+              A(\omega)\propto\mathrm{Re}\int_0^{t_{\max}}
+              dt\,W(t)R^{(1)}(t)e^{i\omega t}.
+              \]
+            </div>
+            <p>The reported calculation uses a cosine apodization $W(t)$ before Fourier transformation. Only the ground and single-excitation sectors are required for this linear response; the double-excitation sparse algebra is developed as groundwork for nonlinear spectroscopy.</p>
+          </section>
+
+          <section id="example">
+            <p class="source-badge example">Simplified educational example</p>
+            <h2>Four molecules: dense matrix and sparse action give the same vector</h2>
+            <div class="worked-example">
+              <p>Take $\epsilon=(1.96,1.99,2.02,2.05)$ eV, $\hbar\omega_c=2.00$ eV, and $\hbar\Omega_R=0.20$ eV. For $N=4$, every coupling is $\hbar g_n=\hbar\Omega_R/(2\sqrt4)=0.05$ eV. The resulting $5\times5$ dense array has 25 storage slots, but only 13 nonzero entries. Applying the component equations above must agree with the dense product to numerical precision.</p>
+            </div>
+            <details class="code-example">
+              <summary>Python sparse-versus-dense validation</summary>
+              <pre><code>import numpy as np
+
+N = 4
+epsilon = 2.0 + np.array([-0.04, -0.01, 0.02, 0.05])  # eV
+omega_c = 2.0
+Omega_R = 0.2
+g = np.full(N, Omega_R / (2.0 * np.sqrt(N)))
+
+rng = np.random.default_rng(7)
+psi = rng.normal(size=N + 1) + 1j * rng.normal(size=N + 1)
+psi /= np.linalg.norm(psi)
+
+def arrowhead_action(vector):
+    out = np.empty_like(vector)
+    out[:N] = epsilon * vector[:N] + g * vector[N]
+    out[N] = omega_c * vector[N] + np.dot(g, vector[:N])
+    return out
+
+# Dense reference is appropriate only for this small validation.
+H = np.diag(np.r_[epsilon, omega_c]).astype(complex)
+H[:N, N] = g
+H[N, :N] = g
+
+error = np.max(np.abs(arrowhead_action(psi) - H @ psi))
+print("nonzero entries:", np.count_nonzero(H), "of", H.size)
+print("maximum action error:", error)</code></pre>
+            </details>
+            <p>The next educational step is to wrap <code>arrowhead_action</code> in the normalized three-term Chebyshev recurrence and compare one short propagation step with <code>scipy.linalg.expm</code>. That test validates the tutorial implementation; it does not reproduce the paper's L-PLDM bath ensemble.</p>
+          </section>
+
+          <section id="results">
+            <p class="source-badge">From the paper</p>
+            <h2>What the simulations report</h2>
+            <ul>
+              <li>At fixed collective splitting, increasing $N$ lengthens the response coherence and narrows the polariton lines through collective polaron decoupling.</li>
+              <li>The no-static-disorder convergence study directly reaches $N=10^5$; for the selected parameters, a much smaller ensemble is already visually close to that large-$N$ lower-polariton line.</li>
+              <li>Independent energetic disorder broadens and lowers the polariton peaks. At sufficiently strong disorder, the LP and UP begin to merge.</li>
+              <li>In-plane orientational disorder mainly contracts the Rabi splitting as the projected couplings average down, with substantially less extra linewidth broadening than energetic disorder.</li>
+              <li>Against exact small-system propagation, the shifted Chebyshev scheme is the most accurate of the tested practical integrators over the relevant time steps.</li>
+            </ul>
+          </section>
+
+          <section id="limits">
+            <p class="source-badge">Scope and limitations</p>
+            <h2>Where the efficiency claim applies</h2>
+            <ul>
+              <li>The physical model uses one cavity mode, two-level molecules, the rotating-wave approximation, independent Debye baths, and no direct intermolecular excitonic coupling.</li>
+              <li>L-PLDM treats the explicit phonon dynamics approximately, and cavity loss is represented through a Markovian stochastic Lindblad model.</li>
+              <li>The $N=10^5$ demonstration is the no-static-disorder convergence case; the broken-symmetry energy- and orientation-disorder examples use $N=500$.</li>
+              <li>The orientation distribution is modeled in a two-dimensional plane, not as an arbitrary three-dimensional molecular distribution.</li>
+              <li>Linear spectra use only the single-excitation sector. Double-excitation scaling should not be presented as part of the linear observable itself.</li>
+              <li>$O(K)$ Hamiltonian actions describe ideal arithmetic scaling; trajectory count, bath propagation, memory movement, spectral-bound estimation, and hardware overhead still affect total runtime.</li>
+              <li>The manifold energy shift preserves relative line shapes but the removed absolute optical frequency must be restored when reporting a physical spectrum.</li>
+            </ul>
+          </section>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer"><div class="container footer-grid"><div><a class="footer-name" href="../index.html">Elious Mondal</a><p>Quantum dynamics of light-matter systems.</p></div><nav aria-label="Footer navigation"><a href="../research.html">Research</a><a href="../publications.html">Publications</a><a href="../blog.html">Notes</a><a href="../codes.html">Software</a></nav><div class="footer-meta"><a href="mailto:mmondal@ur.rochester.edu">Email</a><a href="https://github.com/EliousMondal" target="_blank" rel="noopener">GitHub</a><p>© 2026 Mohammad Elious Ali Mondal</p></div></div></footer>
+  <script src="../main.js"></script>
+  <script src="../deep-dive.js"></script>
+</body>
+</html>

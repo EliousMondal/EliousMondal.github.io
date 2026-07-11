@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Research Notes | Mohammad Elious Ali Mondal</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Detailed notes and derivations on quantum dynamics, numerical methods, spectroscopy, electronic structure, and operator transformations." />
+  <meta name="theme-color" content="#f4efe5" />
+  <meta name="color-scheme" content="light dark" />
+  <link rel="canonical" href="https://eliousmondal.github.io/blog.html" />
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,500;8..60,600;8..60,700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+  <script src="main.js" defer></script>
+</head>
+
+<body data-page="notes">
+  <a class="skip-link" href="#main-content">Skip to content</a>
+  <header class="site-header">
+    <div class="container header-inner">
+      <div class="logo"><a href="index.html" aria-label="Elious Mondal, home"><span class="logo-mark" aria-hidden="true">E</span><span>Elious Mondal</span></a></div>
+      <button class="nav-burger" type="button" aria-label="Open navigation" aria-expanded="false" aria-controls="primary-navigation"><span></span><span></span><span></span></button>
+      <nav class="nav-links" id="primary-navigation" aria-label="Primary navigation"><a href="index.html">Home</a><a href="research.html">Research</a><a href="publications.html">Publications</a><a href="blog.html" class="active" aria-current="page">Notes</a><a href="codes.html">Software</a><a class="nav-contact" href="index.html#contact">Contact</a></nav>
+      <button class="theme-toggle" type="button" aria-label="Switch to dark theme" title="Change color theme"><span class="theme-icon" aria-hidden="true">◐</span></button>
+    </div>
+  </header>
+
+  <main id="main-content">
+    <section class="page-hero notes-hero">
+      <div class="notes-hero-pattern" aria-hidden="true"></div>
+      <div class="container page-hero-grid">
+        <div class="reveal"><p class="eyebrow"><span></span>Research notes</p><h1>Detailed notes on quantum dynamics, spectroscopy, and numerical methods.</h1></div>
+        <div class="page-hero-lead reveal" data-delay="1"><p>Tutorials, derivations, worked examples, and interactive calculations that develop each method step by step.</p></div>
+      </div>
+    </section>
+
+    <section class="section notes-library">
+      <div class="container">
+        <div class="notes-toolbar reveal" aria-label="Filter research notes">
+          <label class="notes-search"><span class="sr-only">Search notes</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m21 21-4.35-4.35m2.35-5.65a8 8 0 1 1-16 0 8 8 0 0 1 16 0Z"/></svg><input type="search" id="notes-search" placeholder="Search notes" autocomplete="off" /></label>
+          <div class="filter-row" role="group" aria-label="Filter by topic">
+            <button class="filter-btn active" type="button" data-filter="all" aria-pressed="true">All</button>
+            <button class="filter-btn" type="button" data-filter="foundations" aria-pressed="false">Foundations</button>
+            <button class="filter-btn" type="button" data-filter="numerical" aria-pressed="false">Numerical methods</button>
+            <button class="filter-btn" type="button" data-filter="spectroscopy" aria-pressed="false">Spectroscopy</button>
+            <button class="filter-btn" type="button" data-filter="transforms" aria-pressed="false">Transforms</button>
+          </div>
+        </div>
+
+        <p class="notes-count reveal" aria-live="polite"><span id="visible-note-count">9</span> notes</p>
+
+        <div class="notes-grid" id="notes-grid">
+          <article class="note-tile reveal" data-note-card data-category="foundations numerical" data-search="discrete variable representation fourier dvr grid quantum dynamics">
+            <a class="note-tile-image" href="notes/dvr_fourier_basis.html"><img src="assets/notes_figures/dvr_fourier_basis.webp" width="1448" height="1086" alt="Harmonic potential sampled on a DVR grid" /></a>
+            <div class="note-tile-body"><p class="note-topic">Quantum dynamics · Interactive</p><h2><a href="notes/dvr_fourier_basis.html">Discrete Variable Representation</a></h2><p>Build a Fourier-grid DVR, choose a potential and grid, and compare its eigenfunctions.</p><a class="read-link" href="notes/dvr_fourier_basis.html">Open tutorial <span aria-hidden="true">→</span></a></div>
+          </article>
+
+          <article class="note-tile reveal" data-delay="1" data-note-card data-category="foundations" data-search="electronic structure born oppenheimer slater determinant hartree fock configuration interaction">
+            <a class="note-tile-image" href="notes/basic_electronic_structure.html"><img src="assets/notes_figures/basic_electronic_structure.webp" width="1600" height="1200" loading="lazy" decoding="async" alt="Atomic orbitals forming molecular orbitals and electronic states" /></a>
+            <div class="note-tile-body"><p class="note-topic">Foundations</p><h2><a href="notes/basic_electronic_structure.html">Basics of Electronic Structure</a></h2><p>From antisymmetry and Slater determinants to Hartree–Fock and configuration interaction.</p><a class="read-link" href="notes/basic_electronic_structure.html">Read derivation <span aria-hidden="true">→</span></a></div>
+          </article>
+
+          <article class="note-tile reveal" data-delay="2" data-note-card data-category="numerical" data-search="chebyshev propagator polynomial time evolution quantum dynamics">
+            <a class="note-tile-image" href="notes/chebyshev_propagator.html"><img src="assets/notes_figures/chebyshev_propagator.webp" width="1448" height="1086" loading="lazy" decoding="async" alt="Wavepacket propagated using Chebyshev recursion" /></a>
+            <div class="note-tile-body"><p class="note-topic">Numerical methods · Interactive</p><h2><a href="notes/chebyshev_propagator.html">Chebyshev Propagator</a></h2><p>Derive the recursion, then propagate a three- or four-level model and inspect the error.</p><a class="read-link" href="notes/chebyshev_propagator.html">Open tutorial <span aria-hidden="true">→</span></a></div>
+          </article>
+
+          <article class="note-tile reveal" data-note-card data-category="numerical" data-search="fast fourier transform fft cooley tukey operator matrix even odd">
+            <a class="note-tile-image" href="notes/fft.html"><img src="assets/notes_figures/fft.webp" width="1448" height="1086" loading="lazy" decoding="async" alt="Waveform passing through an FFT butterfly network" /></a>
+            <div class="note-tile-body"><p class="note-topic">Numerical methods · Interactive</p><h2><a href="notes/fft.html">Fast Fourier Transform</a></h2><p>Construct the DFT matrix, follow each radix-2 stage, and inspect a test signal in frequency space.</p><a class="read-link" href="notes/fft.html">Open tutorial <span aria-hidden="true">→</span></a></div>
+          </article>
+
+          <article class="note-tile reveal" data-delay="1" data-note-card data-category="numerical foundations" data-search="neuron layer neural network batch weights bias machine learning">
+            <a class="note-tile-image" href="notes/A_Neuron_Layer.html"><img src="assets/notes_figures/neuron_layer.webp" width="1600" height="1200" loading="lazy" decoding="async" alt="Input batch flowing through a neural network layer" /></a>
+            <div class="note-tile-body"><p class="note-topic">Machine learning</p><h2><a href="notes/A_Neuron_Layer.html">A Neuron Layer</a></h2><p>Building a single neuron, a layer, and a batch calculation from their matrix operations.</p><a class="read-link" href="notes/A_Neuron_Layer.html">Read notebook <span aria-hidden="true">→</span></a></div>
+          </article>
+
+          <article class="note-tile reveal" data-delay="2" data-note-card data-category="spectroscopy" data-search="linear spectrum two level system harmonic bath drude lorentz brownian oscillator">
+            <a class="note-tile-image" href="notes/monomer_analytic_spectra.html"><img src="assets/notes_figures/monomer_analytic_spectra.webp" width="1448" height="1086" loading="lazy" decoding="async" alt="Two-level transition coupled to a harmonic bath and broadened spectrum" /></a>
+            <div class="note-tile-body"><p class="note-topic">Spectroscopy · Interactive</p><h2><a href="notes/monomer_analytic_spectra.html">Linear Spectra of a Two-Level System</a></h2><p>Combine Drude–Lorentz and underdamped Brownian baths, then calculate the resulting lineshape.</p><a class="read-link" href="notes/monomer_analytic_spectra.html">Open tutorial <span aria-hidden="true">→</span></a></div>
+          </article>
+
+          <article class="note-tile reveal" data-note-card data-category="transforms" data-search="polaron transform frenkel exciton phonon bath displacement">
+            <a class="note-tile-image" href="notes/polaron_frenkel_exciton.html"><img src="assets/notes_figures/polaron_frenkel_exciton.webp" width="1448" height="1086" loading="lazy" decoding="async" alt="Localized exciton dressed by phonon distortions" /></a>
+            <div class="note-tile-body"><p class="note-topic">Operator transforms</p><h2><a href="notes/polaron_frenkel_exciton.html">Polaron Transform of the Frenkel Exciton Model</a></h2><p>How a unitary displacement dresses excitons and renormalizes electronic coupling.</p><a class="read-link" href="notes/polaron_frenkel_exciton.html">Read derivation <span aria-hidden="true">→</span></a></div>
+          </article>
+
+          <article class="note-tile reveal" data-delay="1" data-note-card data-category="transforms" data-search="variational polaron transform gibbs bogoliubov feynman partial displacement">
+            <a class="note-tile-image" href="notes/vpt_notes.html"><img src="assets/notes_figures/vpt_notes.webp" width="1448" height="1086" loading="lazy" decoding="async" alt="Progressively displaced harmonic environments" /></a>
+            <div class="note-tile-body"><p class="note-topic">Operator transforms</p><h2><a href="notes/vpt_notes.html">Variational Polaron Transform</a></h2><p>Interpolating between weak and strong coupling through optimized bath displacements.</p><a class="read-link" href="notes/vpt_notes.html">Read derivation <span aria-hidden="true">→</span></a></div>
+          </article>
+
+          <article class="note-tile reveal" data-delay="2" data-note-card data-category="transforms" data-search="schrieffer wolff transform block diagonal effective hamiltonian commutator">
+            <a class="note-tile-image" href="notes/sw_transform.html"><img src="assets/notes_figures/sw_transform.webp" width="1600" height="1200" loading="lazy" decoding="async" alt="Coupled energy subspaces transformed into effective blocks" /></a>
+            <div class="note-tile-body"><p class="note-topic">Operator transforms</p><h2><a href="notes/sw_transform.html">Schrieffer–Wolff Transform</a></h2><p>Block-diagonalizing coupled Hamiltonians to expose their effective low-energy physics.</p><a class="read-link" href="notes/sw_transform.html">Read derivation <span aria-hidden="true">→</span></a></div>
+          </article>
+        </div>
+        <p class="notes-empty" id="notes-empty" hidden>No notes match that search. Try another keyword or topic.</p>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer"><div class="container footer-grid"><div><a class="footer-name" href="index.html">Elious Mondal</a><p>Quantum dynamics of light–matter systems.</p></div><nav aria-label="Footer navigation"><a href="research.html">Research</a><a href="publications.html">Publications</a><a href="blog.html">Notes</a><a href="codes.html">Software</a></nav><div class="footer-meta"><a href="mailto:mmondal@ur.rochester.edu">Email</a><a href="https://github.com/EliousMondal" target="_blank" rel="noopener">GitHub</a><p>© 2026 Mohammad Elious Ali Mondal</p></div></div></footer>
+</body>
+</html>

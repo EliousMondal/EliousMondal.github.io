@@ -5,7 +5,13 @@
   <title>Polaron transform of the Frenkel exciton model | Notes | Mohammad Elious Ali Mondal</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <!-- Match existing site style -->
-  <link rel="stylesheet" href="../style.css?v=1" />
+  <meta name="theme-color" content="#f4efe5" />
+  <meta name="color-scheme" content="light dark" />
+  <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,500;8..60,600;8..60,700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../style.css?v=3" />
 
   <!-- MathJax config (same as other notes) -->
   <script>
@@ -16,26 +22,29 @@
       }
     };
   </script>
-  <script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  <script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
 </head>
 <body>
+  <a class="skip-link" href="#main-content">Skip to content</a>
   <header class="site-header">
     <div class="container header-inner">
       <div class="logo">
-        <a href="../index.html#hero">Mohammad Elious Ali Mondal</a>
+        <a href="../index.html" aria-label="Elious Mondal, home"><span class="logo-mark" aria-hidden="true">E</span><span>Elious Mondal</span></a>
       </div>
-      <nav class="nav-links">
-        <a href="../index.html#about">About</a>
+      <button class="nav-burger" type="button" aria-label="Open navigation" aria-expanded="false" aria-controls="primary-navigation"><span></span><span></span><span></span></button>
+      <nav class="nav-links" id="primary-navigation" aria-label="Primary navigation">
+        <a href="../index.html">Home</a>
         <a href="../research.html">Research</a>
         <a href="../publications.html">Publications</a>
-        <a href="../notes.html">Notes</a>
+        <a href="../blog.html">Notes</a>
+        <a href="../codes.html">Software</a>
         <a href="../index.html#contact">Contact</a>
       </nav>
-      <button class="theme-toggle" aria-label="Toggle dark mode">☾</button>
+      <button class="theme-toggle" type="button" aria-label="Switch to dark theme" title="Change color theme"><span class="theme-icon" aria-hidden="true">◐</span></button>
     </div>
   </header>
 
-  <main>
+  <main id="main-content" tabindex="-1">
     <!-- Title / intro -->
     <section class="section">
       <div class="container">
@@ -830,8 +839,29 @@
           hopping between sites $n$ and $m$.
         </p>
 
+        <section class="teaching-extension" aria-labelledby="polaron-worked-example">
+          <p class="source-badge example">Worked educational example</p>
+          <h2 id="polaron-worked-example">How bath displacement narrows a dimer coupling</h2>
+          <p>For a single effective mode, a useful teaching model writes the thermally averaged hopping as \(J_{\mathrm{eff}}=J\exp[-S\coth(\beta\omega/2)]\), where \(S\) measures the displacement. This compact expression shows the competition between coherent hopping and environmental dressing.</p>
+          <div class="worked-example"><h3>Insert numbers</h3><p>At low temperature with \(S=0.6\), \(\coth(\beta\omega/2)\approx1\). A bare coupling \(J=100\ \mathrm{cm}^{-1}\) is reduced to \(J_{\mathrm{eff}}\approx54.9\ \mathrm{cm}^{-1}\). This is a pedagogical one-mode estimate, not a reproduction of a particular paper result.</p></div>
+          <ol class="concept-flow" aria-label="Polaron transformation sequence"><li><strong>Displace</strong><span>Condition each harmonic environment on the electronic occupation.</span></li><li><strong>Transform</strong><span>Remove the explicit linear coupling with a unitary operator.</span></li><li><strong>Renormalize</strong><span>Average the displacement operators to obtain a dressed electronic coupling.</span></li></ol>
+          <details class="code-example"><summary>Python plot of the renormalized coupling</summary><pre><code>import numpy as np
+import matplotlib.pyplot as plt
+
+J = 100.0                     # cm^-1
+S = np.linspace(0.0, 2.0, 200)
+thermal_factor = 1.0          # low-temperature illustration
+J_eff = J * np.exp(-S * thermal_factor)
+
+plt.plot(S, J_eff)
+plt.xlabel("displacement strength S")
+plt.ylabel(r"$J_{\mathrm{eff}}$ (cm$^{-1}$)")
+plt.show()</code></pre></details>
+          <aside class="lab-callout"><strong>Common pitfall.</strong> The transformation is exact, but replacing bath displacement operators by their thermal averages is an additional approximation. Keep those two steps conceptually separate.</aside>
+        </section>
+
         <p style="margin-top:1.5rem;">
-            <a class="pub-title" href="../notes.html">&larr; Back to Notes</a>
+            <a class="pub-title" href="../blog.html">&larr; Back to Notes</a>
         </p>
       </div>
     </section>

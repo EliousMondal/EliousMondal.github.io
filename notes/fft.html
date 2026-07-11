@@ -4,7 +4,13 @@
   <meta charset="UTF-8" />
   <title>Fast Fourier Transform (FFT) | Notes | Mohammad Elious Ali Mondal</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <link rel="stylesheet" href="../style.css?v=1" />
+  <meta name="theme-color" content="#f4efe5" />
+  <meta name="color-scheme" content="light dark" />
+  <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,500;8..60,600;8..60,700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../style.css?v=3" />
 
   <!-- MathJax config -->
   <script>
@@ -18,27 +24,30 @@
   </script>
   <script
     async
-    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"
   ></script>
 </head>
 <body>
+  <a class="skip-link" href="#main-content">Skip to content</a>
   <header class="site-header">
     <div class="container header-inner">
       <div class="logo">
-        <a href="../index.html#hero">Mohammad Elious Ali Mondal</a>
+        <a href="../index.html" aria-label="Elious Mondal, home"><span class="logo-mark" aria-hidden="true">E</span><span>Elious Mondal</span></a>
       </div>
-      <nav class="nav-links">
-        <a href="../index.html#about">About</a>
+      <button class="nav-burger" type="button" aria-label="Open navigation" aria-expanded="false" aria-controls="primary-navigation"><span></span><span></span><span></span></button>
+      <nav class="nav-links" id="primary-navigation" aria-label="Primary navigation">
+        <a href="../index.html">Home</a>
         <a href="../research.html">Research</a>
         <a href="../publications.html">Publications</a>
-        <a href="../notes.html">Notes</a>
+        <a href="../blog.html">Notes</a>
+        <a href="../codes.html">Software</a>
         <a href="../index.html#contact">Contact</a>
       </nav>
-      <button class="theme-toggle" aria-label="Toggle dark mode">☾</button>
+      <button class="theme-toggle" type="button" aria-label="Switch to dark theme" title="Change color theme"><span class="theme-icon" aria-hidden="true">◐</span></button>
     </div>
   </header>
 
-  <main>
+  <main id="main-content" tabindex="-1">
     <!-- Title + intro -->
     <section class="section">
       <div class="container">
@@ -1294,8 +1303,55 @@
           block “Hadamard”.
         </p>
 
+        <section class="interactive-lab" id="fft-lab" aria-labelledby="fft-lab-title">
+          <div class="lab-heading">
+            <p class="eyebrow"><span></span>Interactive example</p>
+            <h2 id="fft-lab-title">Construct the transform matrix and butterfly stages</h2>
+            <p>Choose a small signal and compare its time-domain samples with the DFT magnitude. The stage control exposes the bit-reversed input and each radix-2 butterfly layer.</p>
+          </div>
+          <div class="lab-controls" aria-label="FFT demonstration controls">
+            <label class="lab-control">Grid size<select id="fft-size"><option value="4">4</option><option value="8" selected>8</option><option value="16">16</option></select></label>
+            <label class="lab-control">Signal<select id="fft-signal"><option value="single">Single Fourier mode</option><option value="two">Two modes</option><option value="pulse">Gaussian pulse</option></select></label>
+            <label class="lab-control">Sampling interval<input id="fft-dt" type="number" min="0.02" max="1" step="0.01" value="0.125" /></label>
+            <label class="lab-control">Butterfly stage<input id="fft-stage" type="range" min="0" max="3" step="1" value="0" /></label>
+          </div>
+          <div class="lab-plot-grid"><figure class="lab-figure"><canvas id="fft-time-canvas" role="img" aria-label="Sampled time-domain signal"></canvas><figcaption>Input samples on the selected grid.</figcaption></figure><figure class="lab-figure"><canvas id="fft-frequency-canvas" role="img" aria-label="Discrete Fourier-transform magnitude"></canvas><figcaption>Magnitude of the DFT, normalized by the number of samples.</figcaption></figure></div>
+          <div class="fft-inspection"><pre id="fft-matrix" class="matrix-output" aria-label="Preview of the discrete Fourier transform matrix"></pre><p class="lab-output stage-output" id="fft-stage-output" role="status" aria-live="polite"></p></div>
+          <details class="code-example"><summary>Python construction of the DFT matrix and FFT stages</summary><pre><code>import numpy as np
+
+N = 8
+n = np.arange(N)
+k = n[:, None]
+F = np.exp(-2j * np.pi * k * n / N)
+
+x = np.sin(2*np.pi*2*n/N)
+X_matrix = F @ x
+X_fft = np.fft.fft(x)
+print(np.max(np.abs(X_matrix - X_fft)))
+
+def radix2_stages(x):
+    """Return the bit-reversed input and every butterfly stage."""
+    N = len(x)
+    bits = int(np.log2(N))
+    reverse = lambda i: int(f"{i:0{bits}b}"[::-1], 2)
+    y = np.asarray([x[reverse(i)] for i in range(N)], complex)
+    stages = [y.copy()]
+    size = 2
+    while size &lt;= N:
+        for start in range(0, N, size):
+            for j in range(size // 2):
+                w = np.exp(-2j*np.pi*j/size)
+                even = y[start + j]
+                odd = w * y[start + j + size//2]
+                y[start + j], y[start + j + size//2] = even + odd, even - odd
+        stages.append(y.copy())
+        size *= 2
+    return stages</code></pre></details>
+          <aside class="lab-callout"><strong>Interpretation.</strong> The matrix and FFT compute the same linear map. The FFT is faster because the Fourier matrix is factorized into sparse even–odd permutations, twiddle factors, and two-point transforms.</aside>
+        </section>
+
         <p style="margin-top: 1.5rem;">
-          <a class="pub-title" href="../notes.html">&larr; Back to Notes</a>
+          <a class="pub-title" href="../blog.html">&larr; Back to Notes</a>
         </p>
       </div>
     </section>
@@ -1303,5 +1359,6 @@
 
   <!-- Dark mode + utilities -->
   <script src="../main.js?v=2"></script>
+  <script src="../interactive-notes.js?v=1"></script>
 </body>
 </html>

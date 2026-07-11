@@ -4,93 +4,107 @@
   <meta charset="UTF-8" />
   <title>Research | Mohammad Elious Ali Mondal</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <link rel="stylesheet" href="style.css?v=1" />
+  <meta name="description" content="Research on cavity-modified chemistry, nonlinear spectroscopy, open quantum systems, and numerical quantum dynamics." />
+  <meta name="theme-color" content="#f4efe5" />
+  <meta name="color-scheme" content="light dark" />
+  <link rel="canonical" href="https://eliousmondal.github.io/research.html" />
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,500;8..60,600;8..60,700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+  <script src="main.js" defer></script>
 </head>
-<body>
+
+<body data-page="research">
+  <a class="skip-link" href="#main-content">Skip to content</a>
   <header class="site-header">
     <div class="container header-inner">
-      <div class="logo">
-        <a href="index.html#hero">Mohammad Elious Ali Mondal</a>
-      </div>
-      <nav class="nav-links">
-        <a href="index.html#about">About</a>
-        <a href="research.html">Research</a>
-        <a href="publications.html">Publications</a>
-        <a href="notes.html">Notes</a>
-        <a href="index.html#contact">Contact</a>
+      <div class="logo"><a href="index.html" aria-label="Elious Mondal, home"><span class="logo-mark" aria-hidden="true">E</span><span>Elious Mondal</span></a></div>
+      <button class="nav-burger" type="button" aria-label="Open navigation" aria-expanded="false" aria-controls="primary-navigation"><span></span><span></span><span></span></button>
+      <nav class="nav-links" id="primary-navigation" aria-label="Primary navigation">
+        <a href="index.html">Home</a><a href="research.html" class="active" aria-current="page">Research</a><a href="publications.html">Publications</a><a href="blog.html">Notes</a><a href="codes.html">Software</a><a class="nav-contact" href="index.html#contact">Contact</a>
       </nav>
-      <button class="theme-toggle" aria-label="Toggle dark mode">
-        ☾
-      </button>
+      <button class="theme-toggle" type="button" aria-label="Switch to dark theme" title="Change color theme"><span class="theme-icon" aria-hidden="true">◐</span></button>
     </div>
   </header>
 
-  <main>
-    <section class="section">
-      <div class="container">
-        <h1>Research</h1>
-        <p>
-          My research focuses on quantum dynamics and spectroscopy of molecular
-          exciton–polaritons, mixed quantum–classical methods, and open quantum
-          systems with structured environments.
-        </p>
+  <main id="main-content">
+    <section class="page-hero page-hero-research">
+      <div class="page-hero-lines" aria-hidden="true"></div>
+      <div class="container page-hero-grid">
+        <div class="reveal">
+          <p class="eyebrow"><span></span>Research</p>
+          <h1>Quantum dynamics, spectroscopy, and molecular polaritons.</h1>
+        </div>
+        <div class="page-hero-lead reveal" data-delay="1">
+          <p>I study how strong light–matter coupling reshapes molecular dynamics, spectroscopy, and transport, then build the theoretical and computational tools needed to simulate those processes.</p>
+          <nav class="jump-nav" aria-label="Research topics"><a href="#cavity-chemistry">Cavity chemistry</a><a href="#spectroscopy">Spectroscopy</a><a href="#open-systems">Open systems</a><a href="#numerical-methods">Numerical methods</a></nav>
+        </div>
       </div>
     </section>
 
-    <section class="section section-alt">
+    <section class="section research-stories">
       <div class="container">
-        <h2>Current directions</h2>
-        <ul class="item-list">
-          <li>
-            <h3>Exciton–polaritons and cavity-modified spectroscopy</h3>
-            <p>
-              Developing quantum dynamics frameworks to study linear and nonlinear spectroscopy
-              (including 2D electronic spectroscopy) of molecular ensembles strongly coupled to
-              optical cavities, with a focus on polaron decoupling, long-lived polaritonic
-              coherence, and motional narrowing in disordered systems.
-            </p>
-          </li>
-          <li>
-            <h3>Mixed quantum–classical dynamics &amp; mapping approaches</h3>
-            <p>
-              Designing trajectory-based methods that combine PLDM dynamics with Lindblad
-              formalisms to treat both Markovian and non-Markovian dissipation, and exploring
-              spin-mapping and related mapping-based approaches to improve accuracy and
-              efficiency for strongly coupled light–matter systems.
-            </p>
-          </li>
-          <li>
-            <h3>Open quantum systems &amp; structured environments</h3>
-            <p>
-              Studying system–bath interactions under Drude–Lorentz and underdamped Brownian
-              spectral densities using correlation-function approaches, master equations, and
-              analog simulations, with an eye toward connecting microscopic models with
-              experimentally observed spectra and transport.
-            </p>
-          </li>
-          <li>
-            <h3>High-performance computing &amp; scientific software</h3>
-            <p>
-              Implementing scalable simulations using Python, C++, mpi4py, and scientific
-              libraries such as NumPy, SciPy, Numba, PyTorch, and Eigen, enabling studies of
-              quantum dynamics in large polaritonic systems with many molecules and cavity
-              modes.
-            </p>
-          </li>
-        </ul>
+        <article class="research-story reveal" id="cavity-chemistry">
+          <div class="research-art"><img src="assets/research_figures/research_cavity.webp" width="1600" height="1200" alt="Molecular ensemble collectively interacting with a standing optical cavity field" /></div>
+          <div class="research-copy">
+            <div class="story-label"><span>01</span><p>Light–matter interaction</p></div>
+            <h2>Cavity-modified chemistry</h2>
+            <p class="story-lead">When molecules exchange energy coherently with a confined photon, the useful degrees of freedom become hybrid light–matter states.</p>
+            <p>I develop quantum-dynamics frameworks for molecular ensembles under strong coupling. The work connects microscopic models to linear and two-dimensional spectra, revealing polaron decoupling, long-lived polaritonic coherence, motional narrowing, and collective many-body behavior in vibrational strong coupling.</p>
+            <ul class="tag-list"><li>Exciton–polaritons</li><li>Vibrational strong coupling</li><li>Cavity QED</li><li>Collective coupling</li></ul>
+          </div>
+        </article>
+
+        <article class="research-story reverse reveal" id="spectroscopy">
+          <div class="research-art"><img src="assets/research_figures/research_spectroscopy.webp" width="1448" height="1086" loading="lazy" decoding="async" alt="Ultrafast pulses and wavepacket dynamics resolved as a two-dimensional spectrum" /></div>
+          <div class="research-copy">
+            <div class="story-label"><span>02</span><p>Reading molecular motion</p></div>
+            <h2>Condensed-phase spectroscopy</h2>
+            <p class="story-lead">Spectra are not only peaks. Their shapes, cross-peaks, and waiting-time evolution encode how molecules move and exchange energy.</p>
+            <p>I formulate response functions in terms of trajectory-based dynamics and design efficient strategies for computing linear and nonlinear spectra of systems inseparable from their fluctuating environments. Two-dimensional electronic spectroscopy provides a particularly direct view of coherence, coupling, and energy-transfer pathways.</p>
+            <ul class="tag-list"><li>Linear absorption</li><li>2DES</li><li>Response functions</li><li>Lineshape analysis</li></ul>
+          </div>
+        </article>
+
+        <article class="research-story reveal" id="open-systems">
+          <div class="research-art"><img src="assets/research_figures/research_open_systems.webp" width="1448" height="1086" loading="lazy" decoding="async" alt="Coherent quantum wavepacket coupled to harmonic modes and trajectory paths" /></div>
+          <div class="research-copy">
+            <div class="story-label"><span>03</span><p>Dynamics in context</p></div>
+            <h2>Mixed quantum–classical dynamics &amp; open quantum systems</h2>
+            <p class="story-lead">The environment is not background noise. It controls decoherence, relaxation, transport, and the observables measured in spectroscopy.</p>
+            <p>I develop trajectory methods combining partial linearized density-matrix dynamics with Lindblad formalisms so that Markovian and non-Markovian dissipation can be handled in a common simulation. Related work explores spin mapping, polaron and Schrieffer–Wolff transforms, and reaction-coordinate mappings.</p>
+            <ul class="tag-list"><li>PLDM</li><li>Lindblad dynamics</li><li>Mapping methods</li><li>Structured baths</li></ul>
+          </div>
+        </article>
+
+        <article class="research-story reverse reveal" id="numerical-methods">
+          <div class="research-art"><img src="assets/research_figures/research_numerical.webp" width="1448" height="1086" loading="lazy" decoding="async" alt="Wavepacket, sparse transforms, and parallel computational blocks" /></div>
+          <div class="research-copy">
+            <div class="story-label"><span>04</span><p>Scaling the calculation</p></div>
+            <h2>Numerical methods for quantum dynamics</h2>
+            <p class="story-lead">A physical theory becomes useful only when its calculation remains accurate and affordable at the scale of the experiment.</p>
+            <p>I develop sparse propagation schemes, Chebyshev expansions, symmetry and unique-variable reductions, and high-performance implementations in Python, C++, and Julia. The objective is to retain the relevant quantum structure while making ensemble and nonlinear-spectroscopy calculations tractable.</p>
+            <ul class="tag-list"><li>Chebyshev propagation</li><li>HEOM</li><li>HPC &amp; GPU</li><li>Machine learning</li></ul>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="section research-process section-tinted">
+      <div class="container">
+        <div class="section-heading reveal"><div><p class="eyebrow"><span></span>Computational workflow</p><h2>How the calculations are organized.</h2></div></div>
+        <ol class="process-grid">
+          <li class="reveal"><span>01</span><h3>Model</h3><p>Identify the smallest Hamiltonian and bath that preserve the physics of interest.</p></li>
+          <li class="reveal" data-delay="1"><span>02</span><h3>Propagate</h3><p>Choose a dynamics method that balances quantum accuracy, scale, and observable.</p></li>
+          <li class="reveal" data-delay="2"><span>03</span><h3>Measure</h3><p>Construct linear or nonlinear response functions in the experimental language.</p></li>
+          <li class="reveal" data-delay="3"><span>04</span><h3>Interpret</h3><p>Connect spectral signatures back to coherence, transport, and molecular structure.</p></li>
+        </ol>
       </div>
     </section>
   </main>
 
-  <!-- <footer class="site-footer">
-    <div class="container footer-inner">
-      <span>© <span id="year"></span> Mohammad Elious Ali Mondal</span>
-      <span class="footer-right">
-        Built with plain HTML &amp; CSS · Hosted on GitHub Pages
-      </span>
-    </div>
-  </footer> -->
-
-  <script src="main.js?v=2"></script>
+  <footer class="site-footer"><div class="container footer-grid"><div><a class="footer-name" href="index.html">Elious Mondal</a><p>Quantum dynamics of light–matter systems.</p></div><nav aria-label="Footer navigation"><a href="research.html">Research</a><a href="publications.html">Publications</a><a href="blog.html">Notes</a><a href="codes.html">Software</a></nav><div class="footer-meta"><a href="mailto:mmondal@ur.rochester.edu">Email</a><a href="https://github.com/EliousMondal" target="_blank" rel="noopener">GitHub</a><p>© 2026 Mohammad Elious Ali Mondal</p></div></div></footer>
 </body>
 </html>

@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Scientific Software | Mohammad Elious Ali Mondal</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Scientific software for quantum dynamics, spectroscopy, polariton simulations, and nonadiabatic dynamics." />
+  <meta name="theme-color" content="#f4efe5" />
+  <meta name="color-scheme" content="light dark" />
+  <link rel="canonical" href="https://eliousmondal.github.io/codes.html" />
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,500;8..60,600;8..60,700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+  <script src="main.js" defer></script>
+</head>
+
+<body data-page="software">
+  <a class="skip-link" href="#main-content">Skip to content</a>
+  <header class="site-header"><div class="container header-inner"><div class="logo"><a href="index.html" aria-label="Elious Mondal, home"><span class="logo-mark" aria-hidden="true">E</span><span>Elious Mondal</span></a></div><button class="nav-burger" type="button" aria-label="Open navigation" aria-expanded="false" aria-controls="primary-navigation"><span></span><span></span><span></span></button><nav class="nav-links" id="primary-navigation" aria-label="Primary navigation"><a href="index.html">Home</a><a href="research.html">Research</a><a href="publications.html">Publications</a><a href="blog.html">Notes</a><a href="codes.html" class="active" aria-current="page">Software</a><a class="nav-contact" href="index.html#contact">Contact</a></nav><button class="theme-toggle" type="button" aria-label="Switch to dark theme" title="Change color theme"><span class="theme-icon" aria-hidden="true">◐</span></button></div></header>
+
+  <main id="main-content">
+    <section class="software-hero">
+      <div class="container software-hero-grid">
+        <div class="reveal">
+          <p class="eyebrow"><span></span>Scientific software</p>
+          <h1>Scientific software for quantum dynamics.</h1>
+          <p class="hero-lead">I build research software to turn open-quantum-system theories into reproducible simulations of dynamics and spectra.</p>
+          <a class="btn primary" href="https://github.com/EliousMondal" target="_blank" rel="noopener">Explore GitHub <span aria-hidden="true">↗</span></a>
+        </div>
+        <figure class="software-hero-art reveal" data-delay="1"><img src="assets/software_methods.webp" width="1600" height="1200" alt="Scientific simulation pipeline linking trajectories, quantum dynamics, and spectra" /></figure>
+      </div>
+    </section>
+
+    <section class="section software-list-section">
+      <div class="container">
+        <div class="section-heading reveal"><div><p class="eyebrow"><span></span>Selected projects</p><h2>Software and computational methods.</h2></div></div>
+        <div class="software-list">
+          <article class="software-item reveal">
+            <div class="software-number">01</div>
+            <div class="software-main"><div class="software-title-row"><h3>PLDM + Lindblad spectroscopy engine</h3><span class="status-pill">Research code</span></div><p>Simulates linear and nonlinear spectroscopy by combining partial linearized density-matrix dynamics with Lindblad dissipation, separating Markovian and non-Markovian effects within one calculation.</p><ul class="tech-list"><li>Python</li><li>MPI</li><li>Open quantum systems</li></ul></div>
+            <a class="software-link" href="https://github.com/EliousMondal" target="_blank" rel="noopener" aria-label="View PLDM and Lindblad spectroscopy work on GitHub">↗</a>
+          </article>
+          <article class="software-item reveal">
+            <div class="software-number">02</div>
+            <div class="software-main"><div class="software-title-row"><h3>Efficient collective-coupling spectra</h3><span class="status-pill">Research code</span></div><p>Cost-reduction strategies for linear and two-dimensional spectra of large molecular ensembles under collective light–matter coupling, designed to work with general mixed quantum–classical dynamics.</p><ul class="tech-list"><li>Python</li><li>GPU / CuPy</li><li>2DES</li></ul></div>
+            <a class="software-link" href="https://github.com/EliousMondal" target="_blank" rel="noopener" aria-label="View collective-coupling software on GitHub">↗</a>
+          </article>
+          <article class="software-item reveal">
+            <div class="software-number">03</div>
+            <div class="software-main"><div class="software-title-row"><h3>Spin-mapping trajectory dynamics</h3><span class="status-pill">Exploratory</span></div><p>Implementations for spin-mapping and learning-assisted trajectory dynamics, aimed at moving beyond the accuracy and scaling limits of current PLDM-based spectroscopy simulations.</p><ul class="tech-list"><li>Python</li><li>PyTorch</li><li>Mapping methods</li></ul></div>
+            <a class="software-link" href="https://github.com/EliousMondal" target="_blank" rel="noopener" aria-label="View spin-mapping work on GitHub">↗</a>
+          </article>
+          <article class="software-item reveal">
+            <div class="software-number">04</div>
+            <div class="software-main"><div class="software-title-row"><h3>Decoherence-corrected FSSH</h3><span class="status-pill">Thesis code</span></div><p>Fewest-switches surface hopping with IDC/EDC decoherence corrections, fast nonadiabatic-coupling evaluation from orbital overlaps, and distributed trajectory sampling.</p><ul class="tech-list"><li>Python</li><li>mpi4py</li><li>Nonadiabatic dynamics</li></ul></div>
+            <a class="software-link" href="https://github.com/EliousMondal" target="_blank" rel="noopener" aria-label="View surface-hopping work on GitHub">↗</a>
+          </article>
+        </div>
+        <aside class="repository-note reveal"><span aria-hidden="true">{ }</span><div><h2>Repository links</h2><p>Individual project cards currently point to the main GitHub profile. They can be connected to paper-specific repositories as each package is prepared for release.</p></div></aside>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer"><div class="container footer-grid"><div><a class="footer-name" href="index.html">Elious Mondal</a><p>Quantum dynamics of light–matter systems.</p></div><nav aria-label="Footer navigation"><a href="research.html">Research</a><a href="publications.html">Publications</a><a href="blog.html">Notes</a><a href="codes.html">Software</a></nav><div class="footer-meta"><a href="mailto:mmondal@ur.rochester.edu">Email</a><a href="https://github.com/EliousMondal" target="_blank" rel="noopener">GitHub</a><p>© 2026 Mohammad Elious Ali Mondal</p></div></div></footer>
+</body>
+</html>

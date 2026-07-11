@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Deep Dive: 2D Spectroscopy of Exciton Polaritons | Elious Mondal</title>
+  <meta name="description" content="Tutorial on L-PLDM simulations of linear and two-dimensional electronic spectroscopy for lossy exciton-polariton systems." />
+  <meta name="theme-color" content="#f4efe5" />
+  <meta name="color-scheme" content="light dark" />
+  <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Source+Serif+4:opsz,wght@8..60,500;8..60,600;8..60,700&amp;display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../style.css" />
+  <script>
+    window.MathJax = {
+      tex: {
+        inlineMath: [["\\(", "\\)"], ["$", "$"]],
+        displayMath: [["\\[", "\\]"]]
+      },
+      options: { skipHtmlTags: ["script", "noscript", "style", "textarea", "pre", "code"] }
+    };
+  </script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+</head>
+<body class="deep-dive-page">
+  <a class="skip-link" href="#main-content">Skip to content</a>
+
+  <header class="site-header">
+    <div class="container header-inner">
+      <div class="logo">
+        <a href="../index.html" aria-label="Elious Mondal, home">
+          <span class="logo-mark" aria-hidden="true">E</span>
+          <span>Elious Mondal</span>
+        </a>
+      </div>
+      <button class="nav-burger" type="button" aria-label="Open navigation" aria-expanded="false" aria-controls="primary-navigation">
+        <span></span><span></span><span></span>
+      </button>
+      <nav class="nav-links" id="primary-navigation" aria-label="Primary navigation">
+        <a href="../index.html">Home</a>
+        <a href="../research.html">Research</a>
+        <a href="../publications.html" class="active">Publications</a>
+        <a href="../blog.html">Notes</a>
+        <a href="../codes.html">Software</a>
+        <a class="nav-contact" href="../index.html#contact">Contact</a>
+      </nav>
+      <button class="theme-toggle" type="button" aria-label="Switch to dark theme" title="Change color theme">
+        <span class="theme-icon" aria-hidden="true">◐</span>
+      </button>
+    </div>
+  </header>
+
+  <main id="main-content">
+    <section class="deep-dive-hero">
+      <div class="container deep-dive-hero-grid">
+        <div>
+          <p class="eyebrow"><span></span>Publication Deep Dive · 2023</p>
+          <h1>Quantum Dynamics Simulations of the 2D Spectroscopy for Exciton Polaritons</h1>
+          <p class="deep-dive-meta">M. Elious Mondal, Eric R. Koessler, Justin Provazza, A. Nickolas Vamivakas, Steven T. Cundiff, Todd D. Krauss, and Pengfei Huo · The Journal of Chemical Physics 159, 094102 (2023) · DOI: 10.1063/5.0166188 · Published 1 September 2023</p>
+          <div class="deep-dive-actions">
+            <a href="https://doi.org/10.1063/5.0166188" target="_blank" rel="noopener">Paper ↗</a>
+            <a href="https://chemrxiv.org/doi/full/10.26434/chemrxiv-2023-s1kp3" target="_blank" rel="noopener">PDF ↗</a>
+            <a href="https://github.com/EliousMondal" target="_blank" rel="noopener">Code ↗</a>
+            <a href="../publications.html">All publications</a>
+          </div>
+        </div>
+        <figure class="deep-dive-art">
+          <img src="../assets/publication_figures/2023_mondal_2des_polariton.webp" width="1448" height="1086" alt="Three light pulses drive a molecule-cavity hybrid and branch into upper, lower, and cross-peak contours" />
+        </figure>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container deep-dive-layout">
+        <aside class="deep-dive-toc" aria-label="Deep Dive table of contents">
+          <p>On this page</p>
+          <ol>
+            <li><a href="#question">Scientific question</a></li>
+            <li><a href="#model">Model</a></li>
+            <li><a href="#method">L-PLDM method</a></li>
+            <li><a href="#spectroscopy">Reading the 2DES</a></li>
+            <li><a href="#example">Worked example</a></li>
+            <li><a href="#results">Reported results</a></li>
+            <li><a href="#limits">Limitations</a></li>
+          </ol>
+        </aside>
+
+        <article class="deep-dive-content">
+          <section id="question" aria-labelledby="question-heading">
+            <p class="source-badge">From the paper</p>
+            <h2 id="question-heading">How do phonons and cavity loss shape polariton spectra?</h2>
+            <p>Strong coupling between a molecular excitation and a confined photon creates upper and lower polaritons. Their optical response is governed by two distinct environments: molecular vibrations perturb the excitonic component, while photon leakage removes the cavity component. Linear absorption can show the polariton splitting and linewidths, but it does not cleanly separate frequency memory, coherent energy exchange, and the individual nonlinear response pathways.</p>
+            <p>The paper develops a trajectory approach for calculating both linear spectra and two-dimensional electronic spectra while retaining an explicit, non-Markovian phonon bath and a lossy cavity. It then asks how increasing the light-matter coupling $g_c$ or cavity loss rate $\Gamma$ changes polariton linewidths, cross peaks, and coherence lifetimes.</p>
+            <aside class="lab-callout"><strong>Why 2DES?</strong> The excitation frequency $\omega_1$ and detection frequency $\omega_3$ form separate axes. Diagonal peaks identify resonances, cross peaks reveal correlations or coherent exchange, and diagonal versus anti-diagonal widths help distinguish inhomogeneous and homogeneous broadening.</aside>
+          </section>
+
+          <section id="model" aria-labelledby="model-heading">
+            <p class="source-badge">From the paper</p>
+            <h2 id="model-heading">A molecular exciton, an explicit phonon bath, and one lossy cavity mode</h2>
+            <p>For localized exciton states $|m\rangle$, the molecular Hamiltonian is</p>
+            <div class="equation-card">
+              \[
+              \hat H_{\mathrm{ex}}
+              =\sum_m(\bar\epsilon+\epsilon_m)|m\rangle\langle m|
+              +\sum_{m\ne n}J_{mn}|m\rangle\langle n|.
+              \]
+            </div>
+            <p>Here $\bar\epsilon$ is a reference excitation energy, $\epsilon_m$ is a site-energy offset, and $J_{mn}$ couples localized excitons. Each site has an independent harmonic environment,</p>
+            <div class="equation-card">
+              \[
+              \hat H_R=\frac12\sum_{m,\xi}
+              \left(\hat P_{m\xi}^{2}+\omega_{m\xi}^{2}\hat R_{m\xi}^{2}\right),
+              \qquad
+              \hat H_{\mathrm{ex-R}}
+              =\sum_{m,\xi}c_{m\xi}\hat R_{m\xi}|m\rangle\langle m|.
+              \]
+            </div>
+            <p>The frequencies and couplings represent a Debye spectral density,</p>
+            <div class="equation-card">
+              \[
+              J(\omega)=\frac{2\lambda\omega_0\omega}{\omega_0^2+\omega^2},
+              \]
+            </div>
+            <p>where $\lambda$ is the reorganization energy and $\omega_0$ is the bath cutoff frequency. The cavity and rotating-wave light-matter interaction are</p>
+            <div class="equation-card">
+              \[
+              \hat H_{\mathrm{ph}}=\hbar\omega_c\left(\hat a^\dagger\hat a+\frac12\right),
+              \qquad
+              \hat H_{\mathrm{ex-ph}}
+              =\sum_m\hbar g_c(m)
+              \left(|G\rangle\langle m|\hat a^\dagger+|m\rangle\langle G|\hat a\right).
+              \]
+            </div>
+            <p>The transition dipoles are taken parallel to the cavity polarization and permanent dipoles are neglected. The calculation includes the ground, single-excitation, and relevant double-excitation sectors so that excited-state absorption can be evaluated.</p>
+
+            <h3>Elementary origin of polaron decoupling</h3>
+            <p>For one resonant molecule, the two bright eigenstates are</p>
+            <div class="equation-card">
+              \[
+              |\pm\rangle=\frac{|G,1\rangle\pm|m,0\rangle}{\sqrt2}.
+              \]
+            </div>
+            <p>Only the molecular component couples directly to the phonons. Consequently,</p>
+            <div class="equation-card">
+              \[
+              \langle\pm|\hat H_{\mathrm{ex-R}}|\pm\rangle
+              =\frac12\sum_\xi c_{m\xi}\hat R_{m\xi},
+              \]
+            </div>
+            <p>which is half the diagonal coupling of the bare molecular excitation in this simple resonant example. This reduced vibrational displacement is the elementary polaron-decoupling argument used to interpret the narrower polariton lines and longer coherence.</p>
+          </section>
+
+          <section id="method" aria-labelledby="method-heading">
+            <p class="source-badge">From the paper</p>
+            <h2 id="method-heading">L-PLDM combines non-Markovian phonons with stochastic cavity loss</h2>
+            <p>The partial linearized density matrix method represents each reduced-density-matrix contribution with separate forward and backward electronic-photonic amplitudes. The bath coordinates follow a mean force constructed from both paths. Because the phonons are propagated explicitly rather than replaced by a memoryless rate, their feedback on the quantum subsystem is retained within the PLDM approximation.</p>
+            <p>Cavity leakage is represented by a Lindblad dissipator,</p>
+            <div class="equation-card">
+              \[
+              \frac{\partial\hat\rho}{\partial t}
+              =\mathcal L_{\hat H}[\hat\rho]
+              +\Gamma\left(
+              \hat L\hat\rho\hat L^\dagger
+              -\frac12\{\hat L^\dagger\hat L,\hat\rho\}
+              \right),
+              \qquad \hat L=\hat a\otimes\hat I_{\mathrm{ex}}.
+              \]
+            </div>
+            <p>In L-PLDM, complex random factors update the forward and backward mapping amplitudes. Their ensemble average reproduces the Lindblad population transfer and coherence damping. The full time step uses a symmetric split:</p>
+            <div class="equation-card">
+              \[
+              \hat\rho(t+\Delta t)\approx
+              e^{\mathcal L_L\Delta t/2}
+              e^{\mathcal L_H\Delta t}
+              e^{\mathcal L_L\Delta t/2}\hat\rho(t).
+              \]
+            </div>
+            <ol class="concept-flow">
+              <li><strong>Focus</strong><span>Sample the dipole-created density-matrix element and initialize forward and backward amplitudes.</span></li>
+              <li><strong>Propagate</strong><span>Evolve the amplitudes and explicit bath, with half-step stochastic loss on either side.</span></li>
+              <li><strong>Average</strong><span>Combine weighted trajectories and Fourier transform the response into a spectrum.</span></li>
+            </ol>
+            <p>For 2DES, this procedure is repeated after each laser interaction. Importance sampling selects one density-matrix branch according to its magnitude and carries its complex phase as a trajectory weight, preventing an explicit expansion over every possible branch.</p>
+          </section>
+
+          <section id="spectroscopy" aria-labelledby="spectroscopy-heading">
+            <p class="source-badge">From the paper + visual guide</p>
+            <h2 id="spectroscopy-heading">From four dipole interactions to diagonal and cross peaks</h2>
+            <p>The third-order response can be written as a nested commutator,</p>
+            <div class="equation-card">
+              \[
+              R^{(3)}(t_1,t_2,t_3)
+              =-i\,\mathrm{Tr}\!\left[
+              \hat\mu(t_3)
+              [\hat\mu(t_2),[\hat\mu(t_1),[\hat\mu(0),\hat\rho^{(g)}]]]
+              \right].
+              \]
+            </div>
+            <p>The commutator expands into rephasing and non-rephasing pathways. Each group contains ground-state bleaching (GSB), stimulated emission (SE), and excited-state absorption (ESA). Fourier transforming $t_1$ and $t_3$, then adding the rephasing and non-rephasing signals, gives the purely absorptive spectrum.</p>
+            <ul>
+              <li><strong>Diagonal peaks:</strong> excitation and detection occur at the same lower- or upper-polariton frequency.</li>
+              <li><strong>Cross peaks:</strong> excitation at one polariton frequency is correlated with detection at the other; their $t_2$-dependent oscillation reports upper-lower coherence.</li>
+              <li><strong>ESA features:</strong> transitions from the single- to double-excitation manifold can be shifted along the detection axis because the two excitation gaps are unequal.</li>
+              <li><strong>Lineshape:</strong> cavity loss adds homogeneous, anti-diagonal broadening, while slow frequency fluctuations preferentially elongate a diagonal peak along the diagonal.</li>
+            </ul>
+            <figure class="deep-dive-figure">
+              <canvas data-deep-plot="coherence-map" role="img" aria-label="Synthetic four-peak two-dimensional polariton spectrum with diagonal peaks, cross peaks, and a negative excited-state-absorption contribution">A synthetic four-peak polariton spectrum is drawn when JavaScript is available.</canvas>
+              <figcaption>Programmatically generated teaching map. The four positive regions illustrate lower- and upper-polariton diagonal peaks and their two cross peaks; the offset negative contribution illustrates how ESA can distort a diagonal feature. This is not numerical data from the publication.</figcaption>
+            </figure>
+          </section>
+
+          <section id="example" aria-labelledby="example-heading">
+            <p class="source-badge example">Simplified educational example</p>
+            <h2 id="example-heading">A lossy two-state polariton explains splitting contraction</h2>
+            <p>Ignore the explicit phonon coordinates for a moment and replace their bare molecular broadening by $\gamma$. In the basis $\{|e,0\rangle,|G,1\rangle\}$, use the effective non-Hermitian Hamiltonian</p>
+            <div class="equation-card">
+              \[
+              \hat H_{\mathrm{eff}}=
+              \begin{pmatrix}
+              E_e-i\gamma/2 &amp; G\\
+              G &amp; E_c-i\Gamma/2
+              \end{pmatrix},
+              \qquad G=\hbar g_c.
+              \]
+            </div>
+            <p>At resonance, $E_e=E_c=E_0$, its complex poles are</p>
+            <div class="equation-card">
+              \[
+              E_\pm=E_0-i\frac{\gamma+\Gamma}{4}
+              \pm\sqrt{G^2-\left(\frac{\gamma-\Gamma}{4}\right)^2}.
+              \]
+            </div>
+            <div class="worked-example">
+              <h3>Insert representative paper parameters</h3>
+              <p>Take $G=456\ \mathrm{cm}^{-1}$ and $\gamma=175\ \mathrm{cm}^{-1}$. With no cavity loss, the real poles lie at approximately $\pm454\ \mathrm{cm}^{-1}$, giving a splitting near $908\ \mathrm{cm}^{-1}$. At $\Gamma=800\ \mathrm{cm}^{-1}$, they move to approximately $\pm428\ \mathrm{cm}^{-1}$, giving a splitting near $857\ \mathrm{cm}^{-1}$, while the common pole half-width grows to about $244\ \mathrm{cm}^{-1}$.</p>
+              <p>Thus, loss both broadens the peaks and contracts their separation. If $|\gamma-\Gamma|\ge 4G$, the square root has no real part and this simple model no longer has a resolved doublet.</p>
+            </div>
+            <aside class="lab-callout"><strong>What this example omits.</strong> The two-state model is useful for understanding the lossy poles, but it does not contain the explicit Debye bath, PLDM trajectory averaging, nonlinear Liouville pathways, or ESA. It must not be presented as a reproduction of the paper's full simulations.</aside>
+            <details class="code-example">
+              <summary>Python: plot the illustrative lossy polariton doublet</summary>
+              <pre><code>import numpy as np
+import matplotlib.pyplot as plt
+
+G = 456.0       # light-matter coupling energy, cm^-1
+gamma = 175.0   # bare molecular linewidth parameter, cm^-1
+omega = np.linspace(-1200.0, 1200.0, 2401)
+
+def polariton_spectrum(Gamma):
+    H_eff = np.array([
+        [-0.5j * gamma, G],
+        [G, -0.5j * Gamma],
+    ], dtype=complex)
+    poles = np.linalg.eigvals(H_eff)
+    signal = np.zeros_like(omega)
+    for pole in poles:
+        width = max(-pole.imag, 1.0)
+        signal += width / ((omega - pole.real)**2 + width**2)
+    return poles, signal / signal.max()
+
+for Gamma in (0.0, 400.0, 800.0):
+    poles, signal = polariton_spectrum(Gamma)
+    print(f"Gamma={Gamma:5.1f} cm^-1, poles={poles}")
+    plt.plot(omega, signal, label=fr"$\Gamma={Gamma:.0f}$ cm$^{{-1}}$")
+
+plt.xlabel(r"Frequency relative to resonance (cm$^{-1}$)")
+plt.ylabel("Normalized illustrative absorption")
+plt.legend()
+plt.tight_layout()
+plt.show()</code></pre>
+            </details>
+          </section>
+
+          <section id="results" aria-labelledby="results-heading">
+            <p class="source-badge">From the paper</p>
+            <h2 id="results-heading">What the simulations report</h2>
+            <ul>
+              <li><strong>Linear-spectrum validation:</strong> for the resonant monomer, the simulated loss-dependent polariton positions and broadening closely follow the analytic lossy Jaynes-Cummings model.</li>
+              <li><strong>Polaron-decoupled linewidths:</strong> in a lossless cavity, the calculated polariton peaks are narrower than the bare molecular absorption line because the photonic component does not couple directly to the phonon bath.</li>
+              <li><strong>Competing role of cavity loss:</strong> increasing $\Gamma$ broadens the peaks, contracts the splitting, and eventually merges the polariton doublet. In 2DES it adds homogeneous broadening and accelerates signal decay.</li>
+              <li><strong>Cross-peak dynamics:</strong> larger $g_c$ separates the polariton peaks and produces more prominent upper-lower cross-peak oscillations.</li>
+              <li><strong>Bright and dark dimer states:</strong> the chosen asymmetric dimer has upper, lower, and middle polaritons. The middle state is effectively dark because its ground-state transition dipole is about 35 times smaller than those of the bright polaritons.</li>
+              <li><strong>Pathway balance:</strong> GSB and SE dominate the reported dimer spectra; ESA is weaker for the selected parameters, although its shifted transitions explain derivative-like structure.</li>
+              <li><strong>Longer model coherence:</strong> at 300 K, stronger coupling yields polaritonic oscillations persisting beyond 200 fs, compared with bare electronic coherence that decays in less than about 50 fs for the chosen dimer and bath. Long-lived oscillations remain for $\Gamma=10$ meV and a Rabi splitting near 124 meV.</li>
+            </ul>
+          </section>
+
+          <section id="limits" aria-labelledby="limits-heading">
+            <p class="source-badge">Scope and limitations</p>
+            <h2 id="limits-heading">What should not be generalized without further tests</h2>
+            <ul>
+              <li>The demonstrations use a monomer and one asymmetric dimer, not a macroscopic collective ensemble.</li>
+              <li>The light-matter model contains one cavity mode and uses the rotating-wave approximation; counter-rotating and dipole self-energy terms are absent.</li>
+              <li>The molecular phonons are explicitly non-Markovian, but photon leakage is treated as a Markovian Lindblad process.</li>
+              <li>PLDM is a semiclassical, partially linearized approximation rather than an exact solver for arbitrary system-bath parameters.</li>
+              <li>The phonon environment is a finite discretization of a Debye spectral density, so linewidths and coherence lifetimes depend on the selected $\lambda$, $\omega_0$, temperature, and discretization.</li>
+              <li>The dipoles are assumed aligned with the cavity field, permanent dipoles are neglected, and static energetic or orientational disorder is not included in these model calculations.</li>
+              <li>The reported coherence enhancement is a result for the stated model and parameters. It is not a universal lifetime prediction for every molecular cavity.</li>
+              <li>The code example above explains only the lossy two-state poles and should not be compared quantitatively with the full L-PLDM 2DES.</li>
+            </ul>
+          </section>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-grid">
+      <div>
+        <a class="footer-name" href="../index.html">Elious Mondal</a>
+        <p>Quantum dynamics of light-matter systems.</p>
+      </div>
+      <nav aria-label="Footer navigation">
+        <a href="../research.html">Research</a>
+        <a href="../publications.html">Publications</a>
+        <a href="../blog.html">Notes</a>
+        <a href="../codes.html">Software</a>
+      </nav>
+      <div class="footer-meta">
+        <a href="mailto:mmondal@ur.rochester.edu">Email</a>
+        <a href="https://github.com/EliousMondal" target="_blank" rel="noopener">GitHub</a>
+        <p>© 2026 Mohammad Elious Ali Mondal</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="../main.js"></script>
+  <script src="../deep-dive.js"></script>
+</body>
+</html>

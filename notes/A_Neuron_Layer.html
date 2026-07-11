@@ -4,7 +4,13 @@
   <meta charset="UTF-8" />
   <title>Interactive notebook: Chapter 2 — A Neuron Layer | Notes | Mohammad Elious Ali Mondal</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <link rel="stylesheet" href="../style.css?v=1" />
+  <meta name="theme-color" content="#f4efe5" />
+  <meta name="color-scheme" content="light dark" />
+  <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,500;8..60,600;8..60,700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../style.css?v=3" />
 
   <script>
     window.MathJax = {
@@ -14,7 +20,7 @@
       }
     };
   </script>
-  <script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  <script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
 
   <script src="https://cdn.jsdelivr.net/pyodide/v0.26.1/full/pyodide.js"></script>
 
@@ -65,7 +71,10 @@
       font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
       font-size: 0.92rem;
       line-height: 1.45;
-      outline: none;
+    }
+    .pycell-code:focus-visible {
+      border-color: var(--copper);
+      box-shadow: 0 0 0 4px color-mix(in srgb, var(--copper) 18%, transparent);
     }
     .pycell-out {
       margin-top: 0.75rem;
@@ -106,113 +115,106 @@
 </head>
 
 <body>
+  <a class="skip-link" href="#main-content">Skip to content</a>
   <header class="site-header">
   <div class="container header-inner">
     <div class="logo">
-      <a href="../index.html#hero">Mohammad Elious Ali Mondal</a>
+      <a href="../index.html" aria-label="Elious Mondal, home"><span class="logo-mark" aria-hidden="true">E</span><span>Elious Mondal</span></a>
     </div>
-    <nav class="nav-links">
-      <a href="../index.html#about">About</a>
+    <button class="nav-burger" type="button" aria-label="Open navigation" aria-expanded="false" aria-controls="primary-navigation"><span></span><span></span><span></span></button>
+      <nav class="nav-links" id="primary-navigation" aria-label="Primary navigation">
+      <a href="../index.html">Home</a>
       <a href="../research.html">Research</a>
       <a href="../publications.html">Publications</a>
-      <a href="../notes.html">Notes</a>
+      <a href="../blog.html">Notes</a>
+        <a href="../codes.html">Software</a>
       <a href="../index.html#contact">Contact</a>
     </nav>
-    <button class="theme-toggle" aria-label="Toggle dark mode">☾</button>
+    <button class="theme-toggle" type="button" aria-label="Switch to dark theme" title="Change color theme"><span class="theme-icon" aria-hidden="true">◐</span></button>
   </div>
 </header>
 
-  <main>
+  <main id="main-content" tabindex="-1">
     <section class="section">
       <div class="container">
         <h1>Interactive notebook: Chapter 2 — A Neuron Layer</h1>
-        <p class="py-status" id="py-status">Loading Python runtime (Pyodide)… first load may take a bit.</p>
+        <p class="py-status" id="py-status">Python runs in your browser. Click Run on any cell to load the runtime.</p>
       </div>
     </section>
 
     <section class="section section-alt">
       <div class="container">
         <div class="nb-markdown">
-<h3>A single Neuron</h3>
+<h2>A single Neuron</h2>
 <p>Lets take a single neuron which have three inputs (<strong>Inputs</strong> <em>are the data that we pass into the model to get a desired output</em>) to itself. Each input also has a weight (<strong>Weights</strong> <em>are types of values that change in the model during the training phase</em>) associated to it. Each neuron also has a bias (<strong>Bias</strong> <em>is an additional tunable value not associated with any individual input</em>)</p>
 </div>
 
 <div class="pycell" data-cell="1">
   <div class="pycell-top">
     <div class="pycell-label">Python</div>
-    <button class="pycell-run btn secondary" type="button">Run</button>
+    <button class="pycell-run btn secondary" type="button" aria-label="Run Python code cell 1">Run</button>
   </div>
-  <textarea class="pycell-code" spellcheck="false">import numpy as np
+  <textarea class="pycell-code" spellcheck="false" aria-label="Python code cell 1">import numpy as np
 import matplotlib.pyplot as plt
 
 inputs  = np.array([1., 2., 3.])
 weights = np.array([0.2, 0.8, -0.5])
 bias    = 2</textarea>
-  <div class="pycell-out"></div>
+  <div class="pycell-out" role="status" aria-live="polite" aria-label="Output from Python code cell 1"></div>
 </div>
 
 <div class="nb-markdown">
-<p>The output vector, ($\vec{o}$), from the neuron is calculated using the weights ($\vec{w}$), inputs ($\vec{i}$) and the bias ($b$) as,</p>
-<p>\begin{equation}</p>
-<p>\vec{o} = \vec{w}~\cdot~\vec{i} + b </p>
-<p>= \begin{pmatrix} w_1 &amp; w_2 &amp; \dots &amp; w_n \end{pmatrix} \cdot </p>
-<p>\begin{pmatrix}</p>
-<p>i_1 \\ </p>
-<p>i_2 \\ </p>
-<p>\vdots \\ </p>
-<p>i_n</p>
-<p>\end{pmatrix} + b</p>
-<p>\end{equation}</p>
+<p>The scalar output, \(o\), from the neuron is calculated from the weights, \(\mathbf{w}\), inputs, \(\mathbf{x}\), and bias, \(b\), as</p>
+<div class="math-display">
+\[
+  o = \mathbf{w}^{\mathsf T}\mathbf{x} + b
+    = \begin{pmatrix} w_1 &amp; w_2 &amp; \cdots &amp; w_n \end{pmatrix}
+      \begin{pmatrix} x_1 \\ x_2 \\ \vdots \\ x_n \end{pmatrix} + b.
+\]
+</div>
 </div>
 
 <div class="pycell" data-cell="2">
   <div class="pycell-top">
     <div class="pycell-label">Python</div>
-    <button class="pycell-run btn secondary" type="button">Run</button>
+    <button class="pycell-run btn secondary" type="button" aria-label="Run Python code cell 2">Run</button>
   </div>
-  <textarea class="pycell-code" spellcheck="false">output  = np.dot(weights, inputs) + bias
+  <textarea class="pycell-code" spellcheck="false" aria-label="Python code cell 2">output  = np.dot(weights, inputs) + bias
 output</textarea>
-  <div class="pycell-out"></div>
+  <div class="pycell-out" role="status" aria-live="polite" aria-label="Output from Python code cell 2"></div>
 </div>
 
 <div class="nb-markdown">
-<h3>A Layer of Neurons</h3>
-<p>For a layer of neurons, each neuron has its own weights. The weights can thus be combined into a matrix and the ouput becomes</p>
-<p>\begin{equation}</p>
-<p>\vec{o} = \hat{w}~\cdot~\vec{i} + b </p>
-<p>\end{equation}</p>
-<p>For an example, a 3 neuron layers output for $n$ inputs can be computed as,</p>
-<p>\begin{equation}</p>
-<p>\vec{o} =</p>
-<p>\begin{pmatrix}  </p>
-<p>w_1^1 &amp; w_2^1 &amp; \dots &amp; w_n^1 </p>
-<p>\\ </p>
-<p>w_1^2 &amp; w_2^2 &amp; \dots &amp; w_n^2 </p>
-<p>\\ </p>
-<p>w_1^3 &amp; w_2^3 &amp; \dots &amp; w_n^3 </p>
-<p>\end{pmatrix}</p>
-<p>\begin{pmatrix}</p>
-<p>i_1 \\ </p>
-<p>i_2 \\ </p>
-<p>\vdots \\ </p>
-<p>i_n</p>
-<p>\end{pmatrix}</p>
-<p>+</p>
-<p>\begin{pmatrix}</p>
-<p>b_1 \\ </p>
-<p>b_2 \\ </p>
-<p>b_3</p>
-<p>\end{pmatrix}</p>
-<p>\end{equation}</p>
-<p>Let us look at the numerical example below with 3 neurons and 4 inputs</p>
+<h2>A Layer of Neurons</h2>
+<p>For a layer of neurons, each neuron has its own weights. Combining those rows into a matrix gives</p>
+<div class="math-display">
+\[
+  \mathbf{o} = \mathbf{W}\mathbf{x} + \mathbf{b}.
+\]
+</div>
+<p>For example, the outputs from a three-neuron layer with \(n\) inputs are</p>
+<div class="math-display">
+\[
+  \mathbf{o} =
+  \begin{pmatrix}
+    w_1^1 &amp; w_2^1 &amp; \cdots &amp; w_n^1 \\
+    w_1^2 &amp; w_2^2 &amp; \cdots &amp; w_n^2 \\
+    w_1^3 &amp; w_2^3 &amp; \cdots &amp; w_n^3
+  \end{pmatrix}
+  \begin{pmatrix} x_1 \\ x_2 \\ \vdots \\ x_n \end{pmatrix}
+  +
+  \begin{pmatrix} b_1 \\ b_2 \\ b_3 \end{pmatrix}.
+\]
+</div>
+<p>The numerical example below uses three neurons and four inputs.</p>
 </div>
 
 <div class="pycell" data-cell="3">
   <div class="pycell-top">
     <div class="pycell-label">Python</div>
-    <button class="pycell-run btn secondary" type="button">Run</button>
+    <button class="pycell-run btn secondary" type="button" aria-label="Run Python code cell 3">Run</button>
   </div>
-  <textarea class="pycell-code" spellcheck="false">inputs   = np.array([1., 2., 3., 2.5])
+  <textarea class="pycell-code" spellcheck="false" aria-label="Python code cell 3">inputs   = np.array([1., 2., 3., 2.5])
 
 weights1 = np.array([0.2, 0.8, -0.5, 1])
 weights2 = np.array([0.5, -0.91, 0.26, -0.5])
@@ -226,77 +228,56 @@ bias     = np.array([bias1, bias2, bias3])
 
 outputs  = weights @ inputs + bias
 outputs</textarea>
-  <div class="pycell-out"></div>
+  <div class="pycell-out" role="status" aria-live="polite" aria-label="Output from Python code cell 3"></div>
 </div>
 
 <div class="nb-markdown">
-<h3>A batch of data</h3>
+<h2>A batch of data</h2>
 <p>Neural networks tend to get inputs as <strong>batch</strong>es of data, which is basically a collective ensemble of lot of samples of the feature set instances. Often, neural networks expect to take in many samples at a time for two reasons. One reason is that it’s faster to train in batches in parallel processing, and the other reason is that batches help with generalization during training. If you fit (perform a step of a training process) on one sample at a time, you’re highly likely to keep fitting to that individual sample, rather than slowly producing general tweaks to weights and biases that fit the entire dataset. Fitting or training in batches gives you a higher chance of making more meaningful changes to weights and biases.</p>
 </div>
 
 <div class="pycell" data-cell="4">
   <div class="pycell-top">
     <div class="pycell-label">Python</div>
-    <button class="pycell-run btn secondary" type="button">Run</button>
+    <button class="pycell-run btn secondary" type="button" aria-label="Run Python code cell 4">Run</button>
   </div>
-  <textarea class="pycell-code" spellcheck="false">inputs  = np.array([[ 1.0, 2.0, 3.0, 2.5], [ 2.0, 5.0, -1.0, 2.0], [ -1.5, 2.7, 3.3, -0.8]])
+  <textarea class="pycell-code" spellcheck="false" aria-label="Python code cell 4">inputs  = np.array([[ 1.0, 2.0, 3.0, 2.5], [ 2.0, 5.0, -1.0, 2.0], [ -1.5, 2.7, 3.3, -0.8]])
 weights = np.array([[ 0.2, 0.8, -0.5, 1.0], [ 0.5, -0.91, 0.26, -0.5], [ -0.26, -0.27, 0.17, 0.87]])
 biases  = np.array([ 2.0, 3.0, 0.5 ])
 
 print(f&quot;shape of inputs  -&gt; {np.shape(inputs)}&quot;)
 print(f&quot;shape of weights -&gt; {np.shape(weights)}&quot;)
 print(f&quot;shape of biases  -&gt; {np.shape(biases)}&quot;)</textarea>
-  <div class="pycell-out"></div>
+  <div class="pycell-out" role="status" aria-live="polite" aria-label="Output from Python code cell 4"></div>
 </div>
 
 <div class="pycell" data-cell="5">
   <div class="pycell-top">
     <div class="pycell-label">Python</div>
-    <button class="pycell-run btn secondary" type="button">Run</button>
+    <button class="pycell-run btn secondary" type="button" aria-label="Run Python code cell 5">Run</button>
   </div>
-  <textarea class="pycell-code" spellcheck="false">layer_outputs = inputs @ (weights.T) + biases
+  <textarea class="pycell-code" spellcheck="false" aria-label="Python code cell 5">layer_outputs = inputs @ (weights.T) + biases
 layer_outputs</textarea>
-  <div class="pycell-out"></div>
+  <div class="pycell-out" role="status" aria-live="polite" aria-label="Output from Python code cell 5"></div>
 </div>
 
 <div class="pycell" data-cell="6">
   <div class="pycell-top">
     <div class="pycell-label">Python</div>
-    <button class="pycell-run btn secondary" type="button">Run</button>
+    <button class="pycell-run btn secondary" type="button" aria-label="Run Python code cell 6">Run</button>
   </div>
-  <textarea class="pycell-code" spellcheck="false">layer_outputsT = weights @ (inputs.T) + biases
-layer_outputsT</textarea>
-  <div class="pycell-out"></div>
+  <textarea class="pycell-code" spellcheck="false" aria-label="Python code cell 6">layer_outputs_T = weights @ inputs.T + biases[:, None]
+layer_outputs_T.T</textarea>
+  <div class="pycell-out" role="status" aria-live="polite" aria-label="Output from Python code cell 6"></div>
 </div>
-
-<div class="pycell" data-cell="7">
-  <div class="pycell-top">
-    <div class="pycell-label">Python</div>
-    <button class="pycell-run btn secondary" type="button">Run</button>
-  </div>
-  <textarea class="pycell-code" spellcheck="false"></textarea>
-  <div class="pycell-out"></div>
-</div>
-
-<div class="pycell" data-cell="8">
-  <div class="pycell-top">
-    <div class="pycell-label">Python</div>
-    <button class="pycell-run btn secondary" type="button">Run</button>
-  </div>
-  <textarea class="pycell-code" spellcheck="false"></textarea>
-  <div class="pycell-out"></div>
-</div>
-
-<div class="pycell" data-cell="9">
-  <div class="pycell-top">
-    <div class="pycell-label">Python</div>
-    <button class="pycell-run btn secondary" type="button">Run</button>
-  </div>
-  <textarea class="pycell-code" spellcheck="false"></textarea>
-  <div class="pycell-out"></div>
-</div>
+        <section class="teaching-extension" aria-labelledby="neuron-summary">
+          <p class="source-badge example">Summary and numerical checks</p>
+          <h2 id="neuron-summary">From one neuron to a batch calculation</h2>
+          <ol class="concept-flow" aria-label="Neuron layer calculation"><li><strong>Single input</strong><span>Compute a weighted dot product and add one bias.</span></li><li><strong>Layer</strong><span>Stack neuron weights as the rows of a matrix.</span></li><li><strong>Batch</strong><span>Place samples in rows so one matrix multiplication evaluates every sample.</span></li></ol>
+          <aside class="lab-callout"><strong>Shape check.</strong> If the input batch has shape \((B,N_{\mathrm{in}})\) and the weight matrix has shape \((N_{\mathrm{out}},N_{\mathrm{in}})\), the layer output is <code>inputs @ weights.T + biases</code> with shape \((B,N_{\mathrm{out}})\).</aside>
+        </section>
         <p style="margin-top:1.5rem;">
-          <a class="pub-title" href="../notes.html">&larr; Back to Notes</a>
+          <a class="pub-title" href="../blog.html">&larr; Back to Notes</a>
         </p>
       </div>
     </section>
@@ -311,6 +292,7 @@ layer_outputsT</textarea>
     async function initPyodideOnce() {
       if (pyReady) return;
       const statusEl = document.getElementById("py-status");
+      statusEl.textContent = "Loading the Python runtime…";
       try {
         pyodide = await loadPyodide({
           stdout: (s) => console.log(s),
@@ -390,6 +372,7 @@ def _run_cell(code: str):
       for (const b64 of figs) {
         const img = document.createElement("img");
         img.src = "data:image/png;base64," + b64;
+        img.alt = "Plot generated by this Python cell";
         outEl.appendChild(img);
       }
 

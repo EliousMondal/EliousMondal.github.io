@@ -5,7 +5,13 @@
   <title>Linear spectra of a two-level system coupled to a harmonic bath | Notes | Mohammad Elious Ali Mondal</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <!-- Adjust the version numbers if you changed them -->
-  <link rel="stylesheet" href="../style.css?v=1" />
+  <meta name="theme-color" content="#f4efe5" />
+  <meta name="color-scheme" content="light dark" />
+  <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,500;8..60,600;8..60,700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../style.css?v=3" />
 
   <!-- MathJax config -->
   <script>
@@ -16,26 +22,29 @@
       }
     };
   </script>
-  <script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  <script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
 </head>
 <body>
+  <a class="skip-link" href="#main-content">Skip to content</a>
   <header class="site-header">
     <div class="container header-inner">
       <div class="logo">
-        <a href="../index.html#hero">Mohammad Elious Ali Mondal</a>
+        <a href="../index.html" aria-label="Elious Mondal, home"><span class="logo-mark" aria-hidden="true">E</span><span>Elious Mondal</span></a>
       </div>
-      <nav class="nav-links">
-        <a href="../index.html#about">About</a>
+      <button class="nav-burger" type="button" aria-label="Open navigation" aria-expanded="false" aria-controls="primary-navigation"><span></span><span></span><span></span></button>
+      <nav class="nav-links" id="primary-navigation" aria-label="Primary navigation">
+        <a href="../index.html">Home</a>
         <a href="../research.html">Research</a>
         <a href="../publications.html">Publications</a>
-        <a href="../notes.html">Notes</a>
+        <a href="../blog.html">Notes</a>
+        <a href="../codes.html">Software</a>
         <a href="../index.html#contact">Contact</a>
       </nav>
-      <button class="theme-toggle" aria-label="Toggle dark mode">☾</button>
+      <button class="theme-toggle" type="button" aria-label="Switch to dark theme" title="Change color theme"><span class="theme-icon" aria-hidden="true">◐</span></button>
     </div>
   </header>
 
-  <main>
+  <main id="main-content" tabindex="-1">
     <section class="section">
       <div class="container">
         <h1>Linear spectra of a two-level system coupled to a harmonic bath</h1>
@@ -635,8 +644,44 @@
           numerical evaluation.
         </p>
 
+        <section class="interactive-lab" id="spectra-lab" aria-labelledby="spectra-lab-title">
+          <div class="lab-heading">
+            <p class="eyebrow"><span></span>Interactive example</p>
+            <h2 id="spectra-lab-title">Compose a bath and calculate an educational cumulant spectrum</h2>
+            <p>Combine a low-frequency Drude–Lorentz background with one underdamped Brownian peak. The browser evaluates the spectral density, a high-temperature bath correlation function, and a second-order cumulant absorption lineshape.</p>
+          </div>
+          <div class="lab-controls" aria-label="Spectral-density controls">
+            <label class="lab-control">Drude \(\lambda_D\) (cm⁻¹)<input id="spec-lambda-d" type="number" min="0" max="200" step="5" value="45" /></label>
+            <label class="lab-control">Drude \(\gamma_D\) (cm⁻¹)<input id="spec-gamma-d" type="number" min="1" max="300" step="5" value="35" /></label>
+            <label class="lab-control">Brownian \(\lambda_U\) (cm⁻¹)<input id="spec-lambda-u" type="number" min="0" max="150" step="2" value="18" /></label>
+            <label class="lab-control">Brownian \(\Omega_U\) (cm⁻¹)<input id="spec-omega-u" type="number" min="50" max="1800" step="25" value="650" /></label>
+            <label class="lab-control">Brownian \(\Gamma_U\) (cm⁻¹)<input id="spec-gamma-u" type="number" min="1" max="300" step="5" value="45" /></label>
+            <label class="lab-control">Temperature (K)<input id="spec-temperature" type="number" min="50" max="600" step="10" value="300" /></label>
+          </div>
+          <div class="lab-plot-grid"><figure class="lab-figure"><canvas id="spectral-density-canvas" role="img" aria-label="Drude Lorentz and Brownian oscillator spectral densities"></canvas><figcaption>Individual spectral-density components and their sum.</figcaption></figure><figure class="lab-figure"><canvas id="correlation-canvas" role="img" aria-label="Normalized real and imaginary bath correlation function"></canvas><figcaption>Normalized high-temperature correlation function over 500 fs.</figcaption></figure></div>
+          <figure class="lab-figure wide"><canvas id="spectrum-canvas" role="img" aria-label="Simplified cumulant linear absorption spectrum"></canvas><figcaption>Normalized educational spectrum from the second-order cumulant lineshape. This is not a production HEOM calculation.</figcaption></figure>
+          <p class="lab-output" id="spectra-report" role="status" aria-live="polite"></p>
+          <details class="code-example"><summary>Python spectral-density definitions</summary><pre><code>import numpy as np
+
+def J_drude(w, lam, gamma):
+    return 2.0 * lam * gamma * w / (w*w + gamma*gamma)
+
+def J_brownian(w, lam, Omega, Gamma):
+    denominator = (Omega**2 - w**2)**2 + Gamma**2 * w**2
+    return 2.0 * lam * Gamma * Omega**2 * w / denominator
+
+w = np.linspace(1.0, 1800.0, 3000)  # cm^-1
+J = J_drude(w, 45.0, 35.0)
+J += J_brownian(w, 18.0, 650.0, 45.0)
+
+# At temperature T, the symmetrized correlation integrand is
+# J(w) * coth[w / (2 k_B T)].  Keep all frequencies in one
+# unit system and include 2*pi*c when converting cm^-1 to fs^-1.</code></pre></details>
+          <aside class="lab-callout"><strong>Scope.</strong> This small cumulant model is intended to explain how bath structure enters a spectrum. Full polariton spectra, strong non-Gaussian effects, and nonlinear response generally require a more complete dynamics method such as HEOM or a validated mixed quantum–classical approach.</aside>
+        </section>
+
         <p style="margin-top:1.5rem;">
-          <a class="pub-title" href="../notes.html">&larr; Back to Notes</a>
+          <a class="pub-title" href="../blog.html">&larr; Back to Notes</a>
         </p>
       </div>
     </section>
@@ -644,5 +689,6 @@
 
   <!-- Dark mode + small JS utilities -->
   <script src="../main.js?v=2"></script>
+  <script src="../interactive-notes.js?v=1"></script>
 </body>
 </html>
