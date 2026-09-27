@@ -327,18 +327,7 @@ html:not(.js) .theme-toggle { display: none; }
 /* Page heroes ------------------------------------------------------------- */
 .page-hero { position: relative; overflow: hidden; padding: clamp(5rem, 10vw, 9rem) 0 clamp(4rem, 8vw, 7rem); border-bottom: 1px solid var(--line); }
 .page-hero-grid { position: relative; z-index: 2; display: grid; grid-template-columns: 1.15fr 0.65fr; gap: clamp(3rem, 8vw, 8rem); align-items: end; }
-/* .page-hero h1 { font-size: clamp(3.5rem, 7vw, 6.7rem); } */
-/* Smaller introductions on internal pages */
-.page-hero,
-.software-hero {
-  padding: clamp(3rem, 6vw, 5rem) 0;
-}
-
-.page-hero h1,
-.software-hero h1 {
-  font-size: clamp(2.35rem, 4.8vw, 4.5rem);
-  line-height: 1.12;
-}
+.page-hero h1 { font-size: clamp(3.5rem, 7vw, 6.7rem); }
 .page-hero-lead { color: var(--ink-soft); font-size: 1.08rem; }
 .page-hero-lead .btn { margin-top: 1.2rem; }
 .page-hero-lines, .notes-hero-pattern, .publication-waves { position: absolute; inset: 0; pointer-events: none; opacity: 0.65; }
@@ -659,3 +648,80 @@ body:not([data-page]) .pub-title { display: inline-flex; margin-top: 1rem; paddi
 @keyframes orbit-drift { from { transform: translate(0, 0) rotate(0); } to { transform: translate(-30px, 24px) rotate(7deg); } }
 @keyframes orbit-sway { from { transform: rotate(-9deg) scale(1); } to { transform: rotate(-2deg) scale(1.02); } }
 @keyframes pulse-dot { 0%, 100% { transform: scale(1); opacity: 0.6; } 50% { transform: scale(1.45); opacity: 1; } }
+
+/* Final presentation adjustments: keep at the end of style.css. */
+
+/* Smaller internal-page introductions, including Software. */
+.page-hero,
+.software-hero {
+  padding: clamp(3rem, 6vw, 5rem) 0;
+}
+
+.page-hero h1,
+.software-hero h1 {
+  font-size: clamp(2.35rem, 4.8vw, 4.5rem);
+  line-height: 1.12;
+}
+
+/* Bring the publication list closer to its introduction. */
+body[data-page="publications"] .publications-section {
+  padding-top: clamp(2rem, 4vw, 3.5rem);
+}
+
+body[data-page="publications"] .publication-year-group {
+  padding-top: 2.25rem;
+}
+
+/* Preserve complete figures inside square publication frames. */
+body[data-page="publications"] .publication-art {
+  aspect-ratio: 1 / 1;
+  background: #ffffff;
+}
+
+body[data-page="publications"] .publication-art > a {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+body[data-page="publications"] .publication-art img {
+  object-fit: contain;
+  padding: 0.6rem;
+}
+
+body[data-page="publications"] .publication-item:hover .publication-art img {
+  transform: none;
+}
+
+/* Balance titles, authors, and journal information. */
+body[data-page="publications"] .publication-content h3 {
+  font-size: clamp(1.45rem, 2.4vw, 2.05rem);
+  line-height: 1.2;
+}
+
+body[data-page="publications"] .pub-authors {
+  font-size: 0.95rem;
+}
+
+body[data-page="publications"] .pub-venue {
+  font-size: 1rem;
+}
+
+/* Slightly reduce homepage section spacing. */
+body[data-page="home"] .section {
+  padding-block: clamp(3rem, 6vw, 5rem);
+}
+
+/* Style for the optional homepage role paragraph. */
+.hero-role {
+  margin-top: 1rem;
+  color: var(--ink-soft);
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+/* Readable contact-button hover state. */
+.contact-panel .btn.light:hover {
+  color: #ffffff;
+  background: #1f5f61;
+}

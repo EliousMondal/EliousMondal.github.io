@@ -77,7 +77,25 @@
     let pending=false;
     function mark() {
       let active=sections[0];
-      for(const section of sections) {if(section.getBoundingClientRect().top<=160) active=section;else break;}
+      // for(const section of sections) {if(section.getBoundingClientRect().top<=160) active=section;else break;}
+      const paddingTop =
+        parseFloat(
+          getComputedStyle(document.documentElement).scrollPaddingTop
+        ) || 0;
+
+      for (const section of sections) {
+        const marginTop =
+          parseFloat(getComputedStyle(section).scrollMarginTop) || 0;
+
+        if (
+          section.getBoundingClientRect().top <=
+          paddingTop + marginTop + 4
+        ) {
+          active = section;
+        } else {
+          break;
+        }
+      }
       links.forEach((a,id)=>{if(active&&id===active.id)a.setAttribute('aria-current','location');else a.removeAttribute('aria-current');});
       pending=false;
     }
@@ -86,5 +104,25 @@
   let printState=[];
   addEventListener('beforeprint',()=>{printState=Array.from(document.querySelectorAll('.heom-solution')).map(d=>[d,d.open]);printState.forEach(([d])=>{d.open=true;});});
   addEventListener('afterprint',()=>{printState.forEach(([d,open])=>{d.open=open;});});
-  document.addEventListener('DOMContentLoaded',()=>{setupCounts();setupContents();});
+  // document.addEventListener('DOMContentLoaded',()=>{setupCounts();setupContents();});
+  function initializeHEOMPage() {
+    setupCounts();
+    setupContents();
+
+    document.querySelectorAll('[data-print-page]').forEach(function (button) {
+      button.addEventListener('click', function () {
+        window.print();
+      });
+    });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener(
+      'DOMContentLoaded',
+      initializeHEOMPage,
+      { once: true }
+    );
+  } else {
+    initializeHEOMPage();
+  }
 })();

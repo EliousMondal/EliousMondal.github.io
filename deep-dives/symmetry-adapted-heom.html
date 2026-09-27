@@ -23,7 +23,8 @@
   try { var t=localStorage.getItem('theme'); if(t==='light'||t==='dark') document.documentElement.setAttribute('data-theme',t); } catch(e) {}
   window.MathJax={tex:{inlineMath:[["\\(","\\)"],["$","$"]],displayMath:[["\\[","\\]"]],packages:{'[+]':['ams']}},svg:{fontCache:'global'},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']}};
   </script>
-  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+  <!-- <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script> -->
+  <script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
   <script defer src="../main.js"></script>
   <script defer src="../assets/heom/heom-deep-dive.js"></script>
 </head>
@@ -531,7 +532,10 @@ D_u(N,1,L)=D_u(L+2,1,L),\qquad N\geq L+2.\tag{50}
 <h3>Explore the exact counts</h3>
 <p>One exponential per local bath; fully permutation-symmetric operator; hard total-tier cutoff. The conventional counts below use integer arithmetic, not floating-point extrapolation.</p>
 <form id="heom-count-form" class="heom-controls"><label for="heom-N">Number of molecules <span data-math-id="math-357">\(N\)</span><input id="heom-N" name="N" type="text" inputmode="numeric" value="1000000000000" pattern="[0-9]+" required aria-describedby="heom-count-help"></label><label for="heom-L">Hierarchy depth <span data-math-id="math-358">\(L\)</span><input id="heom-L" name="L" type="number" min="0" max="25" step="1" value="25" required></label><button type="submit">Calculate counts</button></form>
-<p id="heom-count-help" class="source-note">Supported here: <span data-math-id="math-359">\(1\leq N\leq10^{12}\)</span> and <span data-math-id="math-360">\(0\leq L\leq25\)</span>. This is a combinatorial calculator, not a runtime benchmark.</p>
+<p id="heom-count-help" class="source-note">Supported here: <span data-math-id="math-359">\(1\leq N\leq10^{12}\)</span> and <span data-math-id="math-360">\(0\leq L\leq25\)</span>. Enter <code>N</code> using digits only
+(for example, <code>1000000000000</code>),
+without commas or scientific notation.
+This is a combinatorial calculator, not a runtime benchmark.</p>
 <div id="heom-count-output" aria-live="polite" aria-atomic="true"><p>The default calculation has 9,296 canonical ADOs and 306,751 unique variables, requiring 4.908016 MB for one complex-double vector. Enable JavaScript to change the parameters.</p></div>
 </div>
 <p class="source-note">Saturation proof: <a href="../assets/publication_pdfs/symHEOM.pdf#page=9">paper Eqs. (70)–(72)</a>. The exact <span data-math-id="math-361">\(L=25\)</span> counts are also reported in <a href="../assets/publication_pdfs/symHEOM.pdf#page=18">Section VII E</a> and are independently checked by the companion program.</p>

@@ -129,3 +129,68 @@
 @media print { .heom-page.deep-dive-page main .container { width:100%; max-width:none; } }
 /* Keep screen-reader MathML available without increasing the page's scroll width. */
 .heom-page mjx-assistive-mml { width:1px!important; height:1px!important; overflow:hidden!important; clip-path:inset(50%); }
+
+/* Separate and style the HEOM reading controls. */
+.heom-page .reading-tools {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.65rem;
+  margin-top: 1rem;
+}
+
+.heom-page .reading-tools a,
+.heom-page .reading-tools button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding: 0.6rem 0.85rem;
+  border: 1px solid var(--line-strong);
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--ink);
+  font: inherit;
+  font-size: 0.86rem;
+  line-height: 1.35;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.heom-page .reading-tools a:hover,
+.heom-page .reading-tools button:hover {
+  background: var(--teal-soft);
+}
+
+/* Keep all contents links reachable on desktop. */
+@media screen and (min-width: 821px) {
+  .heom-page .deep-dive-toc {
+    max-height: calc(100vh - 125px);
+    overflow-y: auto;
+  }
+}
+
+/* Print with dark ink even when the screen theme is dark. */
+@media print {
+  html {
+    background: #ffffff !important;
+    color-scheme: light !important;
+  }
+
+  .heom-page {
+    --paper: #ffffff;
+    --paper-soft: #ffffff;
+    --surface: #ffffff;
+    --surface-raised: #ffffff;
+    --ink: #111111;
+    --ink-soft: #222222;
+    --muted: #444444;
+    --teal: #1f5f61;
+    --teal-deep: #1f5f61;
+    --teal-soft: #f3f6f6;
+    --copper: #8a452a;
+    --line: #cccccc;
+    --line-strong: #aaaaaa;
+    color-scheme: light !important;
+  }
+}
