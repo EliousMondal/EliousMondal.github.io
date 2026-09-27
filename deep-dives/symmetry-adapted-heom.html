@@ -1,0 +1,1033 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Symmetry-adapted HEOM: derivations and worked examples | Elious Mondal</title>
+  <meta name="description" content="A detailed tutorial on symmetry-adapted HEOM for large polariton ensembles: bath correlations, hierarchy derivation, canonical ADOs, explicit matrices, unique variables, observables, disorder, and validated NumPy code.">
+  <meta name="theme-color" content="#f4efe5">
+  <meta name="color-scheme" content="light dark">
+  <link rel="canonical" href="https://eliousmondal.github.io/deep-dives/symmetry-adapted-heom.html">
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="Symmetry-adapted HEOM — a detailed Deep Dive">
+  <meta property="og:description" content="From oscillator correlations to an exact symmetry-compressed hierarchy, with explicit matrices, worked examples, and a tested teaching implementation.">
+  <meta property="og:url" content="https://eliousmondal.github.io/deep-dives/symmetry-adapted-heom.html">
+  <meta property="og:image" content="https://eliousmondal.github.io/assets/publication_figures/symHEOM_toc.png">
+  <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Source+Serif+4:opsz,wght@8..60,500;8..60,600;8..60,700&amp;display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="../style.css">
+  <link rel="stylesheet" href="../assets/heom/heom-deep-dive.css">
+  <script>
+  try { var t=localStorage.getItem('theme'); if(t==='light'||t==='dark') document.documentElement.setAttribute('data-theme',t); } catch(e) {}
+  window.MathJax={tex:{inlineMath:[["\\(","\\)"],["$","$"]],displayMath:[["\\[","\\]"]],packages:{'[+]':['ams']}},svg:{fontCache:'global'},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']}};
+  </script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+  <script defer src="../main.js"></script>
+  <script defer src="../assets/heom/heom-deep-dive.js"></script>
+</head>
+<body class="deep-dive-page heom-page">
+<a class="skip-link" href="#main-content">Skip to content</a>
+<header class="site-header">
+<div class="container header-inner">
+<div class="logo"><a aria-label="Elious Mondal, home" href="../index.html"><span aria-hidden="true" class="logo-mark">E</span><span>Elious Mondal</span></a></div>
+<button aria-controls="primary-navigation" aria-expanded="false" aria-label="Open navigation" class="nav-burger" type="button"><span></span><span></span><span></span></button>
+<nav aria-label="Primary navigation" class="nav-links" id="primary-navigation"><a href="../index.html">Home</a><a href="../research.html">Research</a><a class="active" href="../publications.html">Publications</a><a href="../blog.html">Notes</a><a href="../codes.html">Software</a><a class="nav-contact" href="../index.html#contact">Contact</a></nav>
+<button aria-label="Switch to dark theme" class="theme-toggle" type="button"><span aria-hidden="true" class="theme-icon">◐</span></button>
+</div>
+</header>
+<main id="main-content">
+<section class="deep-dive-hero">
+  <div class="container deep-dive-hero-grid">
+    <div>
+      <p class="eyebrow"><span></span>Publication Deep Dive · 2026</p>
+      <h1>Symmetry-adapted HEOM</h1>
+      <p class="note-lead">From local environmental memory to exact, compact equations for collective polariton dynamics.</p>
+      <p class="heom-paper-title">Symmetry Adapted Hierarchical Equations of Motion for Exact Simulations of Large Polariton Systems</p>
+      <p class="deep-dive-meta">M. Elious Mondal and Pengfei Huo · arXiv:2608.20657v2 · Preprint</p>
+      <div class="deep-dive-actions">
+        <a href="https://arxiv.org/abs/2608.20657" target="_blank" rel="noopener">Paper ↗</a>
+        <a href="../assets/publication_pdfs/symHEOM.pdf" target="_blank" rel="noopener">Paper PDF ↗</a>
+        <a href="../assets/code/heom_tutorial.py" download>Example code ↓</a>
+        <a href="../publications.html">All publications</a>
+      </div>
+      <nav class="reading-tools" aria-label="Reading tools"><a href="#overview">Start reading</a><a href="#saturation">Explore the scaling</a><button type="button" data-print-page>Print / save PDF</button></nav>
+    </div>
+    <figure class="deep-dive-art"><a href="../assets/publication_figures/symHEOM_toc.png" target="_blank" rel="noopener" aria-label="Open the full-size symmetry-adapted HEOM publication image"><img src="../assets/publication_figures/symHEOM_toc.png" width="1041" height="828" alt="Publication artwork comparing conventional and symmetry-adapted hierarchical equations of motion for a molecular ensemble." decoding="async"></a></figure>
+  </div>
+</section>
+<section class="section heom-reading-section">
+  <div class="container deep-dive-layout">
+    <nav class="deep-dive-toc" aria-label="Sections in this HEOM Deep Dive">
+      <details id="heom-toc-details" open>
+        <summary>On this page <span>26 sections</span></summary>
+        <ol><li><a href="#overview">The two reductions</a></li>
+<li><a href="#spaces">States, spaces, and Hamiltonian</a></li>
+<li><a href="#bright-dark">Bright, dark, and polariton bases</a></li>
+<li><a href="#bath-correlation">From oscillators to correlations</a></li>
+<li><a href="#exponentials">Exponential channels and terminators</a></li>
+<li><a href="#derive-heom">Derive the hierarchy</a></li>
+<li><a href="#scaled-liouville">Scaling and Liouville matrices</a></li>
+<li><a href="#count-full">Count the conventional hierarchy</a></li>
+<li><a href="#covariance">Relabeling and initial conditions</a></li>
+<li><a href="#canonical">Canonical patterns and multiplicities</a></li>
+<li><a href="#alignment">Align the neighboring ADO</a></li>
+<li><a href="#unique">Unique variables and the 5×5 example</a></li>
+<li><a href="#saturation">Why the dimension saturates</a></li>
+<li><a href="#hamiltonian-rhs">All Hamiltonian component equations</a></li>
+<li><a href="#hierarchy-rhs">All hierarchy couplings</a></li>
+<li><a href="#two-molecule">A complete 28-variable example</a></li>
+<li><a href="#observables">Observables and initial states</a></li>
+<li><a href="#localized">Localized and arbitrary preparations</a></li>
+<li><a href="#multi-exp">Multiple exponential channels</a></li>
+<li><a href="#disorder">Static Gaussian disorder</a></li>
+<li><a href="#cavity-loss">Cavity loss and the ground state</a></li>
+<li><a href="#implementation">Implementation and verified code</a></li>
+<li><a href="#paper-results">Read the reported results</a></li>
+<li><a href="#convergence">Convergence and common mistakes</a></li>
+<li><a href="#exercises">Exercises with worked solutions</a></li>
+<li><a href="#references">Source map and references</a></li></ol>
+      </details>
+    </nav>
+    <article class="deep-dive-content">
+      <div class="heom-orientation">
+        <p class="heom-label">A working set of research notes</p>
+        <p>Begin with the Hamiltonian and bath, derive the hierarchy, then follow the two reductions down to individual matrix entries. Sections 18–21 develop localized preparations, multiple exponential channels, Gaussian disorder, and cavity loss.</p>
+        <p class="heom-guide">26 sections · 89 numbered equations · 10 exercises with solutions · NumPy validation code</p>
+        <p class="heom-guide">Equation numbers refer to this tutorial, not to the paper. On narrow screens, wide equations and tables scroll horizontally.</p>
+      </div>
+      <section id="overview" data-short="The two reductions">
+<h2>1. What is actually being reduced?</h2>
+<p>A molecular ensemble can be simple to describe and still be expensive to simulate. In the single-excitation manifold, one cavity mode coupled to <span data-math-id="math-89">\(N\)</span> two-level molecules needs only <span data-math-id="math-90">\(N+1\)</span> system basis states. The difficulty is that every molecule has its own environment. A non-Markovian calculation must retain information about the histories of those environments, not just the current electronic density matrix.</p>
+<p>Hierarchical equations of motion (HEOM) store that information in auxiliary density operators, or ADOs. If every local bath correlation is represented by <span data-math-id="math-91">\(m\)</span> exponentials and the total hierarchy is truncated at depth <span data-math-id="math-92">\(L\)</span>, conventional HEOM propagates</p>
+<div class="heom-equation" id="eq-1" data-math-id="math-0">\[
+D_{\rm full}=(N+1)^2\binom{Nm+L}{L}\tag{1}
+\]</div>
+<p>complex numbers when every ADO is stored as a dense matrix. The two factors have different origins: the binomial coefficient counts the hierarchy labels, while <span data-math-id="math-93">\((N+1)^2\)</span> counts the matrix entries attached to each label. Reducing only one factor leaves the other untouched.</p>
+<p>The symmetry-adapted construction removes both redundancies. First, hierarchy labels that differ only by a relabeling of identical molecules are represented once. Second, repeated entries within each representative matrix are stored once. Neither operation removes the independent local environments, assumes a collective bath, nor discards the dark-state sector.</p>
+<div class="worked-example"><h3>A small example of the entire idea</h3>
+<p>Take <span data-math-id="math-94">\(N=2\)</span>, one exponential per molecule, and <span data-math-id="math-95">\(L=2\)</span>. The six conventional labels are <span data-math-id="math-96">\((0,0)\)</span>, <span data-math-id="math-97">\((1,0)\)</span>, <span data-math-id="math-98">\((0,1)\)</span>, <span data-math-id="math-99">\((2,0)\)</span>, <span data-math-id="math-100">\((1,1)\)</span>, and <span data-math-id="math-101">\((0,2)\)</span>. Each carries a <span data-math-id="math-102">\(3\times3\)</span> ADO: 54 complex entries. Relabeling the two molecules leaves four canonical labels, so a first reduction gives 36 entries. Their matrices contain, respectively, 5, 9, 9, and 5 distinct entries: the final calculation propagates only 28 complex variables. We will construct all four matrices explicitly in Section 16.</p></div>
+<p>For fixed <span data-math-id="math-103">\(m\)</span> and <span data-math-id="math-104">\(L\)</span>, the canonical-label count stops increasing once <span data-math-id="math-105">\(N\geq L\)</span>. The unique-variable count stops increasing once <span data-math-id="math-106">\(N\geq L+2\)</span>. The extra two molecules are needed to represent the distinction between a diagonal entry and a coherence between two different molecules in the zero-occupation category.</p>
+<p><strong>The word “exact” refers first to an algebraic statement:</strong> the compressed equations reproduce the same finite HEOM problem, with the same bath expansion, hierarchy closure, Hamiltonian, and initial condition. Convergence of that finite problem to the intended physical model is a separate question. In particular, a fixed number of propagated variables does not imply that the physical dynamics have become independent of <span data-math-id="math-107">\(N\)</span>.</p>
+<p class="source-note">Primary source: <a href="../assets/publication_pdfs/symHEOM.pdf#page=1">Mondal and Huo, arXiv:2608.20657v2, abstract and Sections I–V</a>. This tutorial follows the supplied v2 article. Intermediate algebra, the small-system validation program, and the exercises are teaching additions, not additional numerical results from the paper.</p>
+</section>
+
+<section id="spaces" data-short="States, spaces, and Hamiltonian">
+<h2>2. Start with the states and the tensor-product spaces</h2>
+<p>Let <span data-math-id="math-108">\(\mathcal H_{\rm cav}\)</span> be the cavity Fock space and <span data-math-id="math-109">\(\mathcal H_i=\operatorname{span}\{|g_i\rangle,|e_i\rangle\}\)</span> the electronic space of molecule <span data-math-id="math-110">\(i\)</span>. Before restricting the excitation number, the system space is</p>
+<div class="heom-equation" id="eq-2" data-math-id="math-1">\[
+\mathcal H_S^{\rm full}=\mathcal H_{\rm cav}\otimes\bigotimes_{i=1}^{N}\mathcal H_i.\tag{2}
+\]</div>
+<p>The cavity operators are <span data-math-id="math-111">\(\hat a\)</span> and <span data-math-id="math-112">\(\hat a^\dagger\)</span>. On molecule <span data-math-id="math-113">\(i\)</span>, define <span data-math-id="math-114">\(\hat\sigma_i^+=|e_i\rangle\langle g_i|\)</span> and <span data-math-id="math-115">\(\hat\sigma_i^-=|g_i\rangle\langle e_i|\)</span>. Identity operators on spectator factors are understood only in this full-space expression:</p>
+<div class="heom-equation" id="eq-3" data-math-id="math-2">\[
+\hat H_S^{\rm full}=\omega_{\rm cav}\hat a^\dagger\hat a+
+\epsilon_x\sum_i\hat\sigma_i^+\hat\sigma_i^-+
+g\sum_i\left(\hat a\hat\sigma_i^++\hat a^\dagger\hat\sigma_i^-\right).\tag{3}
+\]</div>
+<p>We use <span data-math-id="math-116">\(\hbar=1\)</span> throughout. Thus energies and angular frequencies have the same units, and time has the reciprocal unit. The rotating-wave approximation keeps exchange terms that conserve <span data-math-id="math-117">\(\hat N_{\rm ex}=\hat a^\dagger\hat a+\sum_i\hat\sigma_i^+\hat\sigma_i^-\)</span>. Counter-rotating terms, such as <span data-math-id="math-118">\(\hat a^\dagger\hat\sigma_i^+\)</span>, are not in this Hamiltonian.</p>
+<p>The one-excitation states, including their spectator factors, are</p>
+<div class="heom-equation" id="eq-4" data-math-id="math-3">\[
+\begin{aligned}
+|c\rangle&amp;=|1\rangle_{\rm cav}\otimes|g_1\rangle\otimes\cdots\otimes|g_N\rangle,\\
+|e_i\rangle&amp;=|0\rangle_{\rm cav}\otimes|g_1\rangle\otimes\cdots\otimes|e_i\rangle\otimes\cdots\otimes|g_N\rangle.
+\end{aligned}\tag{4}
+\]</div>
+<p>The ordered basis used for every system matrix below is <span data-math-id="math-119">\(\mathcal B_N=(|c\rangle,|e_1\rangle,\ldots,|e_N\rangle)\)</span> unless another basis is stated. In this basis,</p>
+<div class="heom-equation" id="eq-5" data-math-id="math-4">\[
+[\hat H_S]_{\mathcal B_N}=\begin{pmatrix}
+\omega_{\rm cav}&amp;g&amp;g&amp;\cdots&amp;g\\
+g&amp;\epsilon_x&amp;0&amp;\cdots&amp;0\\
+g&amp;0&amp;\epsilon_x&amp;\cdots&amp;0\\
+\vdots&amp;\vdots&amp;\vdots&amp;\ddots&amp;\vdots\\
+g&amp;0&amp;0&amp;\cdots&amp;\epsilon_x
+\end{pmatrix},\qquad
+\hat Q_i=|e_i\rangle\langle e_i|.\tag{5}
+\]</div>
+<p>There is no direct intermolecular hopping in this particular model. All molecular excitation energies are the same, and <span data-math-id="math-120">\(g\)</span> is a real, identical molecule–cavity coupling. Those assumptions will later make molecular relabeling a symmetry.</p>
+<p>For example, for two molecules, <span data-math-id="math-121">\([\hat Q_1]_{\mathcal B_2}=\operatorname{diag}(0,1,0)\)</span> and <span data-math-id="math-122">\([\hat Q_2]_{\mathcal B_2}=\operatorname{diag}(0,0,1)\)</span>. These operators act on the system, not on the environmental oscillators. Let <span data-math-id="math-123">\(\mathcal H_B=\bigotimes_i\mathcal H_{B_i}\)</span> denote the bath space. On <span data-math-id="math-124">\(\mathcal H_S^{(1)}\otimes\mathcal H_B\)</span>, the total Hamiltonian is explicitly</p>
+<div class="heom-equation" id="eq-6" data-math-id="math-5">\[
+\hat H=\hat H_S\otimes\hat I_B+\hat I_S\otimes\hat H_B+
+\sum_i\hat Q_i\otimes\hat B_i.\tag{6}
+\]</div>
+<p>The distinction between the two factors is important: an ADO is a system-space operator that encodes environmental information. It is not a matrix containing both electronic and oscillator basis indices.</p>
+<p class="source-note">Model and conventions: <a href="../assets/publication_pdfs/symHEOM.pdf#page=2">paper Section II A–B, Eqs. (2)–(10)</a>.</p>
+</section>
+
+<section id="bright-dark" data-short="Bright, dark, and polariton bases">
+<h2>3. Why a two-state bright–cavity model is not enough</h2>
+<p>The normalized bright exciton is <span data-math-id="math-125">\(|B\rangle=N^{-1/2}\sum_i|e_i\rangle\)</span>. Choose <span data-math-id="math-126">\(N-1\)</span> orthonormal dark kets <span data-math-id="math-127">\(|D_\alpha\rangle\)</span> satisfying <span data-math-id="math-128">\(\langle B|D_\alpha\rangle=0\)</span>. Acting with the Hamiltonian on the bright ket gives</p>
+<div class="heom-equation" id="eq-7" data-math-id="math-6">\[
+\hat H_S|B\rangle=\epsilon_x|B\rangle+g\sqrt N\,|c\rangle,
+\qquad
+\hat H_S|D_\alpha\rangle=\epsilon_x|D_\alpha\rangle.\tag{7}
+\]</div>
+<p>The second identity follows because the molecular amplitudes of a dark ket sum to zero. In the ordered basis <span data-math-id="math-129">\(\mathcal B_{BD}=(|c\rangle,|B\rangle,|D_1\rangle,\ldots)\)</span>,</p>
+<div class="heom-equation" id="eq-8" data-math-id="math-7">\[
+[\hat H_S]_{\mathcal B_{BD}}=
+\begin{pmatrix}\omega_{\rm cav}&amp;g\sqrt N\\g\sqrt N&amp;\epsilon_x\end{pmatrix}
+\oplus\epsilon_x\hat I_{N-1}.\tag{8}
+\]</div>
+<p>The two polariton energies are obtained by setting the determinant of the <span data-math-id="math-130">\(2\times2\)</span> block minus <span data-math-id="math-131">\(E\hat I_2\)</span> to zero:</p>
+<div class="heom-equation" id="eq-9" data-math-id="math-8">\[
+(E-\omega_{\rm cav})(E-\epsilon_x)-Ng^2=0,
+\qquad
+E_\pm=\frac{\omega_{\rm cav}+\epsilon_x}{2}\pm\frac{\sqrt{\Delta^2+4Ng^2}}{2},
+\quad\Delta=\omega_{\rm cav}-\epsilon_x.\tag{9}
+\]</div>
+<p>Choose <span data-math-id="math-132">\(g\geq0\)</span> by a phase convention. Define <span data-math-id="math-133">\(2\theta=\operatorname{atan2}(2g\sqrt N,\Delta)\)</span>, with <span data-math-id="math-134">\(0\leq\theta\leq\pi/2\)</span>. Unlike a bare tangent formula, this specifies the quadrant away from resonance. Then</p>
+<div class="heom-equation" id="eq-10" data-math-id="math-9">\[
+|+\rangle=\cos\theta|c\rangle+\sin\theta|B\rangle,
+\qquad
+|-\rangle=-\sin\theta|c\rangle+\cos\theta|B\rangle.\tag{10}
+\]</div>
+<p>On resonance, <span data-math-id="math-135">\(\theta=\pi/4\)</span> and the splitting is <span data-math-id="math-136">\(\Omega_R=2g\sqrt N\)</span>. The system Hamiltonian therefore has a simple bright–cavity block. The environment does not share that block structure.</p>
+<div class="worked-example"><h3>Two molecules: write the bath projectors in the collective basis</h3>
+<p>For <span data-math-id="math-137">\(N=2\)</span>, choose <span data-math-id="math-138">\(|B\rangle=(|e_1\rangle+|e_2\rangle)/\sqrt2\)</span> and <span data-math-id="math-139">\(|D\rangle=(|e_1\rangle-|e_2\rangle)/\sqrt2\)</span>. The change-of-basis matrix has the new basis kets as its columns in <span data-math-id="math-140">\(\mathcal B_2\)</span>:</p>
+<div class="heom-equation" id="eq-11" data-math-id="math-10">\[
+\hat U_{BD}\;\widehat{=}\;
+\begin{pmatrix}1&amp;0&amp;0\\0&amp;1/\sqrt2&amp;1/\sqrt2\\0&amp;1/\sqrt2&amp;-1/\sqrt2\end{pmatrix},
+\qquad [\hat A]_{\mathcal B_{BD}}=\hat U_{BD}^\dagger[\hat A]_{\mathcal B_2}\hat U_{BD}.\tag{11}
+\]</div>
+<div class="heom-equation" id="eq-12" data-math-id="math-11">\[
+[\hat Q_1]_{\mathcal B_{BD}}=\frac12\begin{pmatrix}0&amp;0&amp;0\\0&amp;1&amp;1\\0&amp;1&amp;1\end{pmatrix},\qquad
+[\hat Q_2]_{\mathcal B_{BD}}=\frac12\begin{pmatrix}0&amp;0&amp;0\\0&amp;1&amp;-1\\0&amp;-1&amp;1\end{pmatrix}.\tag{12}
+\]</div>
+<p>Consequently, <span data-math-id="math-141">\(\langle B|\hat H_{SB}|D\rangle=(\hat B_1-\hat B_2)/2\)</span>. Its thermal mean is zero, but its correlation is not zero. The difference between the two independent local bath forces couples bright and dark states.</p></div>
+<p>A permutation-invariant density operator need not be supported only on permutation-invariant kets. For example, <span data-math-id="math-142">\(|D\rangle\)</span> changes sign when two molecules are exchanged, but <span data-math-id="math-143">\(|D\rangle\langle D|\)</span> does not. For general <span data-math-id="math-144">\(N\)</span>, the normalized dark mixture <span data-math-id="math-145">\(\hat P_D/(N-1)\)</span> is invariant, where</p>
+<div class="heom-equation" id="eq-13" data-math-id="math-12">\[
+\hat P_D=\sum_i|e_i\rangle\langle e_i|-|B\rangle\langle B|.\tag{13}
+\]</div>
+<p>This is why a symmetric density operator can acquire dark population without breaking the symmetry used for compression. Symmetry adaptation is not a projection onto the bright ket alone.</p>
+<p class="source-note">Bright and polariton definitions: <a href="../assets/publication_pdfs/symHEOM.pdf#page=2">paper Eqs. (4)–(6)</a>. The explicit two-molecule basis transformation is a worked example.</p>
+</section>
+
+<section id="bath-correlation" data-short="From oscillators to correlations">
+<h2>4. Derive the bath correlation function</h2>
+<p>Each molecular bath consists of harmonic oscillators. Write <span data-math-id="math-146">\(\hat H_B=\sum_{i\xi}\omega_\xi\hat b_{i\xi}^\dagger\hat b_{i\xi}\)</span> and, with real coupling amplitudes for simplicity, <span data-math-id="math-147">\(\hat B_i=\sum_\xi f_\xi(\hat b_{i\xi}+\hat b_{i\xi}^\dagger)\)</span>. The index <span data-math-id="math-148">\(\xi\)</span> labels actual oscillator modes; it is not the exponential index <span data-math-id="math-149">\(k\)</span> introduced later.</p>
+<p>The reference initial state is factorized:</p>
+<div class="heom-equation" id="eq-14" data-math-id="math-13">\[
+\hat\rho_{SB}(0)=\hat\rho_S(0)\otimes\hat\rho_B^{\rm th},\qquad
+\hat\rho_B^{\rm th}=\frac{e^{-\beta\hat H_B}}{\operatorname{Tr}_B e^{-\beta\hat H_B}},\qquad
+\beta=(k_BT)^{-1}.\tag{14}
+\]</div>
+<p>For one oscillator, the thermal occupation is <span data-math-id="math-150">\(\bar n_\xi=(e^{\beta\omega_\xi}-1)^{-1}\)</span>. The only nonzero second moments needed here are <span data-math-id="math-151">\(\langle\hat b_\xi^\dagger\hat b_\xi\rangle=\bar n_\xi\)</span> and <span data-math-id="math-152">\(\langle\hat b_\xi\hat b_\xi^\dagger\rangle=\bar n_\xi+1\)</span>. Under free bath evolution,</p>
+<div class="heom-equation" id="eq-15" data-math-id="math-14">\[
+\hat b_{i\xi}(t)=e^{-i\omega_\xi t}\hat b_{i\xi},\qquad
+\hat b_{i\xi}^\dagger(t)=e^{i\omega_\xi t}\hat b_{i\xi}^\dagger.\tag{15}
+\]</div>
+<p>Substitute these into <span data-math-id="math-153">\(\langle\hat B_i(t)\hat B_j(0)\rangle_B\)</span>. Independence eliminates cross-molecule terms, while independence of the modes eliminates cross-mode terms. Thus</p>
+<div class="heom-equation" id="eq-16" data-math-id="math-15">\[
+\begin{aligned}
+\langle\hat B_i(t)\hat B_j(0)\rangle_B&amp;=\delta_{ij}C(t),\\
+C(t)&amp;=\sum_\xi |f_\xi|^2\left[(\bar n_\xi+1)e^{-i\omega_\xi t}+\bar n_\xi e^{i\omega_\xi t}\right]\\
+&amp;=\sum_\xi |f_\xi|^2\left[(2\bar n_\xi+1)\cos\omega_\xi t-i\sin\omega_\xi t\right].
+\end{aligned}\tag{16}
+\]</div>
+<p>The identity <span data-math-id="math-154">\(2\bar n_\xi+1=\coth(\beta\omega_\xi/2)\)</span> and the spectral-density convention <span data-math-id="math-155">\(J(\omega)=\pi\sum_\xi|f_\xi|^2\delta(\omega-\omega_\xi)\)</span> give</p>
+<div class="heom-equation" id="eq-17" data-math-id="math-16">\[
+C(t)=\frac1\pi\int_0^\infty d\omega\,J(\omega)
+\left[\coth\left(\frac{\beta\omega}{2}\right)\cos\omega t-i\sin\omega t\right].\tag{17}
+\]</div>
+<p>The real part is the symmetrized fluctuation correlation. The imaginary part is half the bath commutator divided by <span data-math-id="math-156">\(i\)</span> and carries the bath-response information. It should not be discarded merely because the bath has zero mean. Replacing a quantum correlation by a purely real classical noise correlation is a change of physical model, not a consequence of molecular symmetry.</p>
+<p>“Identical independent baths” means the same function <span data-math-id="math-157">\(C(t)\)</span> for every molecule, with <span data-math-id="math-158">\(\delta_{ij}\)</span> between molecules. “One common bath” would instead have nonzero cross correlations between different molecules. These are different problems.</p>
+<p class="source-note">Bath definition and spectral convention: <a href="../assets/publication_pdfs/symHEOM.pdf#page=3">paper Eqs. (7)–(12)</a>.</p>
+</section>
+
+<section id="exponentials" data-short="Exponential channels and terminators">
+<h2>5. Exponential channels, complex conjugation, and the Drude example</h2>
+<p>HEOM closes an infinite chain of first-order equations when the bath correlation is written as a sum of exponentials. For the retained correlation, choose</p>
+<div class="heom-equation" id="eq-18" data-math-id="math-17">\[
+C_m(t)=\sum_{k=0}^{m-1}c_k e^{-\nu_k t},\qquad
+C_m^*(t)=\sum_{k=0}^{m-1}\check c_k e^{-\nu_k t}.\tag{18}
+\]</div>
+<p>Both equations use the <em>same ordered set of rates</em>. If every <span data-math-id="math-159">\(\nu_k\)</span> is real, then <span data-math-id="math-160">\(\check c_k=c_k^*\)</span>. For complex rates, this shortcut is generally wrong. Let <span data-math-id="math-161">\(\bar k\)</span> be the conjugate partner satisfying <span data-math-id="math-162">\(\nu_{\bar k}=\nu_k^*\)</span>. Relabeling the terms in <span data-math-id="math-163">\(C_m^*(t)=\sum_k c_k^*e^{-\nu_k^*t}\)</span> gives <span data-math-id="math-164">\(\check c_k=c_{\bar k}^*\)</span>.</p>
+<div class="worked-example"><h3>A damped oscillatory contribution</h3>
+<p>Take <span data-math-id="math-165">\(C(t)=A e^{-(\gamma+i\Omega)t}+B e^{-(\gamma-i\Omega)t}\)</span>. In the rate order <span data-math-id="math-166">\((\gamma+i\Omega,\gamma-i\Omega)\)</span>, the forward coefficients are <span data-math-id="math-167">\((A,B)\)</span>, while the coefficients for <span data-math-id="math-168">\(C^*\)</span> are <span data-math-id="math-169">\((B^*,A^*)\)</span>. This partner exchange must be retained in the downward HEOM terms. A conjugate pair is two exponential channels, not two distinguishable molecules.</p></div>
+<h3>The one-exponential Drude contribution</h3>
+<p>For <span data-math-id="math-170">\(J_{\rm DL}(\omega)=2\lambda\gamma\omega/(\omega^2+\gamma^2)\)</span>, <span data-math-id="math-171">\(\lambda\)</span> is the reorganization energy and <span data-math-id="math-172">\(\gamma\)</span> the bath decay rate. Evaluating the thermal correlation by its Drude pole and thermal poles gives, for positive time,</p>
+<div class="heom-equation" id="eq-19" data-math-id="math-18">\[
+\begin{aligned}
+\nu_0&amp;=\gamma, &amp; c_0&amp;=\lambda\gamma\left[\cot\left(\frac{\beta\gamma}{2}\right)-i\right],\\
+\nu_k&amp;=\frac{2\pi k}{\beta}, &amp; c_k&amp;=\frac{4\lambda\gamma}{\beta}\frac{\nu_k}{\nu_k^2-\gamma^2},\qquad k\geq1.
+\end{aligned}\tag{19}
+\]</div>
+<p>The first line is one exponential. The full finite-temperature Drude correlation generally also needs the second line, a different controlled decomposition, or a justified residual correction. When <span data-math-id="math-173">\(\beta\gamma\ll1\)</span>, expanding <span data-math-id="math-174">\(\cot x=1/x-x/3+\cdots\)</span> gives <span data-math-id="math-175">\(c_0\simeq2\lambda/\beta-i\lambda\gamma\)</span>. This is a high-temperature approximation to the coefficient, not the definition of the entire exact quantum correlation.</p>
+<p>A useful way to understand a fast-residual terminator is to define the omitted real correlation <span data-math-id="math-176">\(\delta C_R(t)\)</span> and its one-sided integral <span data-math-id="math-177">\(\Delta_R=\int_0^\infty\delta C_R(t)\,dt\)</span>. If the system changes little over the residual correlation time, replace a convolution by</p>
+<div class="heom-equation" id="eq-20" data-math-id="math-19">\[
+\int_0^t ds\,\delta C_R(t-s)f(s)\simeq\Delta_R f(t).\tag{20}
+\]</div>
+<p>This produces the time-local addition</p>
+<div class="heom-equation" id="eq-21" data-math-id="math-20">\[
+\hat{\mathcal T}\hat A=-\Delta_R\sum_i[\hat Q_i,[\hat Q_i,\hat A]].\tag{21}
+\]</div>
+<p>The definition by the one-sided integral avoids ambiguous factors of two associated with delta functions at an integration endpoint. If only the exact Drude pole is retained and every positive Matsubara term is assigned to this residual,</p>
+<div class="heom-equation" id="eq-22" data-math-id="math-21">\[
+\Delta_R=\sum_{k=1}^\infty\frac{c_k}{\nu_k}
+=\frac{2\lambda}{\beta\gamma}-\lambda\cot\left(\frac{\beta\gamma}{2}\right).\tag{22}
+\]</div>
+<p>This expression assumes that exact pole coefficient, rather than its high-temperature replacement. The residual approximation and the terminal-tier closure are also different operations: one handles omitted bath-correlation components; the other handles omitted high-tier ADOs. The paper uses an Ishizaki–Tanimura residual correction in its one-exponential numerical examples. Symmetry reduction preserves a compatible correction but does not make the correction itself exact.</p>
+<p>Finally, keep the energy convention consistent. A displaced oscillator can introduce a reorganization counterterm proportional to <span data-math-id="math-178">\(\sum_i\hat Q_i\)</span>. Here <span data-math-id="math-179">\(\epsilon_x\)</span> means the energy actually used in <span data-math-id="math-180">\(\hat H_S\)</span>. Do not add or subtract <span data-math-id="math-181">\(\lambda\)</span> a second time because another implementation uses a different definition of its input excitation energy.</p>
+<p class="source-note">Channel pairing: <a href="../assets/publication_pdfs/symHEOM.pdf#page=3">paper Eq. (12)</a>. Drude parameters and residual correction: <a href="../assets/publication_pdfs/symHEOM.pdf#page=14">paper Section VII</a>. For broader HEOM background, see <a href="https://doi.org/10.1063/5.0011599" target="_blank" rel="noopener">Tanimura, J. Chem. Phys. 153, 020901 (2020)</a>.</p>
+</section>
+
+<section id="derive-heom" data-short="Derive the hierarchy">
+<h2>6. Derive the hierarchy from exponential memory</h2>
+<p>It is tempting to regard an ADO as a density matrix for a molecule with an extra bath excitation. That interpretation is not generally correct. A hierarchy occupation counts the order of a memory functional. It need not equal the occupation of any physical oscillator.</p>
+<p>For linear coupling to a harmonic bath initially in a Gaussian thermal state, all connected bath correlations above second order vanish. After tracing the bath on the forward and backward evolution branches, its influence can therefore be written using <span data-math-id="math-182">\(C(t)\)</span> alone. The following derivation makes the hierarchy-generating step explicit.</p>
+<h3>Forward and backward histories</h3>
+<p>Use system paths in the basis that diagonalizes all <span data-math-id="math-183">\(\hat Q_i\)</span>. Let <span data-math-id="math-184">\(q_i^+(s)\)</span> and <span data-math-id="math-185">\(q_i^-(s)\)</span> be their eigenvalues on the forward ket and backward bra paths at time <span data-math-id="math-186">\(s\)</span>. They are scalar history functions, not operators. The bath influence functional is</p>
+<div class="heom-equation" id="eq-23" data-math-id="math-22">\[
+\mathcal F[q^+,q^-]=\exp\left\{-\sum_i\int_0^t ds\,[q_i^+(s)-q_i^-(s)]
+\int_0^s du\,[C_m(s-u)q_i^+(u)-C_m^*(s-u)q_i^-(u)]\right\}.\tag{23}
+\]</div>
+<p>The system Hamiltonian can be nondiagonal in this basis; its transitions are included in the system path weight. Gaussianity closes the <em>bath</em> cumulant expansion. It does not replace the system operators by commuting numbers in the original Schrödinger equation.</p>
+<p>For each molecule and exponential channel, define the scalar memory functional</p>
+<div class="heom-equation" id="eq-24" data-math-id="math-23">\[
+\mathcal I_{ik}(t)=-i\int_0^t du\,e^{-\nu_k(t-u)}
+[c_kq_i^+(u)-\check c_kq_i^-(u)].\tag{24}
+\]</div>
+<p>Differentiate this integral. The upper-limit contribution evaluates the integrand at <span data-math-id="math-187">\(u=t\)</span>, and the derivative of its exponential contributes <span data-math-id="math-188">\(-\nu_k\mathcal I_{ik}\)</span>:</p>
+<div class="heom-equation" id="eq-25" data-math-id="math-24">\[
+\frac{d\mathcal I_{ik}}{dt}=-\nu_k\mathcal I_{ik}
+-i[c_kq_i^+(t)-\check c_kq_i^-(t)].\tag{25}
+\]</div>
+<p>Meanwhile, differentiating the upper endpoint of the influence exponent gives</p>
+<div class="heom-equation" id="eq-26" data-math-id="math-25">\[
+\frac{d\mathcal F}{dt}=-i\sum_{ik}[q_i^+(t)-q_i^-(t)]\mathcal I_{ik}(t)\mathcal F.\tag{26}
+\]</div>
+<p>The signs can be checked directly: <span data-math-id="math-189">\(-i\mathcal I_{ik}\)</span> equals minus the corresponding correlation convolution because <span data-math-id="math-190">\((-i)(-i)=-1\)</span>.</p>
+<h3>Define the auxiliaries and use the product rule</h3>
+<p>For a hierarchy label <span data-math-id="math-191">\(n=(n_{10},\ldots,n_{N,m-1})\)</span> of nonnegative integers, define <span data-math-id="math-192">\(\hat\rho_n(t)\)</span> by the same forward–backward path integral as the reduced density operator, but insert <span data-math-id="math-193">\(\prod_{ik}\mathcal I_{ik}^{n_{ik}}\)</span> into its integrand. Schematically, with <span data-math-id="math-194">\(\mathcal W_S\)</span> including both system propagators, boundary conditions, and the initial system density operator,</p>
+<div class="heom-equation" id="eq-27" data-math-id="math-26">\[
+\hat\rho_n(t)=\int\mathcal Dq^+\mathcal Dq^-\,
+\mathcal W_S[q^+,q^-]\,
+\left(\prod_{ik}\mathcal I_{ik}(t)^{n_{ik}}\right)\mathcal F[q^+,q^-].\tag{27}
+\]</div>
+<p>The zero powers give <span data-math-id="math-195">\(\hat\rho_0=\hat\rho_S\)</span>. There are three contributions to its general derivative. Differentiating the system weight gives <span data-math-id="math-196">\(-i[\hat H_S,\hat\rho_n]\)</span>. Differentiating <span data-math-id="math-197">\(\mathcal F\)</span> inserts one additional <span data-math-id="math-198">\(\mathcal I_{ik}\)</span>, which raises <span data-math-id="math-199">\(n_{ik}\)</span> by one. Differentiating one of the <span data-math-id="math-200">\(n_{ik}\)</span> identical memory factors lowers its power by one and produces the integer factor <span data-math-id="math-201">\(n_{ik}\)</span>.</p>
+<p>The damping pieces add to <span data-math-id="math-202">\(\Gamma_n=\sum_{ik}n_{ik}\nu_k\)</span>. At a final-time endpoint, multiplication by <span data-math-id="math-203">\(q_i^+\)</span> becomes left multiplication by <span data-math-id="math-204">\(\hat Q_i\)</span>, and multiplication by <span data-math-id="math-205">\(q_i^-\)</span> becomes right multiplication by <span data-math-id="math-206">\(\hat Q_i\)</span>. With <span data-math-id="math-207">\(e_{ik}\)</span> denoting a unit shift of the hierarchy label, the result is</p>
+<div class="heom-equation" id="eq-28" data-math-id="math-27">\[
+\begin{aligned}
+\dot{\hat\rho}_n={}&amp;-i[\hat H_S,\hat\rho_n]-\Gamma_n\hat\rho_n
+-i\sum_{ik}[\hat Q_i,\hat\rho_{n+e_{ik}}]\\
+&amp;-i\sum_{ik}n_{ik}\left(c_k\hat Q_i\hat\rho_{n-e_{ik}}-\check c_k\hat\rho_{n-e_{ik}}\hat Q_i\right).
+\end{aligned}\tag{28}
+\]</div>
+<p>A downward term with <span data-math-id="math-208">\(n_{ik}=0\)</span> is absent. At <span data-math-id="math-209">\(t=0\)</span>, every memory integral vanishes, so a factorized thermal preparation has <span data-math-id="math-210">\(\hat\rho_n(0)=0\)</span> whenever <span data-math-id="math-211">\(|n|=\sum_{ik}n_{ik}&gt;0\)</span>. A correlated initial equilibrium preparation need not have this property: its bath history is already encoded in nonzero auxiliaries.</p>
+<p>These are local-in-time equations in an enlarged space. The physical density operator alone is still non-Markovian because its derivative depends on the first tier, whose derivative depends on further tiers. The auxiliary hierarchy stores the memory that a reduced equation would otherwise express through time integrals.</p>
+<p class="source-note">This influence-functional derivation supplies the intermediate steps leading to the conventional hierarchy used in <a href="../assets/publication_pdfs/symHEOM.pdf#page=4">paper Section II C</a>. Its assumptions are a Gaussian harmonic bath, linear coupling, the stated bath preparation, and the specified exponential correlation representation.</p>
+</section>
+
+<section id="scaled-liouville" data-short="Scaling and Liouville matrices">
+<h2>7. Scale the auxiliaries and write an explicit Liouville matrix</h2>
+<p>The factorials generated by repeated differentiation can make unscaled ADO magnitudes vary strongly with tier. Introduce the positive scalar</p>
+<div class="heom-equation" id="eq-29" data-math-id="math-28">\[
+s_n=\left[\prod_{ik}n_{ik}!|c_k|^{n_{ik}}\right]^{1/2},
+\qquad \tilde{\hat\rho}_n=\hat\rho_n/s_n.\tag{29}
+\]</div>
+<p>For the simple scaling below, retained channels have nonzero <span data-math-id="math-212">\(|c_k|\)</span>. A representation with a vanishing forward coefficient but a nonvanishing partner needs a nonsingular scaling choice instead of division by zero.</p>
+<p>Substitute <span data-math-id="math-213">\(\hat\rho_n=s_n\tilde{\hat\rho}_n\)</span> into the unscaled equation and divide by <span data-math-id="math-214">\(s_n\)</span>. The upward ratio and downward ratio are</p>
+<div class="heom-equation" id="eq-30" data-math-id="math-29">\[
+\frac{s_{n+e_{ik}}}{s_n}=\sqrt{(n_{ik}+1)|c_k|},
+\qquad
+n_{ik}\frac{s_{n-e_{ik}}}{s_n}=\sqrt{\frac{n_{ik}}{|c_k|}}.\tag{30}
+\]</div>
+<p>The factorial ratio supplies <span data-math-id="math-215">\(n_{ik}+1\)</span> upward and <span data-math-id="math-216">\(1/n_{ik}\)</span> downward. Therefore</p>
+<div class="heom-equation" id="eq-31" data-math-id="math-30">\[
+\begin{aligned}
+\dot{\tilde{\hat\rho}}_n={}&amp;-i[\hat H_S,\tilde{\hat\rho}_n]-\Gamma_n\tilde{\hat\rho}_n\\
+&amp;-i\sum_{ik}\sqrt{(n_{ik}+1)|c_k|}\,[\hat Q_i,\tilde{\hat\rho}_{n+e_{ik}}]\\
+&amp;-i\sum_{ik}\sqrt{\frac{n_{ik}}{|c_k|}}\left(c_k\hat Q_i\tilde{\hat\rho}_{n-e_{ik}}-
+\check c_k\tilde{\hat\rho}_{n-e_{ik}}\hat Q_i\right).
+\end{aligned}\tag{31}
+\]</div>
+<p>This is a change of coordinates, not a new dynamical approximation. A hard total-tier cutoff retains <span data-math-id="math-217">\(|n|\leq L\)</span> and sets the upward connection out of tier <span data-math-id="math-218">\(L\)</span> to zero. Other closures must be specified separately.</p>
+<h3>A one-molecule, two-state example</h3>
+<p>Let <span data-math-id="math-219">\(\mathcal B_1=(|c\rangle,|e_1\rangle)\)</span> and vectorize by stacking columns. The ordered Liouville basis is <span data-math-id="math-220">\((|c\rangle\langle c|,|e_1\rangle\langle c|,|c\rangle\langle e_1|,|e_1\rangle\langle e_1|)\)</span>. Thus</p>
+<div class="heom-equation" id="eq-32" data-math-id="math-31">\[
+|\hat A\rangle\!\rangle=(A_{cc},A_{ec},A_{ce},A_{ee})^{\mathsf T}.\tag{32}
+\]</div>
+<p>Here a double ket denotes a coordinate vector for an operator, not a physical pure state. The identity <span data-math-id="math-221">\(\operatorname{vec}(\hat A\hat X\hat B)=(\hat B^{\mathsf T}\otimes\hat A)\operatorname{vec}(\hat X)\)</span> gives the Hamiltonian superoperator</p>
+<div class="heom-equation" id="eq-33" data-math-id="math-32">\[
+\hat{\mathcal L}_H=-i(\hat I\otimes\hat H_S-\hat H_S^{\mathsf T}\otimes\hat I)
+\;\widehat{=}\; -i\begin{pmatrix}
+0&amp;g&amp;-g&amp;0\\g&amp;\epsilon_x-\omega_{\rm cav}&amp;0&amp;-g\\
+-g&amp;0&amp;\omega_{\rm cav}-\epsilon_x&amp;g\\0&amp;-g&amp;g&amp;0
+\end{pmatrix}.\tag{33}
+\]</div>
+<p>The transpose is not a Hermitian adjoint: it comes from column vectorization of right multiplication. In the same ordered Liouville basis,</p>
+<div class="heom-equation" id="eq-34" data-math-id="math-33">\[
+\begin{aligned}
+\hat{\mathcal Q}_L&amp;=\hat I\otimes\hat Q=\operatorname{diag}(0,1,0,1),\\
+\hat{\mathcal Q}_R&amp;=\hat Q^{\mathsf T}\otimes\hat I=\operatorname{diag}(0,0,1,1),\\
+\hat{\mathcal Q}^{\times}&amp;=\hat{\mathcal Q}_L-\hat{\mathcal Q}_R=\operatorname{diag}(0,1,-1,0),\\
+\hat{\mathcal B}&amp;=c\hat{\mathcal Q}_L-\check c\hat{\mathcal Q}_R
+=\operatorname{diag}(0,c,-\check c,c-\check c).
+\end{aligned}\tag{34}
+\]</div>
+<p>For one real-rate exponential and <span data-math-id="math-222">\(L=2\)</span>, stack the three four-component ADO vectors in the order <span data-math-id="math-223">\(n=0,1,2\)</span>. The entire 12-dimensional generator is the block matrix</p>
+<div class="heom-equation" id="eq-35" data-math-id="math-34">\[
+\hat{\mathcal M}_{\rm full}=\begin{pmatrix}
+\hat{\mathcal L}_H&amp;-i\sqrt{|c|}\hat{\mathcal Q}^{\times}&amp;0\\
+-i\hat{\mathcal B}/\sqrt{|c|}&amp;\hat{\mathcal L}_H-\nu\hat I_4&amp;-i\sqrt{2|c|}\hat{\mathcal Q}^{\times}\\
+0&amp;-i\sqrt{2/|c|}\hat{\mathcal B}&amp;\hat{\mathcal L}_H-2\nu\hat I_4
+\end{pmatrix}.\tag{35}
+\]</div>
+<p>Every symbol in this block matrix is now an explicit <span data-math-id="math-224">\(4\times4\)</span> matrix. The top-tier upward block is absent because of the hard cutoff. Multiple molecules add hierarchy directions; molecular symmetry will identify repeated directions without changing this underlying structure.</p>
+<p class="source-note">Scaling and finite hierarchy: <a href="../assets/publication_pdfs/symHEOM.pdf#page=4">paper Eqs. (14)–(18)</a>. The explicit Liouville matrices are derived here in column-stacking order.</p>
+</section>
+
+<section id="count-full" data-short="Count the conventional hierarchy">
+<h2>8. Count the conventional hierarchy before compressing it</h2>
+<p>There are <span data-math-id="math-225">\(K=Nm\)</span> hierarchy directions. At an exact tier <span data-math-id="math-226">\(\ell\)</span>, a label is a nonnegative integer solution of <span data-math-id="math-227">\(n_1+\cdots+n_K=\ell\)</span>. A stars-and-bars argument places <span data-math-id="math-228">\(K-1\)</span> dividers among <span data-math-id="math-229">\(\ell\)</span> occupations, giving <span data-math-id="math-230">\(\binom{K+\ell-1}{\ell}\)</span> labels.</p>
+<p>To count all tiers at once, introduce the unused-depth variable <span data-math-id="math-231">\(n_{K+1}=L-\sum_{j=1}^{K}n_j\)</span>. It is nonnegative and makes the total exactly <span data-math-id="math-232">\(L\)</span>. The same counting argument now gives</p>
+<div class="heom-equation" id="eq-36" data-math-id="math-35">\[
+N_{\rm ADO}^{\rm full}=\binom{Nm+L}{L},\qquad
+D_{\rm full}=(N+1)^2N_{\rm ADO}^{\rm full}.\tag{36}
+\]</div>
+<p>For complex double precision, one stored state vector uses <span data-math-id="math-233">\(16D_{\rm full}\)</span> bytes. This excludes derivative arrays, integration stages, indexing tables, and the program itself. It is a useful lower bound, not a peak-memory estimate.</p>
+<p>For fixed <span data-math-id="math-234">\(L\)</span> and <span data-math-id="math-235">\(m\)</span>, the leading large-<span data-math-id="math-236">\(N\)</span> behavior is <span data-math-id="math-237">\(N_{\rm ADO}^{\rm full}\sim(Nm)^L/L!\)</span>. Multiplying by the dense system matrix makes the raw variable count scale as <span data-math-id="math-238">\(N^{L+2}\)</span>. This is why even a system Hamiltonian with only <span data-math-id="math-239">\(O(N)\)</span> nonzero entries does not, by itself, solve the conventional HEOM memory problem.</p>
+<p class="source-note">Conventional counts: <a href="../assets/publication_pdfs/symHEOM.pdf#page=4">paper Eqs. (17)–(18)</a>.</p>
+</section>
+
+<section id="covariance" data-short="Relabeling and initial conditions">
+<h2>9. Prove the relabeling relation—and check the initial state</h2>
+<p>A molecular relabeling <span data-math-id="math-240">\(\pi\)</span> is represented on the system by the unitary permutation operator <span data-math-id="math-241">\(\hat U_\pi|c\rangle=|c\rangle\)</span> and <span data-math-id="math-242">\(\hat U_\pi|e_i\rangle=|e_{\pi(i)}\rangle\)</span>. Identical molecular parameters imply</p>
+<div class="heom-equation" id="eq-37" data-math-id="math-36">\[
+\hat U_\pi\hat H_S\hat U_\pi^\dagger=\hat H_S,\qquad
+\hat U_\pi\hat Q_i\hat U_\pi^\dagger=\hat Q_{\pi(i)}.\tag{37}
+\]</div>
+<p>A molecule carries its entire bath-channel history with it. For a multi-exponential label, define <span data-math-id="math-243">\((\pi n)_{ik}=n_{\pi^{-1}(i),k}\)</span>. The rate index <span data-math-id="math-244">\(k\)</span> is unchanged. This preserves the total tier, damping, and neighbor structure:</p>
+<div class="heom-equation" id="eq-38" data-math-id="math-37">\[
+|\pi n|=|n|,\quad\Gamma_{\pi n}=\Gamma_n,\quad
+\pi(n+e_{ik})=\pi n+e_{\pi(i)k}.\tag{38}
+\]</div>
+<p>For the Hamiltonian part, insert <span data-math-id="math-245">\(\hat U_\pi^\dagger\hat U_\pi=\hat I\)</span> between the factors and use the invariance of <span data-math-id="math-246">\(\hat H_S\)</span>. For the upward part, transform <span data-math-id="math-247">\(\hat Q_i\)</span> and rename the summed molecular index. The downward part transforms in the same way because <span data-math-id="math-248">\(c_k\)</span>, <span data-math-id="math-249">\(\check c_k\)</span>, and <span data-math-id="math-250">\(\nu_k\)</span> do not depend on <span data-math-id="math-251">\(i\)</span>. Therefore, if <span data-math-id="math-252">\(\{\tilde{\hat\rho}_n(t)\}\)</span> is a solution, then</p>
+<div class="heom-equation" id="eq-39" data-math-id="math-38">\[
+\tilde{\hat\rho}&#x27;_{\pi n}(t)=\hat U_\pi\tilde{\hat\rho}_n(t)\hat U_\pi^\dagger\tag{39}
+\]</div>
+<p>is also a solution, but generally with relabeled initial data. This is <em>covariance</em>. It does not yet let us identify two ADOs within the same calculation.</p>
+<p>For that identification, require <span data-math-id="math-253">\(\tilde{\hat\rho}_{\pi n}(0)=\hat U_\pi\tilde{\hat\rho}_n(0)\hat U_\pi^\dagger\)</span>. The original and relabeled hierarchies then satisfy the same finite linear initial-value problem. Uniqueness of its solution gives</p>
+<div class="heom-equation" id="eq-40" data-math-id="math-39">\[
+\boxed{\tilde{\hat\rho}_{\pi n}(t)=\hat U_\pi\tilde{\hat\rho}_n(t)\hat U_\pi^\dagger.}\tag{40}
+\]</div>
+<p>For a factorized preparation, all nonzero-tier initial ADOs vanish, so the remaining condition is <span data-math-id="math-254">\(\hat U_\pi\hat\rho_S(0)\hat U_\pi^\dagger=\hat\rho_S(0)\)</span>. Cavity, bright, and polariton populations satisfy it. A localized population <span data-math-id="math-255">\(|e_1\rangle\langle e_1|\)</span> does not satisfy it for an exchange involving molecule 1.</p>
+<div class="worked-example"><h3>Two molecules and a first-tier ADO</h3>
+<p>In <span data-math-id="math-256">\(\mathcal B_2\)</span>, the exchange operator and the first-tier relation are</p>
+<div class="heom-equation" id="eq-41" data-math-id="math-40">\[
+[\hat U_{12}]_{\mathcal B_2}=\begin{pmatrix}1&amp;0&amp;0\\0&amp;0&amp;1\\0&amp;1&amp;0\end{pmatrix},\qquad
+\tilde{\hat\rho}_{(0,1)}=\hat U_{12}\tilde{\hat\rho}_{(1,0)}\hat U_{12}^\dagger.\tag{41}
+\]</div>
+<p>If the stored matrix has entries <span data-math-id="math-257">\(\begin{pmatrix}z&amp;a&amp;b\\d&amp;p&amp;s\\f&amp;t&amp;r\end{pmatrix}\)</span>, its relabeled partner is <span data-math-id="math-258">\(\begin{pmatrix}z&amp;b&amp;a\\f&amp;r&amp;t\\d&amp;s&amp;p\end{pmatrix}\)</span>. They are related matrices, not necessarily identical arrays. This distinction is the reason alignment is essential after canonicalization.</p></div>
+<p class="source-note">Covariance proof and preparation condition: <a href="../assets/publication_pdfs/symHEOM.pdf#page=4">paper Eqs. (19)–(27)</a> and <a href="../assets/publication_pdfs/symHEOM.pdf#page=5">the discussion immediately following them</a>.</p>
+</section>
+
+<section id="canonical" data-short="Canonical patterns and multiplicities">
+<h2>10. First reduction: store one canonical occupation pattern</h2>
+<p>Start with one exponential per molecule, so a label is <span data-math-id="math-259">\(n=(n_1,\ldots,n_N)\)</span>. Sort the positive occupations in descending order and suppress the zeros. The result is a canonical pattern <span data-math-id="math-260">\(\Lambda=[\Lambda_1,\ldots,\Lambda_r]\)</span>, where <span data-math-id="math-261">\(\Lambda_1\geq\cdots\geq\Lambda_r&gt;0\)</span> and <span data-math-id="math-262">\(r\leq N\)</span>.</p>
+<p>For storage, the representative molecule-resolved label is <span data-math-id="math-263">\(n^\Lambda=(\Lambda_1,\ldots,\Lambda_r,0,\ldots,0)\)</span>. Define <span data-math-id="math-264">\(\hat R_\Lambda=\tilde{\hat\rho}_{n^\Lambda}\)</span>. The empty pattern <span data-math-id="math-265">\(\varnothing\)</span> is the physical density operator. No statistical averaging has been performed in this definition: <span data-math-id="math-266">\(\hat R_\Lambda\)</span> is one representative, not a sum over all relabelings.</p>
+<p>Let <span data-math-id="math-267">\(M_q^\Lambda\)</span> be the number of molecules carrying occupation <span data-math-id="math-268">\(q\)</span>. Then</p>
+<div class="heom-equation" id="eq-42" data-math-id="math-41">\[
+M_q^\Lambda=\#\{a:\Lambda_a=q\}\quad(q&gt;0),\qquad
+M_0^\Lambda=N-r,\qquad
+\sum_qM_q^\Lambda=N,\quad\sum_qqM_q^\Lambda=|\Lambda|.\tag{42}
+\]</div>
+<p>The number of conventional labels represented by <span data-math-id="math-269">\(\Lambda\)</span> is</p>
+<div class="heom-equation" id="eq-43" data-math-id="math-42">\[
+N_{\rm ord}(\Lambda;N)=\frac{N!}{\prod_{q\geq0}M_q^\Lambda!}.\tag{43}
+\]</div>
+<p>The numerator counts all assignments to molecular labels. Dividing by <span data-math-id="math-270">\(M_q!\)</span> removes assignments that only exchange equal occupations. The zero category must be included.</p>
+<div class="worked-example"><h3><span data-math-id="math-271">\(N=4\)</span> and <span data-math-id="math-272">\(\Lambda=[2,1]\)</span></h3>
+<p>The representative is <span data-math-id="math-273">\((2,1,0,0)\)</span>, with <span data-math-id="math-274">\(M_2=1\)</span>, <span data-math-id="math-275">\(M_1=1\)</span>, and <span data-math-id="math-276">\(M_0=2\)</span>. There are <span data-math-id="math-277">\(4!/(1!1!2!)=12\)</span> distinct conventional labels. They include <span data-math-id="math-278">\((2,1,0,0)\)</span>, <span data-math-id="math-279">\((0,2,1,0)\)</span>, and <span data-math-id="math-280">\((1,0,0,2)\)</span>. Their matrices are reconstructed by molecular relabeling of one <span data-math-id="math-281">\(\hat R_{[2,1]}\)</span>.</p>
+<p>Do not multiply <span data-math-id="math-282">\(\hat R_{[2,1]}\)</span> itself by 12. This multiplicity counts conventional labels, not the normalization of the retained ADO. Factors entering the equations arise from actual sums of equal contributions, which will be derived separately.</p></div>
+<p>At tier <span data-math-id="math-283">\(\ell\)</span>, the patterns are integer partitions of <span data-math-id="math-284">\(\ell\)</span> with at most <span data-math-id="math-285">\(N\)</span> parts. Writing this count as <span data-math-id="math-286">\(p_N(\ell)\)</span>,</p>
+<div class="heom-equation" id="eq-44" data-math-id="math-43">\[
+N_{\rm ADO}^{\rm can}(N,1,L)=\sum_{\ell=0}^{L}p_N(\ell).\tag{44}
+\]</div>
+<p>Through <span data-math-id="math-287">\(L=3\)</span>, the unrestricted list is <span data-math-id="math-288">\(\varnothing\)</span>; <span data-math-id="math-289">\([1]\)</span>; <span data-math-id="math-290">\([2],[1,1]\)</span>; and <span data-math-id="math-291">\([3],[2,1],[1,1,1]\)</span>. There are seven patterns. A system with <span data-math-id="math-292">\(N=2\)</span> excludes <span data-math-id="math-293">\([1,1,1]\)</span>, leaving six. Once <span data-math-id="math-294">\(N\geq L\)</span>, no partition through tier <span data-math-id="math-295">\(L\)</span> is excluded, so the count becomes <span data-math-id="math-296">\(\sum_{\ell=0}^{L}p(\ell)\)</span>, independent of <span data-math-id="math-297">\(N\)</span>.</p>
+<p class="source-note">Canonical representatives and orbit sizes: <a href="../assets/publication_pdfs/symHEOM.pdf#page=5">paper Eqs. (28)–(41)</a>. Saturation of their count: <a href="../assets/publication_pdfs/symHEOM.pdf#page=7">Eqs. (51)–(52)</a>.</p>
+</section>
+
+<section id="alignment" data-short="Align the neighboring ADO">
+<h2>11. Canonicalization must preserve the matrix labels</h2>
+<p>A hierarchy term does two things at once: it changes a bath occupation and acts with the projector of the molecule whose occupation changed. Sorting the target occupations without keeping track of that molecule generally produces the wrong matrix entry.</p>
+<p>Starting from <span data-math-id="math-298">\(n^\Lambda\)</span>, form the raw target <span data-math-id="math-299">\(m_i^\pm=n^\Lambda\pm e_i\)</span>. The word “raw” means the molecular identities have not been reordered. Sorting gives <span data-math-id="math-300">\(\Lambda_i^\pm=\operatorname{canon}(m_i^\pm)\)</span>. Let <span data-math-id="math-301">\(\pi_i^\pm\)</span> carry the stored canonical ordering of that target back into the raw molecular ordering. The required target operator is</p>
+<div class="heom-equation" id="eq-45" data-math-id="math-44">\[
+\hat R_{\Lambda_i^\pm}^{[m_i^\pm]}=
+\hat U_{\pi_i^\pm}\hat R_{\Lambda_i^\pm}\hat U_{\pi_i^\pm}^\dagger.\tag{45}
+\]</div>
+<div class="worked-example"><h3>Lowering the first molecule in <span data-math-id="math-302">\([2,2]\)</span></h3>
+<p>With <span data-math-id="math-303">\(N=4\)</span>, start from <span data-math-id="math-304">\((2,2,0,0)\)</span>. Lower molecule 1 to get <span data-math-id="math-305">\((1,2,0,0)\)</span>. The stored target is <span data-math-id="math-306">\([2,1]\)</span>, represented as <span data-math-id="math-307">\((2,1,0,0)\)</span>. To recover the raw target, exchange molecular labels 1 and 2.</p>
+<p>Consequently, the raw target entry with row <span data-math-id="math-308">\(|e_1\rangle\)</span> and column <span data-math-id="math-309">\(|c\rangle\)</span> is the <em>occupation-1</em> cavity coherence of <span data-math-id="math-310">\(\hat R_{[2,1]}\)</span>, not its occupation-2 coherence. Similarly, the raw <span data-math-id="math-311">\((e_1,e_2)\)</span> entry has occupation categories <span data-math-id="math-312">\((1,2)\)</span>, not <span data-math-id="math-313">\((2,1)\)</span>. A code that sorts only the hierarchy label would get both entries wrong.</p></div>
+<p>For a single real-rate exponential, define <span data-math-id="math-314">\(\chi_L(\Lambda)=1\)</span> when <span data-math-id="math-315">\(|\Lambda|&lt;L\)</span> and zero at the terminal tier. The canonical equation is</p>
+<div class="heom-equation" id="eq-46" data-math-id="math-45">\[
+\begin{aligned}
+\dot{\hat R}_\Lambda={}&amp;-i[\hat H_S,\hat R_\Lambda]-\nu|\Lambda|\hat R_\Lambda\\
+&amp;-i\chi_L(\Lambda)\sum_i\sqrt{(n_i^\Lambda+1)|c|}
+[\hat Q_i,\hat R_{\Lambda_i^+}^{[m_i^+]}]\\
+&amp;-i\sum_{i:n_i^\Lambda&gt;0}\sqrt{n_i^\Lambda/|c|}
+\left(c\hat Q_i\hat R_{\Lambda_i^-}^{[m_i^-]}-c^*\hat R_{\Lambda_i^-}^{[m_i^-]}\hat Q_i\right).
+\end{aligned}\tag{46}
+\]</div>
+<p>This already evolves only canonical ADOs. However, implementing it with full matrices would still store <span data-math-id="math-316">\((N+1)^2\)</span> entries per pattern. The next reduction replaces the aligned matrix operation by direct access to one of a few distinct entries.</p>
+<p class="source-note">Raw targets, alignment, and the canonical equation: <a href="../assets/publication_pdfs/symHEOM.pdf#page=6">paper Eqs. (42)–(50)</a>.</p>
+</section>
+
+<section id="unique" data-short="Unique variables and the 5×5 example">
+<h2>12. Second reduction: identify the entries that are genuinely different</h2>
+<p>Suppose molecules <span data-math-id="math-317">\(i\)</span> and <span data-math-id="math-318">\(j\)</span> carry the same occupation in <span data-math-id="math-319">\(n^\Lambda\)</span>. Exchanging them leaves the hierarchy label unchanged. The covariance relation then implies <span data-math-id="math-320">\(\hat R_\Lambda=\hat U_{ij}\hat R_\Lambda\hat U_{ij}^\dagger\)</span>. A simultaneous exchange of those rows and columns cannot change the representative.</p>
+<p>Let <span data-math-id="math-321">\(\mathcal G_\Lambda=\{q:M_q^\Lambda&gt;0\}\)</span> be the occupation categories actually present, with <span data-math-id="math-322">\(G_\Lambda=|\mathcal G_\Lambda|\)</span>. Do not include the zero category when no zero-occupation molecules remain. Every required matrix entry falls into one of the following types:</p>
+<div class="heom-equation" id="eq-47" data-math-id="math-46">\[
+\begin{aligned}
+Z^\Lambda&amp;=\langle c|\hat R_\Lambda|c\rangle,\\
+X_q^\Lambda&amp;=\langle e_i|\hat R_\Lambda|c\rangle,&amp;
+Y_q^\Lambda&amp;=\langle c|\hat R_\Lambda|e_i\rangle,\quad n_i^\Lambda=q,\\
+P_q^\Lambda&amp;=\langle e_i|\hat R_\Lambda|e_i\rangle,\quad n_i^\Lambda=q,\\
+S_{qr}^\Lambda&amp;=\langle e_i|\hat R_\Lambda|e_j\rangle,\quad n_i^\Lambda=q,\ n_j^\Lambda=r,\ q\ne r,\\
+T_q^\Lambda&amp;=\langle e_i|\hat R_\Lambda|e_j\rangle,\quad i\ne j,\ n_i^\Lambda=n_j^\Lambda=q.
+\end{aligned}\tag{47}
+\]</div>
+<p><span data-math-id="math-323">\(T_q\)</span> exists only if <span data-math-id="math-324">\(M_q\geq2\)</span>. It is not the same variable as <span data-math-id="math-325">\(P_q\)</span>: relabeling cannot turn a diagonal entry into an off-diagonal one. <span data-math-id="math-326">\(S_{qr}\)</span> is ordered, so <span data-math-id="math-327">\(S_{qr}\)</span> and <span data-math-id="math-328">\(S_{rq}\)</span> are both retained. Similarly, <span data-math-id="math-329">\(X_q\)</span> and <span data-math-id="math-330">\(Y_q\)</span> are separate complex coordinates.</p>
+<p>For the physical Hermitian density operator, opposite coherences are complex conjugates. Individual auxiliaries need not have that simple relation for a general complex-rate representation. Even in a real-rate convention where Hermitian initial auxiliaries remain Hermitian, retaining both directions is a safe linear coordinate choice and permits non-Hermitian initial operators used in response calculations. The counts below do not exploit an additional Hermiticity reduction.</p>
+<div class="worked-example"><h3>The complete <span data-math-id="math-331">\(N=4\)</span>, <span data-math-id="math-332">\([2,1]\)</span> representative</h3>
+<p>In the ordered basis <span data-math-id="math-333">\((|c\rangle,|e_1\rangle,|e_2\rangle,|e_3\rangle,|e_4\rangle)\)</span>, with occupation assignment <span data-math-id="math-334">\((2,1,0,0)\)</span>,</p>
+<div class="heom-equation" id="eq-48" data-math-id="math-47">\[
+[\hat R_{[2,1]}]_{\mathcal B_4}=
+\begin{pmatrix}
+Z&amp;Y_2&amp;Y_1&amp;Y_0&amp;Y_0\\
+X_2&amp;P_2&amp;S_{21}&amp;S_{20}&amp;S_{20}\\
+X_1&amp;S_{12}&amp;P_1&amp;S_{10}&amp;S_{10}\\
+X_0&amp;S_{02}&amp;S_{01}&amp;P_0&amp;T_0\\
+X_0&amp;S_{02}&amp;S_{01}&amp;T_0&amp;P_0
+\end{pmatrix}^{[2,1]}.\tag{48}
+\]</div>
+<p>There are 25 matrix entries but only 17 distinct complex variables. Molecules 3 and 4 share their cavity coherences and populations, but their mutual coherence remains a separate <span data-math-id="math-335">\(T_0\)</span>. At <span data-math-id="math-336">\(N=10\)</span>, this same pattern has 121 matrix entries and still only 17 distinct variables. The multiplicity of its zero category changes from 2 to 8.</p></div>
+<p>For each pattern, define <span data-math-id="math-337">\(h_\Lambda=\#\{q:M_q^\Lambda\geq2\}\)</span>. Counting one <span data-math-id="math-338">\(Z\)</span>, three variables per category, ordered cross-category coherences, and the allowed <span data-math-id="math-339">\(T\)</span> variables gives</p>
+<div class="heom-equation" id="eq-49" data-math-id="math-48">\[
+u(\Lambda)=1+3G_\Lambda+G_\Lambda(G_\Lambda-1)+h_\Lambda
+=(G_\Lambda+1)^2+h_\Lambda.\tag{49}
+\]</div>
+<p>The full propagated dimension is <span data-math-id="math-340">\(D_u=\sum_{|\Lambda|\leq L}u(\Lambda)\)</span>. This is a count of complex coordinates in a chosen linear representation, not a count of independent real parameters of a normalized density operator.</p>
+<p class="source-note">Variable definitions and example: <a href="../assets/publication_pdfs/symHEOM.pdf#page=8">paper Eqs. (53)–(69)</a>.</p>
+</section>
+
+<section id="saturation" data-short="Why the dimension saturates">
+<h2>13. Why the second threshold is <span data-math-id="math-341">\(L+2\)</span>, not <span data-math-id="math-342">\(L\)</span></h2>
+<p>At fixed depth <span data-math-id="math-343">\(L\)</span>, every pattern has at most <span data-math-id="math-344">\(L\)</span> nonzero occupations. Beyond <span data-math-id="math-345">\(N\geq L\)</span>, all patterns are already present. However, increasing <span data-math-id="math-346">\(N\)</span> can still create a zero category where none existed, or give a formerly singleton zero category a second molecule. The latter creates the new variable <span data-math-id="math-347">\(T_0\)</span>.</p>
+<p>Once <span data-math-id="math-348">\(M_0^\Lambda=N-r\geq2\)</span> for every retained pattern, neither change can occur. Because <span data-math-id="math-349">\(r\leq L\)</span>, the sufficient uniform threshold is <span data-math-id="math-350">\(N\geq L+2\)</span>. Above it,</p>
+<div class="heom-equation" id="eq-50" data-math-id="math-49">\[
+D_u(N,1,L)=D_u(L+2,1,L),\qquad N\geq L+2.\tag{50}
+\]</div>
+<p>There can be earlier saturation for a particular pattern or a specially restricted calculation; <span data-math-id="math-351">\(L+2\)</span> is the general bound for this full family of one-excitation density operators. The underlying reason is structural: a matrix entry can involve zero, one, or two distinct molecular identities.</p>
+<p>At <span data-math-id="math-352">\(L=25\)</span>, direct enumeration of the patterns gives 9,296 canonical ADOs for <span data-math-id="math-353">\(N\geq25\)</span>. The exact unique-variable counts near the second threshold are:</p>
+<div class="table-scroll" role="region" aria-label="Dimension near the saturation threshold" tabindex="0"><table><thead><tr><th scope="col">Molecules <span data-math-id="math-354">\(N\)</span></th><th scope="col">Canonical ADOs</th><th scope="col">Unique complex variables</th><th scope="col">One vector, decimal MB</th></tr></thead><tbody>
+<tr><th scope="row">25</th><td>9,296</td><td>306,743</td><td>4.907888</td></tr>
+<tr><th scope="row">26</th><td>9,296</td><td>306,750</td><td>4.908000</td></tr>
+<tr><th scope="row">27</th><td>9,296</td><td>306,751</td><td>4.908016</td></tr>
+<tr><th scope="row"><span data-math-id="math-355">\(10^{12}\)</span></th><td>9,296</td><td>306,751</td><td>4.908016</td></tr>
+</tbody></table></div>
+<p>The storage is <span data-math-id="math-356">\(16D_u\)</span> bytes. These values exclude runtime connection arrays, integrator workspaces, and all other process memory. The statement is that the <em>state-vector size</em> has saturated—not that the entire executable occupies 4.91 MB.</p>
+<div class="heom-explorer" id="dimension-explorer">
+<h3>Explore the exact counts</h3>
+<p>One exponential per local bath; fully permutation-symmetric operator; hard total-tier cutoff. The conventional counts below use integer arithmetic, not floating-point extrapolation.</p>
+<form id="heom-count-form" class="heom-controls"><label for="heom-N">Number of molecules <span data-math-id="math-357">\(N\)</span><input id="heom-N" name="N" type="text" inputmode="numeric" value="1000000000000" pattern="[0-9]+" required aria-describedby="heom-count-help"></label><label for="heom-L">Hierarchy depth <span data-math-id="math-358">\(L\)</span><input id="heom-L" name="L" type="number" min="0" max="25" step="1" value="25" required></label><button type="submit">Calculate counts</button></form>
+<p id="heom-count-help" class="source-note">Supported here: <span data-math-id="math-359">\(1\leq N\leq10^{12}\)</span> and <span data-math-id="math-360">\(0\leq L\leq25\)</span>. This is a combinatorial calculator, not a runtime benchmark.</p>
+<div id="heom-count-output" aria-live="polite" aria-atomic="true"><p>The default calculation has 9,296 canonical ADOs and 306,751 unique variables, requiring 4.908016 MB for one complex-double vector. Enable JavaScript to change the parameters.</p></div>
+</div>
+<p class="source-note">Saturation proof: <a href="../assets/publication_pdfs/symHEOM.pdf#page=9">paper Eqs. (70)–(72)</a>. The exact <span data-math-id="math-361">\(L=25\)</span> counts are also reported in <a href="../assets/publication_pdfs/symHEOM.pdf#page=18">Section VII E</a> and are independently checked by the companion program.</p>
+</section>
+
+<section id="hamiltonian-rhs" data-short="All Hamiltonian component equations">
+<h2>14. Derive the Hamiltonian action without reconstructing matrices</h2>
+<p>Compression is useful only if the derivative can be evaluated in the compressed coordinates. Let <span data-math-id="math-362">\(q\)</span> be the category of molecule <span data-math-id="math-363">\(i\)</span>. The molecular part of row <span data-math-id="math-364">\(i\)</span> contains its own diagonal entry, <span data-math-id="math-365">\(M_q-1\)</span> equivalent off-diagonal entries in the same category, and <span data-math-id="math-366">\(M_r\)</span> entries in every other category. Therefore define the scalar row and column sums</p>
+<div class="heom-equation" id="eq-51" data-math-id="math-50">\[
+\begin{aligned}
+\mathfrak r_q^\Lambda&amp;=P_q^\Lambda+(M_q^\Lambda-1)T_q^\Lambda+
+\sum_{r\ne q}M_r^\Lambda S_{qr}^\Lambda,\\
+\mathfrak c_q^\Lambda&amp;=P_q^\Lambda+(M_q^\Lambda-1)T_q^\Lambda+
+\sum_{r\ne q}M_r^\Lambda S_{rq}^\Lambda.
+\end{aligned}\tag{51}
+\]</div>
+<p>When <span data-math-id="math-367">\(M_q=1\)</span>, omit the <span data-math-id="math-368">\(T_q\)</span> term rather than accessing an undefined variable. For <span data-math-id="math-369">\([2,1]\)</span> at <span data-math-id="math-370">\(N=4\)</span>, <span data-math-id="math-371">\(\mathfrak r_0=P_0+T_0+S_{02}+S_{01}\)</span>. At <span data-math-id="math-372">\(N=10\)</span>, it becomes <span data-math-id="math-373">\(P_0+7T_0+S_{02}+S_{01}\)</span>.</p>
+<h3>Derive a cavity–molecule equation entry by entry</h3>
+<p>For <span data-math-id="math-374">\(X_q=\langle e_i|\hat R_\Lambda|c\rangle\)</span>, the two products in the commutator are</p>
+<div class="heom-equation" id="eq-52" data-math-id="math-51">\[
+\begin{aligned}
+\langle e_i|\hat H_S\hat R_\Lambda|c\rangle&amp;=\epsilon_xX_q+gZ,\\
+\langle e_i|\hat R_\Lambda\hat H_S|c\rangle&amp;=\omega_{\rm cav}X_q+g\sum_j\langle e_i|\hat R_\Lambda|e_j\rangle
+=\omega_{\rm cav}X_q+g\mathfrak r_q.
+\end{aligned}\tag{52}
+\]</div>
+<p>Subtract them, multiply by <span data-math-id="math-375">\(-i\)</span>, and add the hierarchy damping <span data-math-id="math-376">\(-\Gamma_\Lambda X_q\)</span>. This gives <span data-math-id="math-377">\(\dot X_q|_{H+\Gamma}=-i(\epsilon_x-\omega_{\rm cav})X_q-ig(Z-\mathfrak r_q)-\Gamma_\Lambda X_q\)</span>. Repeating the same multiplication for all variable types yields the complete set:</p>
+<div class="heom-equation" id="eq-53" data-math-id="math-52">\[
+\dot Z^\Lambda\big|_{H+\Gamma}=-ig\sum_qM_q^\Lambda(X_q^\Lambda-Y_q^\Lambda)-\Gamma_\Lambda Z^\Lambda.\tag{53}
+\]</div>
+<div class="heom-equation" id="eq-54" data-math-id="math-53">\[
+\begin{aligned}
+\dot X_q^\Lambda\big|_{H+\Gamma}&amp;=-i(\epsilon_x-\omega_{\rm cav})X_q^\Lambda-ig(Z^\Lambda-\mathfrak r_q^\Lambda)-\Gamma_\Lambda X_q^\Lambda,\\
+\dot Y_q^\Lambda\big|_{H+\Gamma}&amp;=-i(\omega_{\rm cav}-\epsilon_x)Y_q^\Lambda-ig(\mathfrak c_q^\Lambda-Z^\Lambda)-\Gamma_\Lambda Y_q^\Lambda.
+\end{aligned}\tag{54}
+\]</div>
+<div class="heom-equation" id="eq-55" data-math-id="math-54">\[
+\begin{aligned}
+\dot P_q^\Lambda\big|_{H+\Gamma}&amp;=-ig(Y_q^\Lambda-X_q^\Lambda)-\Gamma_\Lambda P_q^\Lambda,\\
+\dot S_{qr}^\Lambda\big|_{H+\Gamma}&amp;=-ig(Y_r^\Lambda-X_q^\Lambda)-\Gamma_\Lambda S_{qr}^\Lambda,\qquad q\ne r,\\
+\dot T_q^\Lambda\big|_{H+\Gamma}&amp;=-ig(Y_q^\Lambda-X_q^\Lambda)-\Gamma_\Lambda T_q^\Lambda.
+\end{aligned}\tag{55}
+\]</div>
+<p>For a molecular off-diagonal entry <span data-math-id="math-378">\((i,j)\)</span>, the two equal electronic energies cancel, leaving only <span data-math-id="math-379">\(gY_r-gX_q\)</span>. This explains the last two equations. Their equality of form does not make <span data-math-id="math-380">\(P_q\)</span> and <span data-math-id="math-381">\(T_q\)</span> redundant: their hierarchy couplings differ.</p>
+<p>For one exponential, <span data-math-id="math-382">\(\Gamma_\Lambda=\nu|\Lambda|\)</span>. With multiple channels, <span data-math-id="math-383">\(\Gamma_\Lambda\)</span> is the sum of the occupied local rates. The Hamiltonian equations themselves keep the same category structure.</p>
+<p>Only the grouped sums require more than one or two terms. They run over the categories present in the pattern, not over the <span data-math-id="math-384">\(N\)</span> molecules. A million equal contributions are represented by one variable multiplied by its multiplicity.</p>
+<p class="source-note">Grouped sums and representative component equations: <a href="../assets/publication_pdfs/symHEOM.pdf#page=10">paper Eqs. (75)–(81)</a>. The remaining component equations are derived explicitly here.</p>
+</section>
+
+<section id="hierarchy-rhs" data-short="All hierarchy couplings">
+<h2>15. Derive the hierarchy action one matrix entry at a time</h2>
+<p>The local projector <span data-math-id="math-385">\(\hat Q_i=|e_i\rangle\langle e_i|\)</span> makes the hierarchy action especially simple. For a matrix entry <span data-math-id="math-386">\(A_{ab}=\langle a|\hat A|b\rangle\)</span>,</p>
+<div class="heom-equation" id="eq-56" data-math-id="math-55">\[
+\langle a|[\hat Q_i,\hat A]|b\rangle=(\delta_{a,e_i}-\delta_{b,e_i})A_{ab},
+\quad
+\langle a|(c\hat Q_i\hat A-\check c\hat A\hat Q_i)|b\rangle
+=(c\delta_{a,e_i}-\check c\delta_{b,e_i})A_{ab}.\tag{56}
+\]</div>
+<p>Only a bath attached to the row or the column molecule can contribute. For a cavity–cavity entry neither contributes. A molecular diagonal entry has the same row and column molecule, so its upward commutator cancels exactly.</p>
+<p>Define <span data-math-id="math-387">\(\mathcal A_i^\pm(a,b)\)</span> as the aligned target entry with raw label <span data-math-id="math-388">\(m_i^\pm\)</span> and canonical pattern <span data-math-id="math-389">\(\Lambda_i^\pm\)</span>. It is a scalar accessor, not an additional propagated object. For a one-exponential real-rate bath, set</p>
+<div class="heom-equation" id="eq-57" data-math-id="math-56">\[
+a_q=\sqrt{(q+1)|c|},\qquad b_q=\sqrt{q/|c|},\qquad b_0=0.\tag{57}
+\]</div>
+<p>For any source variable <span data-math-id="math-390">\(V_{ab}^\Lambda=\langle a|\hat R_\Lambda|b\rangle\)</span>, the hierarchy contribution is</p>
+<div class="heom-equation" id="eq-58" data-math-id="math-57">\[
+\begin{aligned}
+\dot V_{ab}^\Lambda\big|_{\rm hier}={}&amp;
+-i\chi_L\sum_i a_{n_i^\Lambda}(\delta_{a,e_i}-\delta_{b,e_i})\mathcal A_i^+(a,b)\\
+&amp;-i\sum_{i:n_i^\Lambda&gt;0}b_{n_i^\Lambda}
+(c\delta_{a,e_i}-c^*\delta_{b,e_i})\mathcal A_i^-(a,b).
+\end{aligned}\tag{58}
+\]</div>
+<p>Although this formula displays a sum over molecules, at most two distinct molecular labels survive. When several exponential channels are retained, repeat the same row and column logic for each channel.</p>
+<h3>Cavity and cavity–molecule entries</h3>
+<p>For <span data-math-id="math-391">\(Z\)</span>, all deltas vanish: <span data-math-id="math-392">\(\dot Z|_{\rm hier}=0\)</span>. For <span data-math-id="math-393">\(X_q\)</span> and <span data-math-id="math-394">\(Y_q\)</span>, choose a molecule <span data-math-id="math-395">\(i\)</span> of occupation <span data-math-id="math-396">\(q\)</span> and obtain</p>
+<div class="heom-equation" id="eq-59" data-math-id="math-58">\[
+\begin{aligned}
+\dot X_q^\Lambda\big|_{\rm hier}&amp;=-i\chi_L a_q\mathcal A_i^+(e_i,c)-icb_q\mathcal A_i^-(e_i,c),\\
+\dot Y_q^\Lambda\big|_{\rm hier}&amp;=+i\chi_L a_q\mathcal A_i^+(c,e_i)+ic^*b_q\mathcal A_i^-(c,e_i).
+\end{aligned}\tag{59}
+\]</div>
+<p>A downward term at <span data-math-id="math-397">\(q=0\)</span> is absent; the notation <span data-math-id="math-398">\(b_0=0\)</span> must not cause a program to request a nonexistent negative-occupation target.</p>
+<h3>Diagonal and off-diagonal molecular entries</h3>
+<p>For a population-type coordinate, row and column are the same molecule. The upward pieces cancel, but the two coefficients in the downward term need not cancel:</p>
+<div class="heom-equation" id="eq-60" data-math-id="math-59">\[
+\dot P_q^\Lambda\big|_{\rm hier}=-i(c-c^*)b_q\mathcal A_i^-(e_i,e_i).\tag{60}
+\]</div>
+<p>At the physical tier <span data-math-id="math-399">\(q=0\)</span>, this is zero. Local diagonal coupling therefore has no direct term in the site population derivative. Population relaxation still occurs through the Hamiltonian and the bath-modified coherences.</p>
+<p>For <span data-math-id="math-400">\(S_{qr}\)</span>, choose distinct molecules <span data-math-id="math-401">\(i\)</span> and <span data-math-id="math-402">\(j\)</span> with occupations <span data-math-id="math-403">\(q\)</span> and <span data-math-id="math-404">\(r\)</span>. Then</p>
+<div class="heom-equation" id="eq-61" data-math-id="math-60">\[
+\begin{aligned}
+\dot S_{qr}^\Lambda\big|_{\rm hier}={}&amp;-i\chi_La_q\mathcal A_i^+(e_i,e_j)
++i\chi_La_r\mathcal A_j^+(e_i,e_j)\\
+&amp;-icb_q\mathcal A_i^-(e_i,e_j)
++ic^*b_r\mathcal A_j^-(e_i,e_j).
+\end{aligned}\tag{61}
+\]</div>
+<p>The equation for <span data-math-id="math-405">\(T_q\)</span> is the same expression with <span data-math-id="math-406">\(r=q\)</span> but still <span data-math-id="math-407">\(i\ne j\)</span>. It does <em>not</em> reduce to the population equation: raising the row molecule and raising the column molecule access different entries of the target representative.</p>
+<div class="worked-example"><h3>Follow the variables when a category changes</h3>
+<p>At <span data-math-id="math-408">\(N=4\)</span>, <span data-math-id="math-409">\(\Lambda=[2,1]\)</span>, consider <span data-math-id="math-410">\(S_{20}=\langle e_1|\hat R_{[2,1]}|e_3\rangle\)</span>. Raising the row molecule gives raw label <span data-math-id="math-411">\((3,1,0,0)\)</span>, pattern <span data-math-id="math-412">\([3,1]\)</span>, and target entry <span data-math-id="math-413">\(S_{30}^{[3,1]}\)</span>. Raising the column molecule gives <span data-math-id="math-414">\((2,1,1,0)\)</span>, pattern <span data-math-id="math-415">\([2,1,1]\)</span>, and target entry <span data-math-id="math-416">\(S_{21}^{[2,1,1]}\)</span>. Lowering the row molecule gives <span data-math-id="math-417">\((1,1,0,0)\)</span> and <span data-math-id="math-418">\(S_{10}^{[1,1]}\)</span>; the zero-occupation column cannot be lowered. Hence, for <span data-math-id="math-419">\(L\geq4\)</span>,</p>
+<div class="heom-equation" id="eq-62" data-math-id="math-61">\[
+\dot S_{20}^{[2,1]}\big|_{\rm hier}=
+-i\sqrt{3|c|}\,S_{30}^{[3,1]}
++i\sqrt{|c|}\,S_{21}^{[2,1,1]}
+-ic\sqrt{2/|c|}\,S_{10}^{[1,1]}.\tag{62}
+\]</div>
+<p>At <span data-math-id="math-420">\(L=3\)</span>, both upward terms are removed. No factor <span data-math-id="math-421">\(M_0=2\)</span> multiplies the column term: this particular matrix element selects one column molecule, not the sum of both zero-category molecules.</p></div>
+<h3>An accessor that avoids permutation matrices</h3>
+<p>Keep the raw target occupations attached to their molecular labels long enough to inspect the requested row and column. Then identify the target variable from their new categories: cavity/cavity means <span data-math-id="math-422">\(Z\)</span>; molecule/cavity means <span data-math-id="math-423">\(X\)</span>; cavity/molecule means <span data-math-id="math-424">\(Y\)</span>; identical molecular labels mean <span data-math-id="math-425">\(P\)</span>; different labels in the same category mean <span data-math-id="math-426">\(T\)</span>; different categories mean ordered <span data-math-id="math-427">\(S\)</span>. Only the target <em>pattern</em> is sorted to find its stored location.</p>
+<p>This procedure is equivalent to applying <span data-math-id="math-428">\(\hat U_\pi\hat R\hat U_\pi^\dagger\)</span>, but it does not construct <span data-math-id="math-429">\(\hat U_\pi\)</span> or <span data-math-id="math-430">\(\hat R\)</span>. It also handles a lowering move that merges two categories and a raising move that splits a category.</p>
+<p class="source-note">Aligned access and sparse row/column selection: <a href="../assets/publication_pdfs/symHEOM.pdf#page=10">paper Eqs. (82)–(89)</a>. The explicit component specialization and target-tracing example are derived here.</p>
+</section>
+
+<section id="two-molecule" data-short="A complete 28-variable example">
+<h2>16. A complete two-molecule hierarchy through <span data-math-id="math-431">\(L=2\)</span></h2>
+<p>Let <span data-math-id="math-432">\(N=2\)</span>, <span data-math-id="math-433">\(m=1\)</span>, and <span data-math-id="math-434">\(L=2\)</span>. Store the patterns in the order <span data-math-id="math-435">\(\varnothing,[1],[2],[1,1]\)</span>. In the same system basis <span data-math-id="math-436">\(\mathcal B_2=(|c\rangle,|e_1\rangle,|e_2\rangle)\)</span>, their matrices are</p>
+<div class="heom-equation" id="eq-63" data-math-id="math-62">\[
+\hat R_\varnothing\;\widehat{=}\;
+\begin{pmatrix}Z&amp;Y_0&amp;Y_0\\X_0&amp;P_0&amp;T_0\\X_0&amp;T_0&amp;P_0\end{pmatrix}^{\varnothing},
+\qquad
+\hat R_{[1]}\;\widehat{=}\;
+\begin{pmatrix}Z&amp;Y_1&amp;Y_0\\X_1&amp;P_1&amp;S_{10}\\X_0&amp;S_{01}&amp;P_0\end{pmatrix}^{[1]}.\tag{63}
+\]</div>
+<div class="heom-equation" id="eq-64" data-math-id="math-63">\[
+\hat R_{[2]}\;\widehat{=}\;
+\begin{pmatrix}Z&amp;Y_2&amp;Y_0\\X_2&amp;P_2&amp;S_{20}\\X_0&amp;S_{02}&amp;P_0\end{pmatrix}^{[2]},
+\qquad
+\hat R_{[1,1]}\;\widehat{=}\;
+\begin{pmatrix}Z&amp;Y_1&amp;Y_1\\X_1&amp;P_1&amp;T_1\\X_1&amp;T_1&amp;P_1\end{pmatrix}^{[1,1]}.\tag{64}
+\]</div>
+<p>The local dimensions are <span data-math-id="math-437">\(5+9+9+5=28\)</span>. The subscripts are occupation categories, not molecule numbers: <span data-math-id="math-438">\(P_1^{[1,1]}\)</span> describes either molecular population entry, whereas <span data-math-id="math-439">\(P_1^{[1]}\)</span> describes only the molecule carrying one hierarchy occupation.</p>
+<p>For the physical block, define the bookkeeping ket <span data-math-id="math-440">\(|r_0\rangle=(Z,X_0,Y_0,P_0,T_0)^{\mathsf T}\)</span>. Its Hamiltonian action is the following <span data-math-id="math-441">\(5\times5\)</span> matrix in that explicitly stated coordinate order:</p>
+<div class="heom-equation" id="eq-65" data-math-id="math-64">\[
+\frac{d|r_0\rangle}{dt}\Big|_H=
+\begin{pmatrix}
+0&amp;-2ig&amp;2ig&amp;0&amp;0\\
+-ig&amp;-i(\epsilon_x-\omega_{\rm cav})&amp;0&amp;ig&amp;ig\\
+ig&amp;0&amp;-i(\omega_{\rm cav}-\epsilon_x)&amp;-ig&amp;-ig\\
+0&amp;ig&amp;-ig&amp;0&amp;0\\
+0&amp;ig&amp;-ig&amp;0&amp;0
+\end{pmatrix}|r_0\rangle.\tag{65}
+\]</div>
+<p>The physical block has zero hierarchy damping. Its hierarchy contribution is</p>
+<div class="heom-equation" id="eq-66" data-math-id="math-65">\[
+\frac{d|r_0\rangle}{dt}\Big|_{\rm hier}=
+\sqrt{|c|}\begin{pmatrix}
+0\\-iX_1^{[1]}\\iY_1^{[1]}\\0\\-iS_{10}^{[1]}+iS_{01}^{[1]}
+\end{pmatrix}.\tag{66}
+\]</div>
+<p>This is an explicit demonstration of bath-mediated dark-state dynamics. Without the hierarchy, <span data-math-id="math-442">\(P_0\)</span> and <span data-math-id="math-443">\(T_0\)</span> have identical derivatives. With the hierarchy, <span data-math-id="math-444">\(T_0\)</span> has an extra term while <span data-math-id="math-445">\(P_0\)</span> does not. Their difference, which determines dark population, can therefore grow.</p>
+<p>As a first-tier example, <span data-math-id="math-446">\(X_1^{[1]}\)</span> has a downward contribution <span data-math-id="math-447">\(-icX_0^{\varnothing}/\sqrt{|c|}\)</span> and an upward contribution <span data-math-id="math-448">\(-i\sqrt{2|c|}X_2^{[2]}\)</span>. The coherence <span data-math-id="math-449">\(X_0^{[1]}\)</span> has no downward contribution from its zero-occupation row, but its upward target is <span data-math-id="math-450">\(X_1^{[1,1]}\)</span>. These two distinct first-tier coherences would be incorrectly merged by a bright-only approximation.</p>
+<p>All derivatives of the remaining 23 coordinates follow directly from Sections 14–15. The companion program constructs those coefficients and verifies the resulting 28-dimensional representation against the full 54-entry hierarchy.</p>
+</section>
+
+<section id="observables" data-short="Observables and initial states">
+<h2>17. Recover physical observables from five numbers</h2>
+<p>For a fully symmetric physical density operator with <span data-math-id="math-451">\(N\geq2\)</span>, the empty pattern has only the zero category. Suppress its superscript and write the five variables as <span data-math-id="math-452">\(Z,X,Y,P,T\)</span>. The trace and total site population are immediately</p>
+<div class="heom-equation" id="eq-67" data-math-id="math-66">\[
+\operatorname{Tr}_S\hat\rho_S=Z+NP,\qquad
+P_{\rm cav}=Z,\qquad P_{\rm exc}=NP.\tag{67}
+\]</div>
+<p>The bright population is a sum over all ordered molecular matrix entries. There are <span data-math-id="math-453">\(N\)</span> diagonal terms and <span data-math-id="math-454">\(N(N-1)\)</span> off-diagonal terms. Dividing by the bright-state normalization gives</p>
+<div class="heom-equation" id="eq-68" data-math-id="math-67">\[
+P_B=\langle B|\hat\rho_S|B\rangle
+=\frac1N\sum_{ij}\langle e_i|\hat\rho_S|e_j\rangle
+=P+(N-1)T.\tag{68}
+\]</div>
+<p>Subtract bright population from total exciton population to obtain</p>
+<div class="heom-equation" id="eq-69" data-math-id="math-68">\[
+P_D=\operatorname{Tr}_S(\hat P_D\hat\rho_S)
+=NP-P_B=(N-1)(P-T).\tag{69}
+\]</div>
+<p>This is the population summed over all <span data-math-id="math-455">\(N-1\)</span> dark states. It is not the population of one chosen dark ket. The scalar <span data-math-id="math-456">\(T\)</span> can be positive, negative, or complex in a general operator calculation; for the physical Hermitian symmetric density operator it is real.</p>
+<h3>The full collective-basis density matrix</h3>
+<p>Within the molecular sector, the matrix is <span data-math-id="math-457">\((P-T)\hat I_N+T\hat J_N\)</span>, where <span data-math-id="math-458">\(\hat J_N\)</span> has every entry equal to one in the site basis. The bright ket is an eigenvector of <span data-math-id="math-459">\(\hat J_N\)</span> with eigenvalue <span data-math-id="math-460">\(N\)</span>, while every dark ket has eigenvalue zero. In the collective basis introduced in Section 3,</p>
+<div class="heom-equation" id="eq-70" data-math-id="math-69">\[
+[\hat\rho_S]_{\mathcal B_{BD}}=
+\begin{pmatrix}Z&amp;\sqrt N\,Y\\\sqrt N\,X&amp;P+(N-1)T\end{pmatrix}
+\oplus(P-T)\hat I_{N-1}.\tag{70}
+\]</div>
+<p>This block form makes the distinction between Hilbert-space and operator symmetry especially clear. The dark block is present even though every molecule is equivalent. For a physical density operator, positivity can be checked without diagonalizing an <span data-math-id="math-461">\((N+1)\times(N+1)\)</span> matrix: require <span data-math-id="math-462">\(P-T\geq0\)</span> and the <span data-math-id="math-463">\(2\times2\)</span> bright–cavity block to be positive semidefinite. In particular, <span data-math-id="math-464">\(Z\geq0\)</span>, <span data-math-id="math-465">\(P_B\geq0\)</span>, and <span data-math-id="math-466">\(ZP_B-N|X|^2\geq0\)</span>, with <span data-math-id="math-467">\(Y=X^*\)</span>.</p>
+<p>Using the polariton kets, expand each quadratic form:</p>
+<div class="heom-equation" id="eq-71" data-math-id="math-70">\[
+\begin{aligned}
+P_+&amp;=Z\cos^2\theta+P_B\sin^2\theta+
+\sqrt N\sin\theta\cos\theta(X+Y),\\
+P_-&amp;=Z\sin^2\theta+P_B\cos^2\theta-
+\sqrt N\sin\theta\cos\theta(X+Y).
+\end{aligned}\tag{71}
+\]</div>
+<p>Adding them cancels the coherence terms. Hence <span data-math-id="math-468">\(P_++P_-+P_D=Z+NP\)</span>, which must remain one in the no-loss calculation. The trace derivative cancels directly: <span data-math-id="math-469">\(\dot Z|_H=-igN(X-Y)\)</span> and <span data-math-id="math-470">\(N\dot P|_H=+igN(X-Y)\)</span>, while the physical diagonal hierarchy terms vanish.</p>
+<h3>Initialize the state in the same coordinate convention</h3>
+<p>Factorized preparation sets every nonempty pattern to zero. The physical variables for several useful initial states are</p>
+<div class="table-scroll" role="region" aria-label="Symmetric initial conditions" tabindex="0"><table><thead><tr><th scope="col">Initial operator</th><th scope="col"><span data-math-id="math-471">\(Z\)</span></th><th scope="col"><span data-math-id="math-472">\(X=Y\)</span></th><th scope="col"><span data-math-id="math-473">\(P=T\)</span></th></tr></thead><tbody>
+<tr><th scope="row"><span data-math-id="math-474">\(|c\rangle\langle c|\)</span></th><td>1</td><td>0</td><td>0</td></tr>
+<tr><th scope="row"><span data-math-id="math-475">\(|B\rangle\langle B|\)</span></th><td>0</td><td>0</td><td><span data-math-id="math-476">\(1/N\)</span></td></tr>
+<tr><th scope="row"><span data-math-id="math-477">\(|+\rangle\langle+|\)</span></th><td><span data-math-id="math-478">\(\cos^2\theta\)</span></td><td><span data-math-id="math-479">\(\sin\theta\cos\theta/\sqrt N\)</span></td><td><span data-math-id="math-480">\(\sin^2\theta/N\)</span></td></tr>
+<tr><th scope="row"><span data-math-id="math-481">\(|-\rangle\langle-|\)</span></th><td><span data-math-id="math-482">\(\sin^2\theta\)</span></td><td><span data-math-id="math-483">\(-\sin\theta\cos\theta/\sqrt N\)</span></td><td><span data-math-id="math-484">\(\cos^2\theta/N\)</span></td></tr>
+</tbody></table></div>
+<p>An incoherent equal mixture of sites instead has <span data-math-id="math-485">\(Z=X=Y=T=0\)</span> and <span data-math-id="math-486">\(P=1/N\)</span>. Its bright population is <span data-math-id="math-487">\(1/N\)</span> and its dark population is <span data-math-id="math-488">\((N-1)/N\)</span>, unlike a pure bright state whose dark population is zero. Equal site populations alone do not determine whether the excitation is bright.</p>
+<p>For <span data-math-id="math-489">\(N=1\)</span>, there is no dark sector and no <span data-math-id="math-490">\(T\)</span> coordinate. Use <span data-math-id="math-491">\(P_B=P\)</span> and <span data-math-id="math-492">\(P_D=0\)</span> rather than requesting a nonexistent <span data-math-id="math-493">\(T_0\)</span>.</p>
+<p class="source-note">Observables and symmetric preparations: <a href="../assets/publication_pdfs/symHEOM.pdf#page=11">paper Eqs. (90)–(101)</a>. The collective-basis block form and positivity check are derived from those variables here.</p>
+</section>
+
+<section id="localized" data-short="Localized and arbitrary preparations">
+<h2>18. Localized states do not destroy all of the symmetry</h2>
+<p>The initial operator <span data-math-id="math-494">\(|e_1\rangle\langle e_1|\)</span> singles out molecule 1. A permutation exchanging it with molecule 2 changes the initial condition, so the fully symmetric five-variable physical block is not sufficient. But exchanges among molecules <span data-math-id="math-495">\(2,\ldots,N\)</span> still leave the initial operator unchanged.</p>
+<p>Keep the distinguished molecular label, its system row and column, and its local hierarchy occupation explicit. Canonicalize only the remaining <span data-math-id="math-496">\(N-1\)</span> molecules. For one exponential, a partially symmetric hierarchy label has the form <span data-math-id="math-497">\((n_d;\Lambda)\)</span> with <span data-math-id="math-498">\(n_d+|\Lambda|\leq L\)</span>.</p>
+<div class="worked-example"><h3>One distinguished molecule and two equivalent spectators</h3>
+<p>For <span data-math-id="math-499">\(N=3\)</span>, in the ordered basis <span data-math-id="math-500">\((|c\rangle,|e_1\rangle,|e_2\rangle,|e_3\rangle)\)</span>, a physical operator invariant under exchange of molecules 2 and 3 has the structure</p>
+<div class="heom-equation" id="eq-72" data-math-id="math-71">\[
+[\hat\rho_S]_{\mathcal B_3}=\begin{pmatrix}
+Z&amp;Y_d&amp;Y_0&amp;Y_0\\
+X_d&amp;P_d&amp;S_{d0}&amp;S_{d0}\\
+X_0&amp;S_{0d}&amp;P_0&amp;T_0\\
+X_0&amp;S_{0d}&amp;T_0&amp;P_0
+\end{pmatrix}.\tag{72}
+\]</div>
+<p>There are ten complex coordinates. For <span data-math-id="math-501">\(|e_1\rangle\langle e_1|\)</span>, set <span data-math-id="math-502">\(P_d=1\)</span> and all other coordinates to zero. The same ten-coordinate physical structure handles a coherent cavity–site superposition; its initial values change, but its symmetry does not.</p></div>
+<p>More generally, keep <span data-math-id="math-503">\(d\)</span> distinguished molecules fixed and compress <span data-math-id="math-504">\(N-d\)</span> others. The sufficient saturation thresholds become</p>
+<div class="heom-equation" id="eq-73" data-math-id="math-72">\[
+N\geq L+d\quad\text{for canonical labels},\qquad
+N\geq L+d+2\quad\text{for unique variables}.\tag{73}
+\]</div>
+<p>For a particular partially symmetric pattern with <span data-math-id="math-505">\(G\)</span> categories among the equivalent molecules, the coordinate count is <span data-math-id="math-506">\((d+G+1)^2+h\)</span>, where <span data-math-id="math-507">\(h\)</span> counts equivalent categories with at least two members. Each distinguished molecule is a separate singleton category even when its hierarchy occupation equals that of another molecule.</p>
+<h3>Understand the localized state's initial collective populations</h3>
+<p>Because <span data-math-id="math-508">\(\langle B|e_1\rangle=1/\sqrt N\)</span>, a localized state has bright weight <span data-math-id="math-509">\(1/N\)</span> and dark weight <span data-math-id="math-510">\(1-1/N\)</span>. On resonance,</p>
+<div class="heom-equation" id="eq-74" data-math-id="math-73">\[
+P_+(0)=P_-(0)=\frac{1}{2N},\qquad P_D(0)=1-\frac1N.\tag{74}
+\]</div>
+<p>For a more general normalized ket <span data-math-id="math-511">\(|\psi\rangle=a|c\rangle+b|e_1\rangle\)</span>, with <span data-math-id="math-512">\(|a|^2+|b|^2=1\)</span>, the resonant populations are</p>
+<div class="heom-equation" id="eq-75" data-math-id="math-74">\[
+\begin{aligned}
+P_+(0)&amp;=\frac12\left|a+\frac{b}{\sqrt N}\right|^2,\\
+P_-(0)&amp;=\frac12\left|-a+\frac{b}{\sqrt N}\right|^2,\\
+P_D(0)&amp;=|b|^2\left(1-\frac1N\right).
+\end{aligned}\tag{75}
+\]</div>
+<p>The initial UP–LP imbalance is an interference term. It depends on the relative phase of <span data-math-id="math-513">\(a\)</span> and <span data-math-id="math-514">\(b\)</span>, not just on their populations. The paper's real-amplitude example <span data-math-id="math-515">\(a=\sqrt{0.7}\)</span>, <span data-math-id="math-516">\(b=\sqrt{0.3}\)</span> gives <span data-math-id="math-517">\(P_\pm(0)=0.35+0.15/N\pm\sqrt{0.21/N}\)</span> and <span data-math-id="math-518">\(P_D(0)=0.3(1-1/N)\)</span>.</p>
+<h3>Arbitrary initial operators from a small set of representative propagations</h3>
+<p>For a fixed factorized bath preparation, let <span data-math-id="math-519">\(\hat{\mathcal G}_t\)</span> be the reduced dynamical map. Expand an arbitrary initial operator in the site/cavity matrix-unit basis:</p>
+<div class="heom-equation" id="eq-76" data-math-id="math-75">\[
+\begin{aligned}
+\hat\rho_S(0)={}&amp;\rho_{cc}|c\rangle\langle c|
++\sum_i\rho_{ic}|e_i\rangle\langle c|
++\sum_i\rho_{ci}|c\rangle\langle e_i|\\
+&amp;+\sum_i\rho_{ii}|e_i\rangle\langle e_i|
++\sum_{i\ne j}\rho_{ij}|e_i\rangle\langle e_j|.
+\end{aligned}\tag{76}
+\]</div>
+<p>Linearity propagates each term independently. Covariance gives <span data-math-id="math-520">\(\hat{\mathcal G}_t[\hat U_\pi\hat A\hat U_\pi^\dagger]=\hat U_\pi\hat{\mathcal G}_t[\hat A]\hat U_\pi^\dagger\)</span>. Therefore the five representative operator types are <span data-math-id="math-521">\(|c\rangle\langle c|\)</span>, <span data-math-id="math-522">\(|e_1\rangle\langle c|\)</span>, <span data-math-id="math-523">\(|c\rangle\langle e_1|\)</span>, <span data-math-id="math-524">\(|e_1\rangle\langle e_1|\)</span>, and <span data-math-id="math-525">\(|e_1\rangle\langle e_2|\)</span>. They distinguish zero, one, one, one, and two molecular labels.</p>
+<p>When the bath-channel pairing and closure preserve adjoints, the responses to the two cavity–molecule orientations are adjoints and only four independent representative propagations are necessary. The non-Hermitian representatives are basis operators, not individually physical density matrices.</p>
+<p>This statement concerns the number of representative dynamics. Reading an arbitrary dense input or writing all <span data-math-id="math-526">\((N+1)^2\)</span> output entries still costs at least quadratic storage and work. Correlated initial system–bath states also require specifying their initial hierarchy, not merely the initial reduced density matrix.</p>
+<p class="source-note">Distinguished molecules and linear reconstruction: <a href="../assets/publication_pdfs/symHEOM.pdf#page=12">paper Section VI, Eqs. (94)–(115) and Table I</a>. Coherent-state initial populations: <a href="../assets/publication_pdfs/symHEOM.pdf#page=16">Section VII C</a>.</p>
+</section>
+
+<section id="multi-exp" data-short="Multiple exponential channels">
+<h2>19. Multiple exponentials: move the entire local history together</h2>
+<p>With <span data-math-id="math-527">\(m\)</span> exponential components, a molecule carries the ordered local occupation tuple <span data-math-id="math-528">\(\alpha_i=(n_{i0},\ldots,n_{i,m-1})\)</span>. These are bookkeeping labels, not oscillator wavefunctions. A molecular exchange moves the complete tuple. It must not independently sort or exchange its components.</p>
+<p>A canonical pattern is now a multiset of nonzero local tuples, sorted by any fixed deterministic ordering. One convenient rule is decreasing total occupation, with lexicographic ordering to resolve ties. Include the zero tuple as a category whenever unoccupied molecules remain. If <span data-math-id="math-529">\(M_\alpha\)</span> is the number of molecules in category <span data-math-id="math-530">\(\alpha\)</span>,</p>
+<div class="heom-equation" id="eq-77" data-math-id="math-76">\[
+|\Lambda|=\sum_\alpha M_\alpha\sum_{k=0}^{m-1}\alpha_k,\qquad
+\Gamma_\Lambda=\sum_\alpha M_\alpha\sum_{k=0}^{m-1}\alpha_k\nu_k.\tag{77}
+\]</div>
+<p>The unique-variable types remain <span data-math-id="math-531">\(Z\)</span>, <span data-math-id="math-532">\(X_\alpha\)</span>, <span data-math-id="math-533">\(Y_\alpha\)</span>, <span data-math-id="math-534">\(P_\alpha\)</span>, ordered <span data-math-id="math-535">\(S_{\alpha\beta}\)</span>, and <span data-math-id="math-536">\(T_\alpha\)</span>. Their count is still <span data-math-id="math-537">\((G+1)^2+h\)</span>. Changing channel <span data-math-id="math-538">\(k\)</span> on one molecule changes its local category from <span data-math-id="math-539">\(\alpha\)</span> to <span data-math-id="math-540">\(\alpha\pm e_k\)</span>, then the target multiset is canonicalized and the selected matrix entry is accessed in the raw labeling.</p>
+<p>The general hierarchy contribution for a source entry <span data-math-id="math-541">\((a,b)\)</span> is</p>
+<div class="heom-equation" id="eq-78" data-math-id="math-77">\[
+\begin{aligned}
+\dot V_{ab}^\Lambda\big|_{\rm hier}={}&amp;
+-i\chi_L\sum_{ik}\sqrt{(n_{ik}^\Lambda+1)|c_k|}
+(\delta_{a,e_i}-\delta_{b,e_i})\mathcal A_{ik}^+(a,b)\\
+&amp;-i\sum_{ik:n_{ik}^\Lambda&gt;0}\sqrt{n_{ik}^\Lambda/|c_k|}
+(c_k\delta_{a,e_i}-\check c_k\delta_{b,e_i})\mathcal A_{ik}^-(a,b).
+\end{aligned}\tag{78}
+\]</div>
+<p>There are at most two selected molecules for each <span data-math-id="math-542">\(k\)</span>. The Hamiltonian sums are unchanged except that their category indices are now tuples.</p>
+<div class="worked-example"><h3>Enumerate every pattern for <span data-math-id="math-543">\(m=2\)</span>, <span data-math-id="math-544">\(L=2\)</span></h3>
+<p>Let <span data-math-id="math-545">\(A=(1,0)\)</span> and <span data-math-id="math-546">\(B=(0,1)\)</span>. Tier zero contains only <span data-math-id="math-547">\(\varnothing\)</span>. Tier one contains <span data-math-id="math-548">\([A]\)</span> and <span data-math-id="math-549">\([B]\)</span>. Tier two contains the three single-molecule patterns <span data-math-id="math-550">\([(2,0)]\)</span>, <span data-math-id="math-551">\([(1,1)]\)</span>, <span data-math-id="math-552">\([(0,2)]\)</span>, and the three two-molecule patterns <span data-math-id="math-553">\([A,A]\)</span>, <span data-math-id="math-554">\([A,B]\)</span>, <span data-math-id="math-555">\([B,B]\)</span>. This makes nine canonical patterns when <span data-math-id="math-556">\(N\geq2\)</span>.</p>
+<p>For <span data-math-id="math-557">\(N\geq4\)</span>, the zero category always has at least two members. The unique-variable total is <span data-math-id="math-558">\(5+2(10)+3(10)+2(11)+17=94\)</span>. By comparison, one exponential at <span data-math-id="math-559">\(L=2\)</span> has four canonical patterns and 36 saturated variables. Adding one exponential can therefore increase the compressed problem substantially even at shallow depth.</p>
+<p>For <span data-math-id="math-560">\(\Lambda=[A,B]\)</span> and two zero-category molecules, the block structure is the same 17-variable pattern as the <span data-math-id="math-561">\([2,1]\)</span> example, with category labels <span data-math-id="math-562">\(A,B,0\)</span>. Raising channel 0 on the molecule in category <span data-math-id="math-563">\(B\)</span> changes <span data-math-id="math-564">\(B=(0,1)\)</span> to <span data-math-id="math-565">\((1,1)\)</span>; raising channel 1 instead changes it to <span data-math-id="math-566">\((0,2)\)</span>. They have the same total tier but different damping and target coefficients.</p></div>
+<p>For completeness, the generating function for canonical tuple multisets is</p>
+<div class="heom-equation" id="eq-79" data-math-id="math-78">\[
+\mathcal P_m(z,x)=\prod_{\alpha\in\mathbb N_0^m\setminus\{0\}}
+\frac{1}{1-zx^{|\alpha|}},\qquad |\alpha|=\sum_k\alpha_k.\tag{79}
+\]</div>
+<p>The coefficient of <span data-math-id="math-567">\(z^r x^\ell\)</span> counts patterns with <span data-math-id="math-568">\(r\)</span> occupied molecules and total tier <span data-math-id="math-569">\(\ell\)</span>. At finite <span data-math-id="math-570">\(L\)</span>, only tuples of total occupation at most <span data-math-id="math-571">\(L\)</span> can appear, so only finitely many factors matter. Restrict <span data-math-id="math-572">\(r\leq N\)</span> and sum through <span data-math-id="math-573">\(\ell=L\)</span>.</p>
+<p>Every nonzero local tuple still costs at least one tier. Therefore the canonical count saturates at <span data-math-id="math-574">\(N\geq L\)</span>, and the unique-variable count at <span data-math-id="math-575">\(N\geq L+2\)</span>, for fixed <span data-math-id="math-576">\(m\)</span>. The saturated size can grow rapidly with both <span data-math-id="math-577">\(m\)</span> and <span data-math-id="math-578">\(L\)</span>. “Independent of ensemble size” does not mean independent of bath complexity.</p>
+<p class="source-note">The main article specifies the whole-tuple relabeling in <a href="../assets/publication_pdfs/symHEOM.pdf#page=4">Eqs. (21)–(23)</a> and states the multi-exponential extension on <a href="../assets/publication_pdfs/symHEOM.pdf#page=12">page 12</a>. The explicit enumeration and generating-function explanation are supplied here; the separate Supporting Information is not bundled in the supplied website archive.</p>
+</section>
+
+<section id="disorder" data-short="Static Gaussian disorder">
+<h2>20. Why Gaussian static disorder is a zero-rate channel</h2>
+<p>A fixed disordered realization has <span data-math-id="math-579">\(\hat H_S(\delta)=\hat H_S+\sum_i\delta\epsilon_i\hat Q_i\)</span>. Unless its site shifts happen to coincide, relabeling molecules changes that Hamiltonian. The fully symmetric generator cannot simply be applied to each individual realization.</p>
+<p>The disorder average is a different object. Suppose <span data-math-id="math-580">\(\delta\epsilon_i=\sigma x_i\)</span>, where the <span data-math-id="math-581">\(x_i\)</span> are independent standard Gaussian random variables, and the initial system operator is independent of the particular disorder realization. Their joint probability distribution is invariant under molecular relabeling. The averaged evolution can retain that covariance even though every sample breaks it.</p>
+<p>The static random force has correlation <span data-math-id="math-582">\(\mathbb E[\delta\epsilon_i(t)\delta\epsilon_j(0)]=\delta_{ij}\sigma^2\)</span>. It is represented by the channel <span data-math-id="math-583">\(c_{\rm st}=\check c_{\rm st}=\sigma^2\)</span>, <span data-math-id="math-584">\(\nu_{\rm st}=0\)</span>. There is no damping along that hierarchy direction.</p>
+<h3>Derive this channel directly, without treating disorder as an oscillator</h3>
+<p>Let <span data-math-id="math-585">\(\phi_n(x)=\mathrm{He}_n(x)/\sqrt{n!}\)</span> be the orthonormal probabilists' Hermite polynomials with respect to the standard Gaussian measure. Their recurrence is</p>
+<div class="heom-equation" id="eq-80" data-math-id="math-79">\[
+x\phi_n(x)=\sqrt{n+1}\,\phi_{n+1}(x)+\sqrt n\,\phi_{n-1}(x).\tag{80}
+\]</div>
+<p>For the conditional system operator <span data-math-id="math-586">\(\hat\rho_x(t)\)</span>, define polynomial-weighted disorder moments</p>
+<div class="heom-equation" id="eq-81" data-math-id="math-80">\[
+\hat R_n(t)=\mathbb E_x\left[\prod_i\phi_{n_i}(x_i)\,\hat\rho_x(t)\right].\tag{81}
+\]</div>
+<p>Multiply <span data-math-id="math-587">\(\dot{\hat\rho}_x=-i[\hat H_S,\hat\rho_x]-i\sigma\sum_i x_i[\hat Q_i,\hat\rho_x]\)</span> by the polynomial product and average. Apply the recurrence to the one factor containing <span data-math-id="math-588">\(x_i\)</span>. This yields</p>
+<div class="heom-equation" id="eq-82" data-math-id="math-81">\[
+\dot{\hat R}_n=-i[\hat H_S,\hat R_n]
+-i\sigma\sum_i\left(\sqrt{n_i+1}[\hat Q_i,\hat R_{n+e_i}]
++\sqrt{n_i}[\hat Q_i,\hat R_{n-e_i}]\right).\tag{82}
+\]</div>
+<p>This is exactly the scaled hierarchy with <span data-math-id="math-589">\(c=\sigma^2\)</span> and <span data-math-id="math-590">\(\nu=0\)</span>. Orthogonality gives <span data-math-id="math-591">\(\hat R_n(0)=0\)</span> for nonzero <span data-math-id="math-592">\(n\)</span> when the initial state is independent of the disorder. Additional dynamical-bath ADO labels can be carried alongside these polynomial labels.</p>
+<div class="worked-example"><h3>Check the average against an elementary Gaussian integral</h3>
+<p>With no cavity coupling, a cavity–site coherence acquires the random phase <span data-math-id="math-593">\(e^{-i\delta\epsilon_i t}\)</span>. Gaussian averaging gives <span data-math-id="math-594">\(\mathbb E[e^{-i\delta\epsilon_i t}]=e^{-\sigma^2t^2/2}\)</span>. A coherence between two independently disordered sites has phase <span data-math-id="math-595">\(e^{-i(\delta\epsilon_i-\delta\epsilon_j)t}\)</span> and decays as <span data-math-id="math-596">\(e^{-\sigma^2t^2}\)</span>. A converged zero-rate hierarchy should reproduce both laws.</p></div>
+<p>A zero-rate channel can require a deep hierarchy over a long observation time because there is no tier damping to suppress its memory. Convergence must be checked over the full requested time interval. This is not the same numerical situation as a rapidly decaying Drude or Matsubara channel.</p>
+<p>For non-Gaussian static disorder, a constant two-point correlation alone does not specify the distribution or its higher cumulants. The Gaussian HEOM channel cannot reproduce an arbitrary distribution merely by matching its variance. A suitable polynomial hierarchy may still be constructed from that distribution, but its recurrence coefficients and closure must be derived separately.</p>
+<p>In the paper's disorder plots, upper, lower, and dark projectors refer to the <em>mean disorder-free TC Hamiltonian</em>. They are not redefined for each realization. This matters when interpreting the populations after disorder mixing.</p>
+<p class="source-note">Gaussian disorder and the static channel: <a href="../assets/publication_pdfs/symHEOM.pdf#page=17">paper Eqs. (124)–(126) and Fig. 7</a>. The Hermite-moment derivation is a teaching addition.</p>
+</section>
+
+<section id="cavity-loss" data-short="Cavity loss and the ground state">
+<h2>21. Cavity loss: include the state that receives the photon</h2>
+<p>The one-excitation Hamiltonian conserves excitation number. Photon loss does not. To write a trace-preserving model, append the zero-excitation ket <span data-math-id="math-597">\(|G\rangle=|0\rangle_{\rm cav}\otimes|g_1\rangle\otimes\cdots\otimes|g_N\rangle\)</span> and use the jump operator</p>
+<div class="heom-equation" id="eq-83" data-math-id="math-82">\[
+\hat L_c=\sqrt\kappa\,|G\rangle\langle c|,\qquad
+\hat{\mathcal D}_c\hat A=\hat L_c\hat A\hat L_c^\dagger-
+\frac12\{\hat L_c^\dagger\hat L_c,\hat A\}.\tag{83}
+\]</div>
+<p>The rate convention is now explicit: a bare cavity population decays at rate <span data-math-id="math-598">\(\kappa\)</span>, while a cavity amplitude decays at <span data-math-id="math-599">\(\kappa/2\)</span>. In the ordered basis <span data-math-id="math-600">\((|G\rangle,|c\rangle,|e_1\rangle,\ldots)\)</span>, the only nonzero matrix entry of <span data-math-id="math-601">\(\hat L_c\)</span> is its ground-row/cavity-column entry <span data-math-id="math-602">\(\sqrt\kappa\)</span>.</p>
+<p>For an arbitrary ADO, the jump term transfers its cavity entry to its ground entry. The anticommutator damps its cavity row and column. Thus</p>
+<div class="heom-equation" id="eq-84" data-math-id="math-83">\[
+(\hat{\mathcal D}_c\hat A)_{GG}=\kappa A_{cc},\quad
+(\hat{\mathcal D}_c\hat A)_{cc}=-\kappa A_{cc},\quad
+(\hat{\mathcal D}_c\hat A)_{ic}=-\frac\kappa2A_{ic},\quad
+(\hat{\mathcal D}_c\hat A)_{ci}=-\frac\kappa2A_{ci}.\tag{84}
+\]</div>
+<p>For molecular–molecular entries, this dissipator vanishes. Add the same system dissipator to every ADO when appending this independent Markovian loss channel. Since <span data-math-id="math-603">\(|G\rangle\)</span> and <span data-math-id="math-604">\(|c\rangle\)</span> are unchanged by molecular relabeling, the dissipator preserves the required covariance.</p>
+<p>Without pumping or ground–excited driving, the excitation block evolves autonomously with the loss contributions <span data-math-id="math-605">\(\dot Z|_{\rm loss}=-\kappa Z\)</span>, <span data-math-id="math-606">\(\dot X_q|_{\rm loss}=-\kappa X_q/2\)</span>, and <span data-math-id="math-607">\(\dot Y_q|_{\rm loss}=-\kappa Y_q/2\)</span>. Its trace is a survival probability, not a normalized density-matrix trace:</p>
+<div class="heom-equation" id="eq-85" data-math-id="math-84">\[
+\frac{d}{dt}(Z+NP)=-\kappa Z,\qquad
+\dot P_G=\kappa Z,\qquad
+P_G+P_++P_-+P_D=1.\tag{85}
+\]</div>
+<p>One can recover the physical ground population from the lost trace in this no-return setting. In a full augmented hierarchy, the ground diagonal of each ADO has its own damping and the source <span data-math-id="math-608">\(\kappa Z^\Lambda\)</span>; it does not feed back into the excitation block without an additional excitation process.</p>
+<p>Simply renormalizing the surviving excitation block after every step changes the question to conditional, postselected dynamics. That is not the unconditional loss dynamics above. Likewise, replacing <span data-math-id="math-609">\(\omega_{\rm cav}\)</span> by a complex number without stating the associated bra evolution and jump treatment can hide a factor-of-two or normalization error.</p>
+<p class="source-note">The main article identifies cavity loss as a compatible extension in <a href="../assets/publication_pdfs/symHEOM.pdf#page=2">Section I</a>. The explicit Lindblad block construction here is derived separately to specify the rate and normalization conventions.</p>
+</section>
+
+<section id="implementation" data-short="Implementation and verified code">
+<h2>22. Turn the derivation into a matrix-free program</h2>
+<p>Collect the unique coordinates of each pattern into a bookkeeping ket <span data-math-id="math-610">\(|r_\Lambda\rangle\)</span> and stack them into <span data-math-id="math-611">\(|r\rangle\)</span>. The equations are linear, so <span data-math-id="math-612">\(d|r\rangle/dt=\hat{\mathcal M}_u|r\rangle\)</span>. There is no need to assemble the dense matrix <span data-math-id="math-613">\(\hat{\mathcal M}_u\)</span>.</p>
+<p>During precomputation, assign an integer index to every pair <span data-math-id="math-614">\((\Lambda,\text{variable type})\)</span>. For each derivative, record the source coordinate, destination coordinate, and complex coefficient of every contribution derived in Sections 14–15. Duplicate contributions can be combined. At runtime the update is only</p>
+<div class="heom-equation" id="eq-86" data-math-id="math-85">\[
+\dot r_{a}=\sum_{e:\,a_e=a}w_e\,r_{b_e},\tag{86}
+\]</div>
+<p>where an edge record <span data-math-id="math-615">\(e\)</span> stores a destination <span data-math-id="math-616">\(a_e\)</span>, a source <span data-math-id="math-617">\(b_e\)</span>, and a coefficient <span data-math-id="math-618">\(w_e\)</span>. All sorting, category identification, and target alignment can be moved outside the time-stepping loop.</p>
+<h3>Why this is an exact finite-dimensional reduction</h3>
+<p>Let <span data-math-id="math-619">\(\hat E\)</span> expand a compressed vector into the full molecule-resolved hierarchy using the relabeling relations. Let <span data-math-id="math-620">\(\hat C\)</span> select the representative unique entries from a full hierarchy. These are rectangular linear maps between explicitly different bookkeeping spaces, with <span data-math-id="math-621">\(\hat C\hat E=\hat I_u\)</span>. On the symmetry-compatible subspace, <span data-math-id="math-622">\(\hat E\hat C\)</span> acts as the identity.</p>
+<p>Invariance of that subspace under the full HEOM generator gives</p>
+<div class="heom-equation" id="eq-87" data-math-id="math-86">\[
+\hat{\mathcal M}_{\rm full}\hat E=\hat E\hat{\mathcal M}_u,
+\qquad
+\hat{\mathcal M}_u=\hat C\hat{\mathcal M}_{\rm full}\hat E.\tag{87}
+\]</div>
+<p>Apply the first identity repeatedly to powers of the generators and then sum the exponential series:</p>
+<div class="heom-equation" id="eq-88" data-math-id="math-87">\[
+e^{t\hat{\mathcal M}_{\rm full}}\hat E=\hat E e^{t\hat{\mathcal M}_u}.\tag{88}
+\]</div>
+<p>Therefore expanding a compressed solution gives the same finite-hierarchy solution as propagating the full compatible initial hierarchy. The maps here identify an invariant subspace; they do not eliminate dynamical variables by a Markov or short-memory approximation.</p>
+<h3>A runnable teaching implementation</h3>
+<p>The companion program implements the one-exponential, fully symmetric, hard-cutoff problem. It uses only NumPy beyond the Python standard library. Construction uses readable dictionaries and tuples; the runtime right-hand side uses numerical arrays and never forms a dense ADO or generator.</p>
+<p><a class="heom-download" href="../assets/code/heom_tutorial.py" download>Download heom_tutorial.py</a></p>
+<pre><code>python heom_tutorial.py --test
+python heom_tutorial.py --counts --N 1000000000000 --L 25
+python heom_tutorial.py --demo --N 4 --L 5 --output heom_demo.csv</code></pre>
+<p>The core runtime action is deliberately short:</p>
+<pre><code>def rhs_reduced(state, rows, cols, coefficients):
+    out = np.zeros_like(state)
+    np.add.at(out, rows, coefficients * state[cols])
+    return out</code></pre>
+<p><code>np.add.at</code> accumulates repeated destination indices correctly. A plain indexed assignment such as <code>out[rows] += ...</code> does not safely express that operation when destinations repeat. For a production solver, a row-compressed or compiled loop can avoid scatter overhead while implementing exactly the same coefficient list.</p>
+<p>The builder keeps at most <span data-math-id="math-623">\(L\)</span> occupied molecular labels and at most two explicit zero-category labels per representative. All other zero-category molecules enter only through <span data-math-id="math-624">\(M_0\)</span>. Thus neither its representative label storage nor its runtime graph grows with <span data-math-id="math-625">\(N\)</span> above the saturation threshold. The separate full-HEOM routines intentionally do allocate molecule-resolved matrices, but only as small-system validation oracles.</p>
+<div class="worked-example"><h3>Checks performed on the supplied implementation</h3>
+<p>For <span data-math-id="math-626">\(N=1,2,3,4\)</span> and <span data-math-id="math-627">\(L=0,1,2,3\)</span>, random complex compressed hierarchies were expanded and their derivatives compared with an independently evaluated full HEOM. The largest maximum-entry discrepancy was below <span data-math-id="math-628">\(1.0\times10^{-15}\)</span>. This tests more than one physical initial state and includes non-Hermitian coordinates.</p>
+<p>For a two-molecule, <span data-math-id="math-629">\(L=3\)</span> example, both representations were propagated for 200 RK4 steps. The largest hierarchy-entry discrepancy was below <span data-math-id="math-630">\(8\times10^{-18}\)</span>; the maximum trace error was below <span data-math-id="math-631">\(5\times10^{-16}\)</span>. The exact <span data-math-id="math-632">\(L=25\)</span> counts above were also checked, including <span data-math-id="math-633">\(N=10^{12}\)</span>.</p>
+<p>For <span data-math-id="math-634">\(L=3\)</span>, the nonzero runtime graph has 74 variables and 360 coefficient entries for <span data-math-id="math-635">\(N=5\)</span>, <span data-math-id="math-636">\(100\)</span>, and <span data-math-id="math-637">\(10^{12}\)</span> at the same parameter convention. This checks structural saturation directly; it is not a wall-clock performance benchmark.</p></div>
+<p>The demo uses arbitrary consistent units, one finite correlation exponential, no residual terminator, no disorder, and no loss. It is not the authors' production code and does not claim to reproduce a paper figure. The dense/reduced agreement checks algebraic equivalence; hierarchy-depth and bath-decomposition convergence remain independent tasks.</p>
+<p class="source-note">Matrix-free assembly: <a href="../assets/publication_pdfs/symHEOM.pdf#page=11">paper Section V C 4</a>. The expansion-map proof and downloadable implementation are teaching additions with the tests described above.</p>
+</section>
+
+<section id="paper-results" data-short="Read the reported results">
+<h2>23. What to look for in the paper's population dynamics</h2>
+<p>The reported numerical examples answer two different questions. A small-<span data-math-id="math-638">\(N\)</span> comparison checks whether the compressed implementation reproduces conventional HEOM. Larger-<span data-math-id="math-639">\(N\)</span> calculations then ask how the physical populations change when the collective splitting is held fixed.</p>
+<p>For the one-exponential dynamical-bath examples, the paper uses <span data-math-id="math-640">\(\omega_{\rm cav}=\epsilon_x=10000\,\mathrm{cm}^{-1}\)</span>, <span data-math-id="math-641">\(\Omega_R=500\,\mathrm{cm}^{-1}\)</span>, <span data-math-id="math-642">\(\lambda=50\,\mathrm{cm}^{-1}\)</span>, <span data-math-id="math-643">\(\gamma=18\,\mathrm{cm}^{-1}\)</span>, and <span data-math-id="math-644">\(T=300\)</span> K, with a residual Matsubara correction. The main larger-ensemble calculations use <span data-math-id="math-645">\(L=25\)</span> and a 0.5 fs time step; the two-molecule conventional-HEOM comparison uses <span data-math-id="math-646">\(L=15\)</span>.</p>
+<p>The individual light–matter coupling is changed with ensemble size:</p>
+<div class="heom-equation" id="eq-89" data-math-id="math-88">\[
+g(N)=\frac{\Omega_R}{2\sqrt N}.\tag{89}
+\]</div>
+<p>Consequently, the resonant polariton energies stay fixed as <span data-math-id="math-647">\(N\)</span> changes. Differences between the curves are not simply the result of opening a larger Rabi gap.</p>
+<h3>Upper-polariton preparation</h3>
+<p><a href="../assets/publication_pdfs/symHEOM.pdf#page=14">Figure 4</a> first compares compressed and conventional HEOM for two molecules. The agreement tests the retained finite hierarchy, including its local bath effects. For larger ensembles, follow <span data-math-id="math-648">\(P_+\)</span>, <span data-math-id="math-649">\(P_-\)</span>, and total <span data-math-id="math-650">\(P_D\)</span> together, rather than interpreting the cavity population alone as a polariton population.</p>
+<p>The displayed larger-<span data-math-id="math-651">\(N\)</span> trajectories show increasingly strong accumulation in the dark manifold for those parameters and times. The <span data-math-id="math-652">\(N=10^3\)</span> and <span data-math-id="math-653">\(N=10^{12}\)</span> curves are visually coincident on the plotted window. That is a statement about observed physical convergence for this example, not a theorem that every model or every observable converges at <span data-math-id="math-654">\(N=10^3\)</span>.</p>
+<h3>Localized and coherent preparations</h3>
+<p><a href="../assets/publication_pdfs/symHEOM.pdf#page=15">Figure 5</a> retains one distinguished molecule. The localized preparation starts with bright weight <span data-math-id="math-655">\(1/N\)</span>, so it is already mostly dark for large <span data-math-id="math-656">\(N\)</span>. At fixed collective splitting, its individual cavity coupling also decreases as <span data-math-id="math-657">\(N^{-1/2}\)</span>. Both facts are relevant when interpreting slow escape from the initially excited site.</p>
+<p><a href="../assets/publication_pdfs/symHEOM.pdf#page=16">Figure 6</a> starts from a cavity–site superposition. Its initial UP and LP populations contain the interference terms derived in Section 18. Equal cavity and excitonic population labels would not reveal this phase-sensitive difference.</p>
+<h3>Static disorder</h3>
+<p><a href="../assets/publication_pdfs/symHEOM.pdf#page=17">Figure 7</a> uses a different collective splitting, <span data-math-id="math-658">\(\Omega_R=100\,\mathrm{cm}^{-1}\)</span>, Gaussian disorder width <span data-math-id="math-659">\(\sigma=25\,\mathrm{cm}^{-1}\)</span>, and the same stated Drude parameters. The dynamical and zero-rate disorder channels are propagated together, with the article reporting total-depth convergence at <span data-math-id="math-660">\(L=14\)</span> for that calculation. Do not transfer a convergence depth from the one-channel example to this two-channel example without testing it.</p>
+<p>The strongest computational result is the separation between ensemble size and propagated dimension. For the one-exponential, <span data-math-id="math-661">\(L=25\)</span> fully symmetric calculation, the raw vector remains at 306,751 complex coordinates beyond <span data-math-id="math-662">\(N=27\)</span>. The physical dynamics still depend on molecular multiplicities and on the chosen <span data-math-id="math-663">\(g(N)\)</span>. This is what allows very large ensembles to be studied without replacing local environments by a common collective bath.</p>
+<p class="source-note">All reported parameters and qualitative comparisons in this section refer to <a href="../assets/publication_pdfs/symHEOM.pdf#page=14">paper Section VII, Figs. 4–7, and Table II</a>, not to the arbitrary-unit companion demo.</p>
+</section>
+
+<section id="convergence" data-short="Convergence and common mistakes">
+<h2>24. What “exact” does—and does not—guarantee</h2>
+<p>There are several logically separate levels of description. The chosen Hamiltonian specifies the physical model. The bath correlation representation approximates or exactly represents that model's environmental input. A finite hierarchy and closure define an ODE system. Symmetry compression changes its representation. A numerical integrator approximates its time evolution.</p>
+<p>The algebraic equivalence of compressed and full finite HEOM concerns the fourth step. It cannot establish the accuracy of the first three steps or remove time-integration error.</p>
+<div class="table-scroll" role="region" aria-label="Independent validation questions" tabindex="0"><table><thead><tr><th scope="col">Question</th><th scope="col">A useful check</th></tr></thead><tbody>
+<tr><th scope="row">Are the compressed equations correct?</th><td>Compare the expanded compressed derivative with full HEOM for small systems and random compatible hierarchies. Test alignment, not just populations.</td></tr>
+<tr><th scope="row">Is the hierarchy deep enough?</th><td>Increase <span data-math-id="math-664">\(L\)</span> while holding the correlation representation and closure fixed. Compare every requested observable over the full time window.</td></tr>
+<tr><th scope="row">Is the bath represented accurately?</th><td>Increase the number or quality of exponential components, or test the residual approximation against explicitly retained fast components.</td></tr>
+<tr><th scope="row">Is time stepping accurate?</th><td>Reduce the step size or tighten an adaptive tolerance. Check whether differences are much smaller than the intended physical accuracy.</td></tr>
+<tr><th scope="row">Is the preparation compatible?</th><td>Test the initial hierarchy under every retained relabeling, or keep distinguished molecules explicit.</td></tr>
+<tr><th scope="row">Is the normalization correct?</th><td>Check <span data-math-id="math-665">\(Z+NP=1\)</span> without loss; with loss, include the ground population. Check Hermiticity and positivity separately.</td></tr>
+</tbody></table></div>
+<p>Several implementation mistakes can preserve the trace and still give incorrect dynamics. Sorting a target label without aligning its row and column is one. Multiplying every hierarchy contribution by a category multiplicity is another. Replacing <span data-math-id="math-666">\(\check c_k\)</span> by <span data-math-id="math-667">\(c_k^*\)</span> without checking complex-rate pairing is a third. Merging <span data-math-id="math-668">\(P_q\)</span> and <span data-math-id="math-669">\(T_q\)</span> removes the very distinction needed for dark population.</p>
+<p>When using wavenumber input and femtosecond time, convert the Hamiltonian and rates consistently to angular inverse time. In particular, a numerical wavenumber <span data-math-id="math-670">\(\tilde\nu\)</span> corresponds to angular frequency <span data-math-id="math-671">\(2\pi c_{\rm light}\tilde\nu\)</span>, not <span data-math-id="math-672">\(c_{\rm light}\tilde\nu\)</span>. Correlation coefficients have units of energy squared in the <span data-math-id="math-673">\(\hbar=1\)</span> convention, while the rates have units of energy. Mixing these conventions changes both the oscillation and damping scales.</p>
+<p>At very large <span data-math-id="math-674">\(N\)</span>, collective observables can involve a large multiplicity times a small per-molecule coordinate. For example, <span data-math-id="math-675">\(P_B=P+(N-1)T\)</span>. An absolute-error threshold suitable for an <span data-math-id="math-676">\(O(1)\)</span> population may not be suitable for a coordinate of order <span data-math-id="math-677">\(1/N\)</span>. Consistent rescaling of coordinates, observable-aware convergence checks, or suitable integration tolerances are preferable to dropping small coordinates solely because their numerical magnitude is small.</p>
+<p>Numerical filtering is an additional approximation unless it is shown to preserve the required accuracy and relabeling structure. Low-rank approximations likewise address a different kind of redundancy. They can be combined with symmetry adaptation, but they should not be conflated with its exact identification of repeated variables.</p>
+<p>The present one-excitation density-operator representation also should not be reused unchanged for nonlinear optical response. Ground–excited coherences and two-excitation sectors have different row/column spaces, and optical interactions can change which molecular labels are distinguished. The same symmetry logic may be developed there, but the basis, pulse actions, and observable contractions must be rederived.</p>
+<p class="source-note">Scope and exactness statement: <a href="../assets/publication_pdfs/symHEOM.pdf#page=19">paper Section VIII</a>. The checks above distinguish algebraic validation from physical and numerical convergence.</p>
+</section>
+
+<section id="exercises" data-short="Exercises with worked solutions">
+<h2>25. Exercises that test the construction</h2>
+<p>The following exercises are designed to reveal different kinds of mistakes. Each answer uses the same basis and coefficient conventions as the tutorial.</p>
+
+<details class="heom-solution"><summary>1. Count the hierarchy for <span data-math-id="math-678">\(N=3\)</span>, <span data-math-id="math-679">\(m=1\)</span>, <span data-math-id="math-680">\(L=2\)</span>.</summary>
+<p>The conventional count is <span data-math-id="math-681">\(\binom{5}{2}=10\)</span> ADOs, each a <span data-math-id="math-682">\(4\times4\)</span> matrix, giving 160 complex entries. The canonical patterns are <span data-math-id="math-683">\(\varnothing,[1],[2],[1,1]\)</span>. The empty pattern has one category of multiplicity three, so <span data-math-id="math-684">\(u=5\)</span>. Each of <span data-math-id="math-685">\([1]\)</span> and <span data-math-id="math-686">\([2]\)</span> has one occupied molecule and two zero-category molecules, so <span data-math-id="math-687">\(G=2\)</span>, <span data-math-id="math-688">\(h=1\)</span>, and <span data-math-id="math-689">\(u=10\)</span>. The pattern <span data-math-id="math-690">\([1,1]\)</span> has two occupation-1 molecules and one zero-category molecule, also giving <span data-math-id="math-691">\(u=10\)</span>. The total is <span data-math-id="math-692">\(5+10+10+10=35\)</span>. At <span data-math-id="math-693">\(N=4\)</span>, the last pattern gains a second zero-category molecule and the total becomes 36.</p>
+</details>
+
+<details class="heom-solution"><summary>2. Show that a symmetric density operator can be entirely dark.</summary>
+<p>Use <span data-math-id="math-694">\(\hat\rho_D=\hat P_D/(N-1)\)</span> for <span data-math-id="math-695">\(N\geq2\)</span>. In the site basis, its diagonal entries are <span data-math-id="math-696">\(P=1/N\)</span> and its off-diagonal entries are <span data-math-id="math-697">\(T=-1/[N(N-1)]\)</span>, with <span data-math-id="math-698">\(Z=X=Y=0\)</span>. Then <span data-math-id="math-699">\(NP=1\)</span>, <span data-math-id="math-700">\(P_B=P+(N-1)T=0\)</span>, and <span data-math-id="math-701">\(P_D=(N-1)(P-T)=1\)</span>. This operator is positive because it is a normalized orthogonal projector, despite the negative off-diagonal entries.</p>
+</details>
+
+<details class="heom-solution"><summary>3. Find a target entry after a lowering move that changes the canonical ordering.</summary>
+<p>Start from <span data-math-id="math-702">\(N=4\)</span>, <span data-math-id="math-703">\([2,2]\)</span>, and the matrix entry <span data-math-id="math-704">\(\langle e_1|\hat R_{[2,2]}|e_2\rangle=T_2^{[2,2]}\)</span>. Lower molecule 1. The raw label is <span data-math-id="math-705">\((1,2,0,0)\)</span> and the canonical pattern is <span data-math-id="math-706">\([2,1]\)</span>. The selected row now has category 1 and the column category 2. The correct target is <span data-math-id="math-707">\(S_{12}^{[2,1]}\)</span>, not <span data-math-id="math-708">\(S_{21}^{[2,1]}\)</span>. Lowering molecule 2 instead accesses <span data-math-id="math-709">\(S_{21}^{[2,1]}\)</span>.</p>
+</details>
+
+<details class="heom-solution"><summary>4. Explain why the root site population has no direct upward bath term.</summary>
+<p>For <span data-math-id="math-710">\(\langle e_i|[\hat Q_j,\hat A]|e_i\rangle\)</span>, the two Kronecker deltas are identical, so they cancel for every <span data-math-id="math-711">\(j\)</span>. The root also has no downward term because all occupations are zero. Its site population changes through <span data-math-id="math-712">\(-ig(Y_0-X_0)\)</span>. Those coherences do couple to higher tiers, so the absence of a direct population bath term does not mean the bath cannot relax the physical populations.</p>
+</details>
+
+<details class="heom-solution"><summary>5. Verify the complex-rate partner coefficients.</summary>
+<p>Take <span data-math-id="math-713">\(C(t)=(2+i)e^{-(1+3i)t}+(4-2i)e^{-(1-3i)t}\)</span>. Its conjugate is <span data-math-id="math-714">\((2-i)e^{-(1-3i)t}+(4+2i)e^{-(1+3i)t}\)</span>. In the original rate order <span data-math-id="math-715">\((1+3i,1-3i)\)</span>, the correct coefficients for <span data-math-id="math-716">\(C^*\)</span> are <span data-math-id="math-717">\((4+2i,2-i)\)</span>. Taking each original coefficient's conjugate without exchanging partners would attach it to the wrong rate.</p>
+</details>
+
+<details class="heom-solution"><summary>6. Derive the dark population of an incoherent site mixture.</summary>
+<p>For <span data-math-id="math-718">\(\hat\rho=N^{-1}\sum_i|e_i\rangle\langle e_i|\)</span>, one has <span data-math-id="math-719">\(P=1/N\)</span> and <span data-math-id="math-720">\(T=0\)</span>. Hence <span data-math-id="math-721">\(P_B=1/N\)</span> and <span data-math-id="math-722">\(P_D=(N-1)/N\)</span>. For <span data-math-id="math-723">\(|B\rangle\langle B|\)</span>, the diagonal populations are unchanged but <span data-math-id="math-724">\(T=1/N\)</span>, giving <span data-math-id="math-725">\(P_B=1\)</span> and <span data-math-id="math-726">\(P_D=0\)</span>. Measuring equal site populations does not distinguish the two states; their coherences do.</p>
+</details>
+
+<details class="heom-solution"><summary>7. Compute the initial populations of a phased cavity–site superposition.</summary>
+<p>Let <span data-math-id="math-727">\(|\psi\rangle=\sqrt{0.7}|c\rangle+e^{i\varphi}\sqrt{0.3}|e_1\rangle\)</span> on resonance. Expanding the squared amplitudes gives <span data-math-id="math-728">\(P_\pm=0.35+0.15/N\pm\sqrt{0.21/N}\cos\varphi\)</span> and <span data-math-id="math-729">\(P_D=0.3(1-1/N)\)</span>. At <span data-math-id="math-730">\(\varphi=\pi/2\)</span>, the UP and LP weights are equal even though the cavity and site amplitudes remain coherent.</p>
+</details>
+
+<details class="heom-solution"><summary>8. Distinguish trace preservation from positivity.</summary>
+<p>Set <span data-math-id="math-731">\(N=2\)</span>, <span data-math-id="math-732">\(Z=0.5\)</span>, <span data-math-id="math-733">\(P=0.25\)</span>, <span data-math-id="math-734">\(T=0.25\)</span>, and real <span data-math-id="math-735">\(X=Y=0.6\)</span>. The trace is <span data-math-id="math-736">\(Z+2P=1\)</span> and <span data-math-id="math-737">\(P_D=0\)</span>. However, the bright–cavity block has determinant <span data-math-id="math-738">\(ZP_B-2X^2=0.25-0.72=-0.47\)</span>, so it has a negative eigenvalue. A correct trace alone does not establish that a numerical density operator is physical.</p>
+</details>
+
+<details class="heom-solution"><summary>9. Code exercise: intentionally break target alignment.</summary>
+<p>In a copy of the companion program, modify the target accessor so that it reads the selected row and column occupations after sorting the raw target without updating their molecular identities. Run <code>--test</code>. The random-hierarchy comparison should fail. Restore the correct accessor and confirm agreement again. This test is more sensitive than inspecting a single population trajectory initialized in a particularly symmetric state.</p>
+</details>
+
+<details class="heom-solution"><summary>10. Code exercise: separate equivalence from hierarchy convergence.</summary>
+<p>Run the demo for the same <span data-math-id="math-739">\(N\)</span> at several depths, for example <span data-math-id="math-740">\(L=3,5,7\)</span>, and compare the output CSV populations on the same time grid. The dense/reduced algebraic test can pass at all three depths even if those three trajectories differ appreciably. Agreement between representations validates the reduction; agreement as <span data-math-id="math-741">\(L\)</span> increases tests the chosen hierarchy closure for that time window. Repeat with a smaller integration step before attributing a residual difference to the hierarchy.</p>
+</details>
+</section>
+
+<section id="references" data-short="Source map and references">
+<h2>26. Source map and further reading</h2>
+<p>The primary source is M. Elious Mondal and Pengfei Huo, <em>Symmetry Adapted Hierarchical Equations of Motion for Exact Simulations of Large Polariton Systems</em>, arXiv:2608.20657v2, dated 30 August 2026. The tutorial's equation numbers are independent of the article's equation numbers.</p>
+<div class="table-scroll" role="region" aria-label="Tutorial to paper source map" tabindex="0"><table><thead><tr><th scope="col">Tutorial topic</th><th scope="col">Location in the supplied article</th></tr></thead><tbody>
+<tr><th scope="row">Model, local bath, scaled HEOM</th><td><a href="../assets/publication_pdfs/symHEOM.pdf#page=2">Section II, Eqs. (2)–(18), pages 2–4</a></td></tr>
+<tr><th scope="row">Molecular covariance and preparation</th><td><a href="../assets/publication_pdfs/symHEOM.pdf#page=4">Section III, Eqs. (19)–(27), pages 4–5</a></td></tr>
+<tr><th scope="row">Canonical patterns and alignment</th><td><a href="../assets/publication_pdfs/symHEOM.pdf#page=5">Section IV, Eqs. (28)–(52), pages 5–7</a></td></tr>
+<tr><th scope="row">Unique variables and direct propagation</th><td><a href="../assets/publication_pdfs/symHEOM.pdf#page=8">Section V, Eqs. (53)–(93), pages 7–12</a></td></tr>
+<tr><th scope="row">Localized and general initial operators</th><td><a href="../assets/publication_pdfs/symHEOM.pdf#page=12">Section VI, Eqs. (94)–(115), pages 12–14</a></td></tr>
+<tr><th scope="row">Benchmarks, disorder, and resource counts</th><td><a href="../assets/publication_pdfs/symHEOM.pdf#page=14">Section VII, Figs. 4–7 and Table II, pages 14–19</a></td></tr>
+</tbody></table></div>
+<p>Background on the hierarchy's theoretical foundations is available in Yoshitaka Tanimura, <a href="https://doi.org/10.1063/5.0011599" target="_blank" rel="noopener"><em>Numerically “exact” approach to open quantum dynamics: The hierarchical equations of motion (HEOM)</em>, J. Chem. Phys. 153, 020901 (2020)</a>. For the scaled representation, the primary article cites Q. Shi, L. Chen, G. Nan, R. Xu, and Y. Yan, <em>Efficient hierarchical Liouville space propagator to quantum dissipative dynamics</em>, J. Chem. Phys. 130, 084105 (2009).</p>
+<p>The explicit influence-functional derivation, basis transformations, complete component equations, Hermite-disorder construction, Lindblad loss blocks, exercises, and NumPy validation program are explanatory material developed for this page. They are distinguished from the numerical observations reported in the article. No claim is made here to have regenerated its production population curves.</p>
+<p class="heom-closing">The central result is not that local environmental histories become irrelevant for large ensembles. It is that histories and matrix entries related by an exact relabeling symmetry need not be stored repeatedly. Keeping the distinct histories, the diagonal/off-diagonal distinction, and the correct multiplicities retains bright, dark, and photonic dynamics while removing the redundant coordinates.</p>
+<nav class="reading-tools" aria-label="End-of-page reading tools"><a href="#overview">Back to the beginning</a><a href="../assets/code/heom_tutorial.py" download>Download the example code</a><button type="button" data-print-page>Print / save PDF</button></nav>
+</section>
+
+    </article>
+  </div>
+</section>
+</main>
+<footer class="site-footer"><div class="container footer-inner"><p>© <span>2026</span> Elious Mondal</p><p>Quantum dynamics · Spectroscopy · Open quantum systems</p><div class="footer-links"><a href="../index.html#contact">Contact</a><a href="../publications.html">Publications</a><a href="#main-content">Back to top ↑</a></div></div></footer>
+</body>
+</html>
