@@ -725,3 +725,23 @@ body[data-page="home"] .section {
   color: #ffffff;
   background: #1f5f61;
 }
+
+/* Justify paragraph text throughout the main website content. */
+main p {
+  text-align: justify;
+  text-align-last: auto;
+  -webkit-hyphens: auto;
+  hyphens: auto;
+}
+
+/* Keep short labels and publication metadata left-aligned. */
+main p.eyebrow,
+main p.publication-type,
+main p.pub-authors,
+main p.pub-venue,
+main p.deep-dive-meta,
+main p.note-topic {
+  text-align: left;
+  -webkit-hyphens: manual;
+  hyphens: manual;
+}
