@@ -11,7 +11,6 @@ plain HTML, CSS, and JavaScript and can be served directly through GitHub Pages.
 - `blog.html` — searchable and filterable Research Notes library
 - `codes.html` — scientific-software projects
 - `notes/` — detailed mathematical derivations, worked examples, and four interactive numerical tutorials
-- `deep-dives/` — ten paper-specific guides based on the supplied papers and supporting information
 
 ## Visual system
 
